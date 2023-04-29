@@ -1,0 +1,43 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=4
+
+_global_script_classes=[ {
+"base": "Node",
+"class": "Ship",
+"language": "GDScript",
+"path": "res://Ship.gd"
+}, {
+"base": "Area2D",
+"class": "Squadron",
+"language": "GDScript",
+"path": "res://Squadron.gd"
+} ]
+_global_script_class_icons={
+"Ship": "",
+"Squadron": ""
+}
+
+[application]
+
+config/name="battleships_v0.1"
+run/main_scene="res://Map.tscn"
+config/icon="res://icon.png"
+
+[input]
+
+test={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":84,"unicode":0,"echo":false,"script":null)
+ ]
+}
+
+[rendering]
+
+environment/default_environment="res://default_env.tres"

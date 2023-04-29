@@ -1,0 +1,74 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://art/basic_ship.png" type="Texture" id=1]
+[ext_resource path="res://Squadron.gd" type="Script" id=2]
+[ext_resource path="res://art/selected_ship.png" type="Texture" id=3]
+[ext_resource path="res://Map.gd" type="Script" id=4]
+[ext_resource path="res://ColorRect.gd" type="Script" id=5]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 3 ) ],
+"loop": true,
+"name": "clicked",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 1 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 21.8499, 30.95 )
+
+[node name="Control" type="Control"]
+margin_left = -0.5
+margin_top = -0.25
+margin_right = 1239.5
+margin_bottom = 719.75
+mouse_filter = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Map" type="Node2D" parent="."]
+script = ExtResource( 4 )
+
+[node name="ColorRect" type="ColorRect" parent="Map"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 0.25
+margin_right = 1024.25
+margin_bottom = 720.0
+mouse_filter = 2
+color = Color( 0.215686, 0.368627, 0.501961, 1 )
+script = ExtResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Squadron" type="Area2D" parent="Map"]
+position = Vector2( 134, 76.75 )
+script = ExtResource( 2 )
+
+[node name="Sprite" type="AnimatedSprite" parent="Map/Squadron"]
+frames = SubResource( 1 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Map/Squadron"]
+shape = SubResource( 2 )
+
+[node name="ReferenceRect" type="ReferenceRect" parent="Map/Squadron"]
+visible = false
+show_behind_parent = true
+anchor_left = -20.0
+anchor_top = -20.0
+anchor_bottom = 20.0
+margin_left = -20.0
+margin_top = -22.0
+margin_right = 20.0
+margin_bottom = 25.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+[connection signal="right_click" from="Map" to="Map/Squadron" method="_on_Map_right_click"]
