@@ -1,6 +1,9 @@
 class_name Squadron
 extends Area2D
 
+signal new_course_change(current_target, placement)
+signal reached_target()
+
 func get_min_speed():
 	
 	if len(ships) == 0:
@@ -31,12 +34,18 @@ func deselect():
 	$Sprite.animation = "default"
 
 func on_click():
+	
 	if selected:
 		self.deselect()
 	else:
 		self.select()
 
-var target = Vector2()
+func get_current_target():
+	return current_target
+
+var target_array = []
+
+var current_target = Vector2()
 var velocity = Vector2()
 var selected = false
 var initial_rot = 0
@@ -48,10 +57,21 @@ func _ready():
 	print(self.rotation)
 	screen_size = get_viewport_rect().size
 	
-	target = self.global_position
+	current_target = self.global_position
 
 func _process(delta):
-	position = position.move_toward(target, delta*speed)
+	if global_position.distance_to(current_target) < 10 and len(target_array) > 0:
+		print("updating current target")
+		emit_signal("reached_target")
+		
+		current_target = target_array[0]
+		
+		var angle = current_target.angle_to_point(position) + (PI / 2)
+		self.rotation = angle
+		
+		target_array.remove(0)
+	
+	position = position.move_toward(current_target, delta*speed)
 	
 	position.x = clamp(position.x, 0, screen_size.x)
 	position.y = clamp(position.y, 0, screen_size.y)
@@ -73,8 +93,15 @@ func _unhandled_input(event):
 func _on_Map_right_click(placement):
 	if selected:
 		# Turn logic is here for now?
-		var angle = placement.angle_to_point(position) + (PI / 2)
-		target = placement
+		if Input.is_action_pressed("queue"):
+			target_array.append(placement)
+			
+			emit_signal("new_course_change", current_target, placement)
+			print(target_array)
+		else:
+			var angle = placement.angle_to_point(position) + (PI / 2)
+			current_target = placement
+			
+			self.rotation = angle
 		
-		self.rotation = angle
 
