@@ -44,6 +44,9 @@ func _init():
 	# stopped, half, full ahead, flank
 	var speed_array = [0, speed / 2, speed, int(speed * 1.2)]
 	
+	# lower is better
+	var turn_weight = 0.08
+	
 	print("squad created")
 	
 func select():
@@ -72,7 +75,9 @@ var selected = false
 var initial_rot = 0
 var screen_size
 var current_speed
-var turning = false
+
+
+var turn_weight = 0.08
 
 
 # Called when the node enters the scene tree for the first time.
@@ -85,17 +90,7 @@ func _ready():
 	current_speed = self.base_speed
 	turn_speed = int(self.base_speed / 2)
 
-func smooth_rotate():
-	# start rotation when a few pixels away from target
-	
-	# slow speed during rotation, using move and slide
-	
-	# end of rotation: 
-	pass
-
-var weight = 0.1
-
-func _process(delta):
+func _physics_process(delta):
 	
 	if global_position.distance_to(current_target) < (turn_speed * 2) and len(target_array) > 0:
 		#print("updating current target")
@@ -106,39 +101,18 @@ func _process(delta):
 		
 		target_array.remove(0)
 		
-		# Turn here
-		turning = true
+	if int(global_position.distance_to(current_target)) > 1:
+		self.rotation = lerp_angle(self.rotation, (current_target - self.global_position).normalized().angle() + PI/2, turn_weight)
 		
-		var angle_degrees = rad2deg(transform.x.angle_to(current_target))
-		print(angle_degrees)
-		
-		if abs(angle_degrees) < 30:
-			#print("stopped turning")
-			self.rotation_degrees = rad2deg(global_position.angle_to_point(current_target) - PI/2)
-			turning = false
-			print("don't need to turn")
-	
-	if turning:
-		#print(transform.x)
-		var angle_degrees = rad2deg(transform.x.angle_to(current_target))
-		#print(angle_degrees)
-		
-		if abs(angle_degrees) < 10:
-			#print("stopped turning")
-			self.rotation_degrees = rad2deg(global_position.angle_to_point(current_target) - PI/2)
-			turning = false
-		elif angle_degrees > 0:
-			self.rotation_degrees += self.turn_rate
-		elif angle_degrees < 0:
-			self.rotation_degrees -= self.turn_rate
-		
-		position += transform.x * turn_speed * delta
-		
-	else:
-		position = position.move_toward(current_target, delta * current_speed)
+	position = position.move_toward(current_target, delta * current_speed)
 	
 	position.x = clamp(position.x, 0, screen_size.x)
 	position.y = clamp(position.y, 0, screen_size.y)
+	
+
+func _process(delta):
+	
+	pass
 
 func _input_event(viewport, event, shape_idx):
 	if event is InputEventMouseButton \
