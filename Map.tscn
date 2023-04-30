@@ -1,34 +1,8 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://art/basic_ship.png" type="Texture" id=1]
-[ext_resource path="res://Squadron.gd" type="Script" id=2]
-[ext_resource path="res://art/selected_ship.png" type="Texture" id=3]
+[ext_resource path="res://squadron_instance.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Map.gd" type="Script" id=4]
 [ext_resource path="res://ColorRect.gd" type="Script" id=5]
-
-[sub_resource type="SpriteFrames" id=1]
-animations = [ {
-"frames": [ ExtResource( 3 ) ],
-"loop": true,
-"name": "clicked",
-"speed": 5.0
-}, {
-"frames": [ ExtResource( 1 ) ],
-"loop": true,
-"name": "default",
-"speed": 5.0
-} ]
-
-[sub_resource type="GDScript" id=3]
-script/source = "extends AnimatedSprite
-
-onready var line = $Line2D
-
-	
-"
-
-[sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 21.8499, 30.95 )
 
 [node name="Control" type="Control"]
 margin_left = -0.5
@@ -56,30 +30,4 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Squadron" type="Area2D" parent="Map"]
-position = Vector2( 134, 76.75 )
-script = ExtResource( 2 )
-
-[node name="Sprite" type="AnimatedSprite" parent="Map/Squadron"]
-frames = SubResource( 1 )
-script = SubResource( 3 )
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Map/Squadron"]
-shape = SubResource( 2 )
-
-[node name="ReferenceRect" type="ReferenceRect" parent="Map/Squadron"]
-visible = false
-show_behind_parent = true
-anchor_left = -20.0
-anchor_top = -20.0
-anchor_bottom = 20.0
-margin_left = -20.0
-margin_top = -22.0
-margin_right = 20.0
-margin_bottom = 25.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-[connection signal="right_click" from="Map" to="Map/Squadron" method="_on_Map_right_click"]
-[connection signal="new_course_change" from="Map/Squadron" to="Map" method="_on_Squadron_new_course_change"]
-[connection signal="reached_target" from="Map/Squadron" to="Map" method="_on_Squadron_reached_target"]
+[node name="squad_1" parent="Map" instance=ExtResource( 1 )]

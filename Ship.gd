@@ -2,12 +2,14 @@ extends Node
 class_name Ship
 
 var speed: int
+var turn_rate: int
 
-func _init(speed_input):
-	self.speed = speed_input
+func _init(speed, turn_rate):
+	self.speed = speed
+	self.turn_rate = turn_rate
 	
 func get_speed():
 	return self.speed
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+
+func get_turn_rate():
+	return self.turn_rate

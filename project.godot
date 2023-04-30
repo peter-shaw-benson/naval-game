@@ -30,6 +30,10 @@ config/name="battleships_v0.1"
 run/main_scene="res://Map.tscn"
 config/icon="res://icon.png"
 
+[autoload]
+
+Utility="*res://Utility.gd"
+
 [input]
 
 queue={
