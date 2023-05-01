@@ -34,10 +34,10 @@ func _deferred_goto_scene(path):
 	# Optionally, to make it compatible with the SceneTree.change_scene_to_file() API.
 	get_tree().current_scene = current_scene
 
-func change_to_main_map(path, squadron):
-	call_deferred("goto_main_map", path, squadron)
+func change_to_main_map(path, squadron, num_islands):
+	call_deferred("goto_main_map", path, squadron, num_islands)
 
-func goto_main_map(path, squadron_data):
+func goto_main_map(path, squadron_data, num_islands):
 	# It is now safe to remove the current scene
 	current_scene.free()
 
@@ -53,4 +53,4 @@ func goto_main_map(path, squadron_data):
 	# Optionally, to make it compatible with the SceneTree.change_scene_to_file() API.
 	get_tree().current_scene = current_scene
 	
-	current_scene.init(squadron_data)
+	current_scene.init(squadron_data, num_islands)

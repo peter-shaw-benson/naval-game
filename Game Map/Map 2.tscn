@@ -3,14 +3,14 @@
 [ext_resource path="res://Game Map/Map 2.gd" type="Script" id=1]
 [ext_resource path="res://Squad/Squadron.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Game Map/LineDrawer.gd" type="Script" id=3]
-[ext_resource path="res://Game Map/IslandTexture.gd" type="Script" id=4]
+[ext_resource path="res://Game Map/Islands/Island.tscn" type="PackedScene" id=4]
 
 [node name="Main" type="Node"]
 script = ExtResource( 1 )
 squadron_scene = ExtResource( 2 )
+island_scene = ExtResource( 4 )
 
 [node name="ColorRect" type="ColorRect" parent="."]
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
@@ -20,9 +20,6 @@ color = Color( 0.215686, 0.427451, 0.501961, 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
-
-[node name="IslandTexture" type="Sprite" parent="."]
-script = ExtResource( 4 )
 
 [node name="LineDrawer" type="Node2D" parent="."]
 script = ExtResource( 3 )

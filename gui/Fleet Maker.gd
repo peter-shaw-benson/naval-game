@@ -6,6 +6,7 @@ const Destroyer = preload("res://Ships/Destroyer.gd")
 var num_destroyers = 0
 var position_x = 0
 var position_y = 0
+var num_islands = 0
 
 func _ready():
 	pass
@@ -46,4 +47,8 @@ func _on_y_pos_value_changed(value):
 
 
 func _on_StartButton_pressed():
-	GameState.change_to_main_map("res://Game Map/Map 2.tscn", get_squadron())
+	GameState.change_to_main_map("res://Game Map/Map 2.tscn", get_squadron(), num_islands)
+
+
+func _on_Islands_value_changed(value):
+	num_islands = value

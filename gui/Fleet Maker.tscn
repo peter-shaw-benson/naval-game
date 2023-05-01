@@ -48,7 +48,7 @@ __meta__ = {
 
 [node name="Title" type="RichTextLabel" parent="VBoxContainer"]
 margin_right = 924.0
-margin_bottom = 96.0
+margin_bottom = 68.0
 rect_clip_content = false
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -58,7 +58,7 @@ bbcode_text = "[center]Fleet Creator[/center]"
 text = "Fleet Creator"
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
-margin_top = 100.0
+margin_top = 72.0
 margin_right = 924.0
 margin_bottom = 310.0
 custom_constants/margin_right = 300
@@ -72,7 +72,7 @@ __meta__ = {
 [node name="options" type="VBoxContainer" parent="VBoxContainer/MarginContainer"]
 margin_left = 300.0
 margin_right = 624.0
-margin_bottom = 160.0
+margin_bottom = 188.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/separation = 20
@@ -86,20 +86,20 @@ text = "Start Game"
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer/options"]
 margin_top = 40.0
 margin_right = 324.0
-margin_bottom = 120.0
+margin_bottom = 148.0
 alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer/options/HBoxContainer"]
 margin_right = 200.0
-margin_bottom = 80.0
+margin_bottom = 108.0
 rect_min_size = Vector2( 200, 50 )
 size_flags_horizontal = 3
 alignment = 1
 
 [node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer"]
-margin_top = 6.0
+margin_top = 8.0
 margin_right = 200.0
-margin_bottom = 26.0
+margin_bottom = 28.0
 rect_min_size = Vector2( 0, 20 )
 size_flags_horizontal = 3
 custom_fonts/normal_font = SubResource( 2 )
@@ -107,27 +107,36 @@ text = "Num. Destroyers"
 scroll_active = false
 
 [node name="RichTextLabel2" type="RichTextLabel" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer"]
-margin_top = 30.0
+margin_top = 32.0
 margin_right = 200.0
-margin_bottom = 50.0
+margin_bottom = 52.0
 rect_min_size = Vector2( 0, 20 )
 size_flags_horizontal = 3
 custom_fonts/normal_font = SubResource( 2 )
 text = "X Position"
 
 [node name="RichTextLabel3" type="RichTextLabel" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer"]
-margin_top = 54.0
+margin_top = 56.0
 margin_right = 200.0
-margin_bottom = 74.0
+margin_bottom = 76.0
 rect_min_size = Vector2( 0, 20 )
 size_flags_horizontal = 3
 custom_fonts/normal_font = SubResource( 2 )
 text = "Y Position"
 
+[node name="Num Islands" type="RichTextLabel" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer"]
+margin_top = 80.0
+margin_right = 200.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 0, 20 )
+size_flags_horizontal = 3
+custom_fonts/normal_font = SubResource( 2 )
+text = "Num. Islands"
+
 [node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/MarginContainer/options/HBoxContainer"]
 margin_left = 204.0
 margin_right = 324.0
-margin_bottom = 80.0
+margin_bottom = 108.0
 size_flags_horizontal = 3
 alignment = 1
 
@@ -150,13 +159,20 @@ margin_right = 120.0
 margin_bottom = 80.0
 rect_min_size = Vector2( 0, 20 )
 
+[node name="Islands" type="SpinBox" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2"]
+margin_top = 84.0
+margin_right = 120.0
+margin_bottom = 108.0
+
 [node name="BackButton" type="Button" parent="VBoxContainer/MarginContainer/options"]
-margin_top = 140.0
+margin_top = 168.0
 margin_right = 324.0
-margin_bottom = 160.0
+margin_bottom = 188.0
 text = "Back"
 [connection signal="pressed" from="VBoxContainer/MarginContainer/options/StartButton" to="." method="_on_StartButton_pressed"]
 [connection signal="value_changed" from="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2/SpinBox" to="." method="_on_SpinBox_value_changed"]
 [connection signal="value_changed" from="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2/x pos" to="." method="_on_x_pos_value_changed"]
 [connection signal="value_changed" from="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2/y pos" to="." method="_on_y_pos_value_changed"]
+[connection signal="changed" from="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2/Islands" to="." method="_on_Islands_changed"]
+[connection signal="value_changed" from="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2/Islands" to="." method="_on_Islands_value_changed"]
 [connection signal="pressed" from="VBoxContainer/MarginContainer/options/BackButton" to="." method="_on_BackButton_pressed"]
