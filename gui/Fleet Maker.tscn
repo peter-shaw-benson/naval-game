@@ -1,0 +1,158 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://fonts/outline-pixel7/outline_pixel-7.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://gui/Fleet Maker.gd" type="Script" id=2]
+[ext_resource path="res://fonts/outline-pixel7/outline_pixel-7_solid.ttf" type="DynamicFontData" id=3]
+
+[sub_resource type="DynamicFont" id=1]
+size = 60
+font_data = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=2]
+font_data = ExtResource( 3 )
+
+[node name="Fleet Maker" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchor_left = 0.00138104
+anchor_top = -0.00117839
+anchor_right = 1.00138
+anchor_bottom = 0.998822
+color = Color( 0.0862745, 0.0862745, 0.0901961, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -462.0
+margin_top = -132.0
+margin_right = 462.0
+margin_bottom = 178.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.0
+alignment = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Title" type="RichTextLabel" parent="VBoxContainer"]
+margin_right = 924.0
+margin_bottom = 96.0
+rect_clip_content = false
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_fonts/normal_font = SubResource( 1 )
+bbcode_enabled = true
+bbcode_text = "[center]Fleet Creator[/center]"
+text = "Fleet Creator"
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+margin_top = 100.0
+margin_right = 924.0
+margin_bottom = 310.0
+custom_constants/margin_right = 300
+custom_constants/margin_top = 0
+custom_constants/margin_left = 300
+custom_constants/margin_bottom = 50
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="options" type="VBoxContainer" parent="VBoxContainer/MarginContainer"]
+margin_left = 300.0
+margin_right = 624.0
+margin_bottom = 160.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/separation = 20
+
+[node name="StartButton" type="Button" parent="VBoxContainer/MarginContainer/options"]
+margin_right = 324.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+text = "Start Game"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer/options"]
+margin_top = 40.0
+margin_right = 324.0
+margin_bottom = 120.0
+alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer/options/HBoxContainer"]
+margin_right = 200.0
+margin_bottom = 80.0
+rect_min_size = Vector2( 200, 50 )
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer"]
+margin_top = 6.0
+margin_right = 200.0
+margin_bottom = 26.0
+rect_min_size = Vector2( 0, 20 )
+size_flags_horizontal = 3
+custom_fonts/normal_font = SubResource( 2 )
+text = "Num. Destroyers"
+scroll_active = false
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer"]
+margin_top = 30.0
+margin_right = 200.0
+margin_bottom = 50.0
+rect_min_size = Vector2( 0, 20 )
+size_flags_horizontal = 3
+custom_fonts/normal_font = SubResource( 2 )
+text = "X Position"
+
+[node name="RichTextLabel3" type="RichTextLabel" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer"]
+margin_top = 54.0
+margin_right = 200.0
+margin_bottom = 74.0
+rect_min_size = Vector2( 0, 20 )
+size_flags_horizontal = 3
+custom_fonts/normal_font = SubResource( 2 )
+text = "Y Position"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/MarginContainer/options/HBoxContainer"]
+margin_left = 204.0
+margin_right = 324.0
+margin_bottom = 80.0
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="SpinBox" type="SpinBox" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2"]
+margin_right = 120.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 20, 0 )
+min_value = 1.0
+value = 1.0
+
+[node name="SpinBox2" type="SpinBox" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2"]
+margin_top = 28.0
+margin_right = 120.0
+margin_bottom = 52.0
+rect_min_size = Vector2( 20, 0 )
+
+[node name="SpinBox3" type="SpinBox" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2"]
+margin_top = 56.0
+margin_right = 120.0
+margin_bottom = 80.0
+rect_min_size = Vector2( 0, 20 )
+
+[node name="BackButton" type="Button" parent="VBoxContainer/MarginContainer/options"]
+margin_top = 140.0
+margin_right = 324.0
+margin_bottom = 160.0
+text = "Back"
+[connection signal="pressed" from="VBoxContainer/MarginContainer/options/BackButton" to="." method="_on_BackButton_pressed"]

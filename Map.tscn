@@ -1,13 +1,31 @@
 [gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://squadron_instance.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Squad/squadron_instance.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Map.gd" type="Script" id=4]
-[ext_resource path="res://ColorRect.gd" type="Script" id=5]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends ColorRect
+
+
+# Declare member variables here. Examples:
+# var a = 2
+# var b = \"text\"
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+#func _process(delta):
+#	pass
+"
 
 [node name="Control" type="Control"]
-margin_left = -0.5
+margin_left = -1.20715
 margin_top = -0.25
-margin_right = 1239.5
+margin_right = 1238.79
 margin_bottom = 719.75
 mouse_filter = 2
 __meta__ = {
@@ -25,9 +43,9 @@ margin_right = 1024.25
 margin_bottom = 720.0
 mouse_filter = 2
 color = Color( 0.215686, 0.368627, 0.501961, 1 )
-script = ExtResource( 5 )
+script = SubResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="squad_1" parent="Map" instance=ExtResource( 1 )]
+[node name="SquadFull" parent="Map" instance=ExtResource( 1 )]

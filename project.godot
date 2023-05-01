@@ -12,27 +12,33 @@ _global_script_classes=[ {
 "base": "Node",
 "class": "Ship",
 "language": "GDScript",
-"path": "res://Ship.gd"
+"path": "res://Squad/Ship.gd"
+}, {
+"base": "Node2D",
+"class": "SquadFull",
+"language": "GDScript",
+"path": "res://Squad/SquadFull.gd"
 }, {
 "base": "Area2D",
 "class": "Squadron",
 "language": "GDScript",
-"path": "res://Squadron.gd"
+"path": "res://Squad/Squadron.gd"
 } ]
 _global_script_class_icons={
 "Ship": "",
+"SquadFull": "",
 "Squadron": ""
 }
 
 [application]
 
 config/name="battleships_v0.1"
-run/main_scene="res://Map.tscn"
+run/main_scene="res://gui/MainMenu.tscn"
 config/icon="res://icon.png"
 
 [autoload]
 
-Utility="*res://Utility.gd"
+GameState="*res://GameState.gd"
 
 [input]
 
