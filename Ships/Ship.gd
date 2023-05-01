@@ -4,7 +4,7 @@ extends Node
 var speed: int
 var turn_weight: float
 
-func _init(speed, turn_weight):
+func init(speed, turn_weight):
 	self.speed = speed
 	self.turn_weight = turn_weight
 	

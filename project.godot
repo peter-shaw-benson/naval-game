@@ -12,7 +12,7 @@ _global_script_classes=[ {
 "base": "Node",
 "class": "Ship",
 "language": "GDScript",
-"path": "res://Squad/Ship.gd"
+"path": "res://Ships/Ship.gd"
 }, {
 "base": "Node2D",
 "class": "SquadFull",
@@ -39,6 +39,11 @@ config/icon="res://icon.png"
 [autoload]
 
 GameState="*res://GameState.gd"
+
+[display]
+
+window/per_pixel_transparency/allowed=true
+window/per_pixel_transparency/enabled=true
 
 [input]
 

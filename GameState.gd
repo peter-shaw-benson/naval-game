@@ -33,3 +33,24 @@ func _deferred_goto_scene(path):
 
 	# Optionally, to make it compatible with the SceneTree.change_scene_to_file() API.
 	get_tree().current_scene = current_scene
+
+func change_to_main_map(path, squadron):
+	call_deferred("goto_main_map", path, squadron)
+
+func goto_main_map(path, squadron_data):
+	# It is now safe to remove the current scene
+	current_scene.free()
+
+	# Load the new scene.
+	var s = ResourceLoader.load(path)
+
+	# Instance the new scene.
+	current_scene = s.instance()
+
+	# Add it to the active scene, as child of root.
+	get_tree().root.add_child(current_scene)
+
+	# Optionally, to make it compatible with the SceneTree.change_scene_to_file() API.
+	get_tree().current_scene = current_scene
+	
+	current_scene.init(squadron_data)

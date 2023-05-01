@@ -2,15 +2,15 @@ class_name SquadFull
 extends Node2D
 
 const Squadron = preload("Squadron.gd")
+const Destroyer = preload("res://Ships/Destroyer.gd")
 #const Utils = preload("res://Utility.gd")
-const Utils = preload("Utility.gd")
 
 var course_draw_list = []
 var squad: Squadron
 
 func _ready():
 	squad = Squadron.new()
-	var ship_list = [Ship.new(20, 0.05)]
+	var ship_list = [Destroyer.new()]
 	squad.init(ship_list, Vector2(200, 200))
 	
 	print(squad.get_min_speed())

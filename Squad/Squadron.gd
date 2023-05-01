@@ -40,12 +40,15 @@ var initial_pos: Vector2
 
 func init(ship_array, initial_position):
 	ships = ship_array
+	#print(ships[0].speed)
 	
 	base_speed = get_min_speed()
 	turn_weight = get_min_turn_weight()
 	
-	self.position = initial_pos
-	self.rotation = initial_rot
+	self.initial_pos = initial_position
+	self.current_speed = get_min_speed()
+	
+	self.position = self.initial_pos
 	
 	# stopped, half, full ahead, flank
 	var speed_array = [0, speed / 2, speed, int(speed * 1.2)]
@@ -86,13 +89,11 @@ var current_speed
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	
-	print(self.rotation)
-	print(self.position)
+	self.rotation = self.initial_rot
 	
 	screen_size = get_viewport_rect().size
 	
 	current_target = self.global_position
-	current_speed = self.base_speed
 	turn_speed = int(self.base_speed / 2)
 
 func _physics_process(delta):
@@ -108,15 +109,13 @@ func _physics_process(delta):
 		
 	if int(global_position.distance_to(current_target)) > 1:
 		self.rotation = lerp_angle(self.rotation, (current_target - self.global_position).normalized().angle() + PI/2, self.turn_weight)
-		
-	position = position.move_toward(current_target, delta * current_speed)
+	
+	#print(position.move_toward(current_target, delta*current_speed))
+	global_position = global_position.move_toward(current_target, delta * current_speed)
 	
 	position.x = clamp(position.x, 0, screen_size.x)
 	position.y = clamp(position.y, 0, screen_size.y)
-	
-func _process(delta):
-	
-	pass
+
 
 func _input_event(viewport, event, shape_idx):
 	if event is InputEventMouseButton \
@@ -134,6 +133,7 @@ func _unhandled_input(event):
 
 func handle_right_click(placement):
 	if selected:
+		print("right clicked for course")
 		# Turn logic is here for now?
 		if Input.is_action_pressed("queue"):
 			target_array.append(placement)
@@ -146,4 +146,4 @@ func handle_right_click(placement):
 			
 			self.rotation = angle
 		
-
+		print(current_target)

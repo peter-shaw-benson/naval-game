@@ -42,7 +42,7 @@ __meta__ = {
 
 [node name="Title" type="RichTextLabel" parent="VBoxContainer"]
 margin_right = 924.0
-margin_bottom = 92.0
+margin_bottom = 52.0
 rect_clip_content = false
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -52,9 +52,9 @@ bbcode_text = "[center]Midway[/center]"
 text = "Midway"
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
-margin_top = 96.0
+margin_top = 56.0
 margin_right = 924.0
-margin_bottom = 156.0
+margin_bottom = 116.0
 custom_constants/margin_top = 50
 custom_constants/margin_bottom = 10
 __meta__ = {
@@ -62,7 +62,7 @@ __meta__ = {
 }
 
 [node name="MarginContainer3" type="MarginContainer" parent="VBoxContainer"]
-margin_top = 160.0
+margin_top = 120.0
 margin_right = 924.0
 margin_bottom = 310.0
 custom_constants/margin_right = 300
@@ -76,7 +76,7 @@ __meta__ = {
 [node name="options" type="VBoxContainer" parent="VBoxContainer/MarginContainer3"]
 margin_left = 300.0
 margin_right = 624.0
-margin_bottom = 100.0
+margin_bottom = 140.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/separation = 20
@@ -100,5 +100,12 @@ margin_right = 324.0
 margin_bottom = 100.0
 size_flags_vertical = 0
 text = "Quit"
+
+[node name="Noise" type="Button" parent="VBoxContainer/MarginContainer3/options"]
+margin_top = 120.0
+margin_right = 324.0
+margin_bottom = 140.0
+text = "Noise"
 [connection signal="pressed" from="VBoxContainer/MarginContainer3/options/StartButton2" to="." method="_on_StartButton_pressed"]
 [connection signal="pressed" from="VBoxContainer/MarginContainer3/options/QuitButton" to="." method="_on_QuitButton_pressed"]
+[connection signal="pressed" from="VBoxContainer/MarginContainer3/options/Noise" to="." method="_on_Noise_pressed"]

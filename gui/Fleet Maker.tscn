@@ -138,13 +138,13 @@ rect_min_size = Vector2( 20, 0 )
 min_value = 1.0
 value = 1.0
 
-[node name="SpinBox2" type="SpinBox" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2"]
+[node name="x pos" type="SpinBox" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2"]
 margin_top = 28.0
 margin_right = 120.0
 margin_bottom = 52.0
 rect_min_size = Vector2( 20, 0 )
 
-[node name="SpinBox3" type="SpinBox" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2"]
+[node name="y pos" type="SpinBox" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2"]
 margin_top = 56.0
 margin_right = 120.0
 margin_bottom = 80.0
@@ -155,4 +155,8 @@ margin_top = 140.0
 margin_right = 324.0
 margin_bottom = 160.0
 text = "Back"
+[connection signal="pressed" from="VBoxContainer/MarginContainer/options/StartButton" to="." method="_on_StartButton_pressed"]
+[connection signal="value_changed" from="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2/SpinBox" to="." method="_on_SpinBox_value_changed"]
+[connection signal="value_changed" from="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2/x pos" to="." method="_on_x_pos_value_changed"]
+[connection signal="value_changed" from="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2/y pos" to="." method="_on_y_pos_value_changed"]
 [connection signal="pressed" from="VBoxContainer/MarginContainer/options/BackButton" to="." method="_on_BackButton_pressed"]
