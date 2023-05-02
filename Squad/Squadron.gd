@@ -3,6 +3,8 @@ extends Area2D
 
 signal new_course_change(current_target, placement)
 signal reached_target()
+# used when it hits an island
+signal hit()
 
 func get_min_speed():
 	
@@ -91,6 +93,8 @@ func _ready():
 	
 	self.rotation = self.initial_rot
 	
+	self.scale = Vector2(0.6, 0.6)
+	
 	screen_size = get_viewport_rect().size
 	
 	current_target = self.global_position
@@ -147,3 +151,12 @@ func handle_right_click(placement):
 			self.rotation = angle
 		
 		print(current_target)
+
+func _on_Squadron_area_entered(area):
+	hide()
+	self.current_target = self.global_position
+	self.target_array = []
+	
+	emit_signal("hit")
+	
+	$CollisionShape2D.set_deferred("disabled", true)

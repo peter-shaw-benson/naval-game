@@ -17,6 +17,9 @@ func init(squadron_data, num_islands):
 	
 	add_child(squad)
 	
+	# Connect squad hit signal to this 
+	squad.connect("hit", self, "_on_squad_crash")
+	
 	# Add Islands
 	var screen_size = get_viewport().size
 	
@@ -41,3 +44,19 @@ func _input(event):
 			#print("Left button was clicked at ", event.position)
 	if event is InputEventMouseButton and event.pressed and event.button_index == 2:
 		squad.handle_right_click(event.position)
+
+# Handle collisions with Islands
+func _on_squad_crash():
+	print("squad crashed")
+	
+	get_node("CrashPopup").popup_centered()
+	
+	squad.queue_free()
+
+func _on_CrashPopup_id_pressed(id):
+	if id == 0:
+		# Go to Main Menu
+		GameState.goto_scene("res://gui/MainMenu.tscn")
+	elif id == 1:
+		# Quit Game
+		get_tree().quit()

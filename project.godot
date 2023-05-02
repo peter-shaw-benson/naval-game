@@ -59,6 +59,11 @@ queue={
  ]
 }
 
+[layer_names]
+
+2d_physics/layer_1="ships / islands"
+2d_physics/layer_2="planes"
+
 [rendering]
 
 environment/default_environment="res://default_env.tres"

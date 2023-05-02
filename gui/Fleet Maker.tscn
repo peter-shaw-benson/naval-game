@@ -163,6 +163,7 @@ rect_min_size = Vector2( 0, 20 )
 margin_top = 84.0
 margin_right = 120.0
 margin_bottom = 108.0
+max_value = 10.0
 
 [node name="BackButton" type="Button" parent="VBoxContainer/MarginContainer/options"]
 margin_top = 168.0
