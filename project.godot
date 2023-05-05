@@ -9,15 +9,35 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "Ship",
+"class": "Battleship",
+"language": "GDScript",
+"path": "res://Entities/Ships/Battleship.gd"
+}, {
+"base": "",
+"class": "CombatPlane",
+"language": "GDScript",
+"path": "res://Entities/Planes/Plane.gd"
+}, {
+"base": "Ship",
+"class": "Cruiser",
+"language": "GDScript",
+"path": "res://Entities/Ships/Cruiser.gd"
+}, {
+"base": "Ship",
+"class": "Destroyer",
+"language": "GDScript",
+"path": "res://Entities/Ships/Destroyer.gd"
+}, {
 "base": "Area2D",
 "class": "Island",
 "language": "GDScript",
 "path": "res://Game Map/Islands/Island.gd"
 }, {
-"base": "Node",
+"base": "",
 "class": "Ship",
 "language": "GDScript",
-"path": "res://Ships/Ship.gd"
+"path": "res://Entities/Ships/Ship.gd"
 }, {
 "base": "Node2D",
 "class": "SquadFull",
@@ -28,12 +48,28 @@ _global_script_classes=[ {
 "class": "Squadron",
 "language": "GDScript",
 "path": "res://Squad/Squadron.gd"
+}, {
+"base": "Ship",
+"class": "TorpDestroyer",
+"language": "GDScript",
+"path": "res://Entities/Ships/TorpDestroyer.gd"
+}, {
+"base": "Node",
+"class": "Weapon",
+"language": "GDScript",
+"path": "res://Weapons/Weapon.gd"
 } ]
 _global_script_class_icons={
+"Battleship": "",
+"CombatPlane": "",
+"Cruiser": "",
+"Destroyer": "",
 "Island": "",
 "Ship": "",
 "SquadFull": "",
-"Squadron": ""
+"Squadron": "",
+"TorpDestroyer": "",
+"Weapon": ""
 }
 
 [application]
@@ -61,8 +97,10 @@ queue={
 
 [layer_names]
 
-2d_physics/layer_1="ships / islands"
+2d_physics/layer_1="islands"
 2d_physics/layer_2="planes"
+2d_physics/layer_3="Visibility"
+2d_physics/layer_4="ship combat"
 
 [rendering]
 

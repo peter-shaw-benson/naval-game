@@ -19,8 +19,8 @@ func generate_new_island(map_center):
 	self.rotation = rand_range(0, 2*PI)
 	
 	# Scale
-	self.scale.x = rand_range(0.2, 0.8)
-	self.scale.y = rand_range(0.2, 0.8)
+	self.scale.x = rand_range(0.5, 0.8)
+	self.scale.y = rand_range(0.5, 0.8)
 	
 	var island_drawing = self.get_node("AnimatedSprite")
 	# Frame

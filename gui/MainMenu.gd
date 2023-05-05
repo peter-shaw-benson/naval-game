@@ -11,5 +11,5 @@ func _on_QuitButton_pressed():
 func _on_StartButton_pressed():
 	GameState.goto_scene("res://gui/Fleet Maker.tscn")
 
-
-
+func _on_Custom_Game_pressed():
+	GameState.goto_scene("res://gui/AdvancedFleetMaker.tscn")

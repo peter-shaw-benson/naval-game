@@ -22,9 +22,39 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="CrashPopup" parent="." instance=ExtResource( 5 )]
+visible = false
+items = [ "Main Menu", null, 0, false, false, 0, 0, null, "", false, "Quit", null, 0, false, false, 1, 0, null, "", false ]
+
 [node name="LineDrawer" type="Node2D" parent="."]
 script = ExtResource( 3 )
 
-[node name="CrashPopup" parent="." instance=ExtResource( 5 )]
-visible = false
+[node name="Ship Funeral" type="PopupPanel" parent="."]
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_top = -23.0
+margin_right = 357.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Ship Text" type="RichTextLabel" parent="Ship Funeral"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -174.5
+margin_top = -7.5
+margin_right = 174.5
+margin_bottom = 7.5
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "HMS Cambridge lost to Enemy Action!"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Ship Popup Timer" type="Timer" parent="."]
+wait_time = 0.5
 [connection signal="id_pressed" from="CrashPopup" to="." method="_on_CrashPopup_id_pressed"]
+[connection signal="timeout" from="Ship Popup Timer" to="." method="_on_Ship_Popup_Timer_timeout"]

@@ -2,7 +2,17 @@ extends Node
 
 var current_scene = null
 
+var playerFaction: int
+var combatPace: float
+var rangeFactor: float
+var crewAccuracyFactor: float
+
 func _ready():
+	# Global variables
+	combatPace = 2
+	rangeFactor = 0.05
+	crewAccuracyFactor = 0.05
+	
 	var root = get_tree().root
 	current_scene = root.get_child(root.get_child_count() - 1)
 
@@ -54,3 +64,18 @@ func goto_main_map(path, squadron_data, num_islands):
 	get_tree().current_scene = current_scene
 	
 	current_scene.init(squadron_data, num_islands)
+
+func change_playerFaction(new_faction):
+	playerFaction = new_faction
+
+func get_playerFaction():
+	return playerFaction
+
+func get_combatPace():
+	return combatPace
+	
+func get_rangeFactor():
+	return rangeFactor
+
+func get_crewAccuracyFactor():
+	return crewAccuracyFactor
