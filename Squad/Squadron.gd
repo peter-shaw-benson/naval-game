@@ -10,6 +10,10 @@ signal squadron_spotted(squad, position)
 signal ship_lost(Ship)
 signal squandron_left()
 signal squadron_lost(squad)
+signal stopped_placing()
+signal squad_selected(squad)
+signal squad_deselected(squad)
+signal update_squad_info(new_info)
 
 func get_min_speed():
 	
@@ -103,8 +107,8 @@ func init(ship_array, initial_position, faction):
 	#var hiding_scale = hiding * 10
 	
 	get_node("Detection Area/CollisionShape2D").shape.radius = visibility_scale
-	#get_node("Spotting Area/CollisionShape2D").shape.radius = visibility_scale
-	#print("spot radius:", get_node("Spotting Area/CollisionShape2D").shape.radius)
+	# Disable this at game start
+	get_node("Detection Area/CollisionShape2D").disabled = true
 	
 	self.initial_pos = initial_position
 	self.current_speed = get_min_speed()
@@ -132,11 +136,15 @@ func select():
 		selected = true
 		$Sprite.animation = "clicked"
 		$Sprite.set_frame(faction)
+		
+		emit_signal("squad_selected", self)
 
 func deselect():
 	selected = false
 	$Sprite.animation = "basic"
 	$Sprite.set_frame(faction)
+	
+	emit_signal("squad_deselected", self)
 
 func on_click():
 	
@@ -251,9 +259,14 @@ func start_placing():
 func stop_placing():
 	placing = false
 	
+	emit_signal("stopped_placing")
+	
 	get_node("IslandCollision").disabled = false
 	
 	current_target = self.global_position
+
+func enable_spotting():
+	get_node("Detection Area/CollisionShape2D").disabled = false
 
 # More input functions, related to hotkeys
 func stop(): stopped = true
@@ -398,12 +411,15 @@ func take_damage(weapon: Weapon, distance_to_squad):
 			
 			if len(ships) <= 0:
 				emit_signal("squadron_lost", self, current_enemy_squadron)
+				
+	emit_signal("update_squad_info", get_squad_info())
 
 func shoot_guns(weapon_shooting_list, enemy_squadron: Squadron):
-	for w in weapon_shooting_list:
-		enemy_squadron.take_damage(w, global_position.distance_to(enemy_squadron.global_position))
-		enemy_squadron.update_armorbar()
-		enemy_squadron.update_healthbar()
+	if enemy_squadron:
+		for w in weapon_shooting_list:
+			enemy_squadron.take_damage(w, global_position.distance_to(enemy_squadron.global_position))
+			enemy_squadron.update_armorbar()
+			enemy_squadron.update_healthbar()
 
 func _on_ShotTimer_timeout():
 	#check_t_crossed()
@@ -412,3 +428,14 @@ func _on_ShotTimer_timeout():
 	for f in weapon_dict:
 		if current_shot_count % int(f) == 0:
 			shoot_guns(weapon_dict[f], current_enemy_squadron)
+
+func get_squad_info():
+	# Name, HP, armor, speed, composition
+	var squad_text = ""
+	
+	if len(task_force_name) > 0:
+		squad_text += task_force_name + "\n"
+	
+	squad_text += "Health: " + str(get_total_health()) + " Armor: " + str(get_total_armor()) + " Speed: " + str(base_speed)
+
+	return squad_text

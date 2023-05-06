@@ -11,7 +11,8 @@ var building = false
 var num_islands = 0
 
 var squad_list = []
-var faction_budgets = {0: 200, 1: 200, 2: 200}
+var default_budgets = {"0": 200, "1": 200, "2": 200}
+var faction_budgets = {"0": 200, "1": 200, "2": 200}
 
 func _ready():
 	# Global variables
@@ -52,6 +53,9 @@ func _deferred_goto_scene(path):
 
 func change_to_main_map(path, squadron, num_islands):
 	call_deferred("goto_main_map", path, squadron, num_islands)
+
+func change_to_main_map2(path):
+	call_deferred("goto_main_map2", path)
 
 func goto_main_map(path, squadron_data, num_islands):
 	# It is now safe to remove the current scene
@@ -119,6 +123,9 @@ func get_faction_budget(faction):
 
 func use_budget(budget, faction):
 	faction_budgets[faction] = budget
+
+func restore_budgets():
+	faction_budgets = default_budgets
 
 func set_num_islands(islands):
 	num_islands = islands

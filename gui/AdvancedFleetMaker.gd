@@ -29,7 +29,7 @@ var fleet_name: String
 
 func _ready():
 	# Budget should be by faction
-	start_budget = GameState.get_faction_budget(faction)
+	start_budget = GameState.get_faction_budget(str(faction))
 	var budget = start_budget
 
 	update_budget()
@@ -99,6 +99,10 @@ func _on_BackButton_pressed():
 
 func _on_Faction_value_changed(value):
 	faction = value
+	
+	start_budget = GameState.get_faction_budget(str(faction))
+	
+	update_budget()
 	#print(faction)
 
 func update_budget():
@@ -143,12 +147,13 @@ func _on_BattleshipNumber_value_changed(value):
 
 
 func _on_ContinueButton_pressed():
-	print(get_squadron())
+	#print(get_squadron())
 	# Check if budget < 0
 	if budget >= 0:
 		GameState.add_fleet(get_squadron())
 		
-		GameState.use_budget(budget, faction)
+		GameState.use_budget(budget, str(faction))
+		print(GameState.faction_budgets)
 		
 		GameState.goto_scene("res://gui/AdvancedFleetMaker.tscn")
 	else:
@@ -161,7 +166,7 @@ func _on_PlaceButton_pressed():
 		
 		GameState.use_budget(budget, faction)
 		
-		GameState.goto_main_map2("res://Game Map/Map 2.tscn")
+		GameState.change_to_main_map2("res://Game Map/Map 2.tscn")
 	else:
 		get_node("OverBudget").popup()
 

@@ -1,10 +1,16 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Game Map/Map 2.gd" type="Script" id=1]
 [ext_resource path="res://Squad/Squadron.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Game Map/LineDrawer.gd" type="Script" id=3]
 [ext_resource path="res://Game Map/Islands/Island.tscn" type="PackedScene" id=4]
 [ext_resource path="res://gui/Crash Popup.tscn" type="PackedScene" id=5]
+[ext_resource path="res://fonts/neon-pixel-7/neon_pixel-7.ttf" type="DynamicFontData" id=6]
+[ext_resource path="res://fonts/basic_font.tres" type="DynamicFont" id=7]
+
+[sub_resource type="DynamicFont" id=1]
+size = 36
+font_data = ExtResource( 6 )
 
 [node name="Main" type="Node"]
 script = ExtResource( 1 )
@@ -24,10 +30,26 @@ __meta__ = {
 
 [node name="CrashPopup" parent="." instance=ExtResource( 5 )]
 visible = false
+custom_fonts/font = ExtResource( 7 )
 items = [ "Main Menu", null, 0, false, false, 0, 0, null, "", false, "Quit", null, 0, false, false, 1, 0, null, "", false ]
 
 [node name="LineDrawer" type="Node2D" parent="."]
 script = ExtResource( 3 )
+
+[node name="ClockDisplay" type="RichTextLabel" parent="."]
+anchor_left = 0.999309
+anchor_top = 0.00117851
+anchor_right = 0.999309
+anchor_bottom = 0.00117851
+margin_left = -99.2928
+margin_top = 13.636
+margin_right = -0.292847
+margin_bottom = 53.636
+custom_fonts/normal_font = SubResource( 1 )
+text = "12:20"
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Ship Funeral" type="PopupPanel" parent="."]
 anchor_top = 1.0
@@ -54,7 +76,40 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="SquadSelected" type="PopupPanel" parent="."]
+visible = true
+anchor_left = 0.998619
+anchor_top = 0.998822
+anchor_right = 0.998619
+anchor_bottom = 0.998822
+margin_left = -473.586
+margin_top = -78.293
+margin_right = 0.414246
+margin_bottom = 0.707031
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SquadInfo" type="RichTextLabel" parent="SquadSelected"]
+anchor_left = 0.5
+anchor_top = 0.487809
+anchor_right = 0.5
+anchor_bottom = 0.487809
+margin_left = -233.0
+margin_top = -34.5369
+margin_right = 233.0
+margin_bottom = 36.4631
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_fonts/normal_font = ExtResource( 7 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="Ship Popup Timer" type="Timer" parent="."]
 wait_time = 0.5
+
+[node name="GameClock" type="Timer" parent="."]
 [connection signal="id_pressed" from="CrashPopup" to="." method="_on_CrashPopup_id_pressed"]
 [connection signal="timeout" from="Ship Popup Timer" to="." method="_on_Ship_Popup_Timer_timeout"]
+[connection signal="timeout" from="GameClock" to="." method="_on_GameClock_timeout"]
