@@ -156,6 +156,7 @@ var target_array = []
 var current_target = Vector2()
 var velocity = Vector2()
 var selected = false
+var placing = false
 var initial_rot = 0
 var screen_size
 var current_speed
@@ -173,27 +174,37 @@ func _ready():
 	
 	screen_size = get_viewport_rect().size
 	
-	current_target = self.global_position
+	#current_target = self.global_position
 	turn_speed = int(self.base_speed / 2)
+	
+	# Make sure it doesn't crash until we're done placing
+	get_node("IslandCollision").disabled = true
 
 func _physics_process(delta):
 	
-	if global_position.distance_to(current_target) < (turn_speed) and len(target_array) > 0:
-		#print("updating current target")
-		emit_signal("reached_target")
-		
-		current_target = target_array[0]
-		#print(current_target)
-		
-		target_array.remove(0)
-		
-	if int(global_position.distance_to(current_target)) > 1:
-		self.rotation = lerp_angle(self.rotation, (current_target - self.global_position).normalized().angle() + PI/2, self.turn_weight)
+	if placing:
+		# Place squadron at mouse, until the mouse clicks
+		global_position = get_viewport().get_mouse_position()
+		current_target = self.global_position
 	
-	#print(position.move_toward(current_target, delta*current_speed))
-	if not stopped:
-		global_position = global_position.move_toward(current_target, delta * current_speed)
-	
+	else:
+		
+		if global_position.distance_to(current_target) < (turn_speed) and len(target_array) > 0:
+			#print("updating current target")
+			emit_signal("reached_target")
+			
+			current_target = target_array[0]
+			#print(current_target)
+			
+			target_array.remove(0)
+			
+		if int(global_position.distance_to(current_target)) > 1:
+			self.rotation = lerp_angle(self.rotation, (current_target - self.global_position).normalized().angle() + PI/2, self.turn_weight)
+		
+		#print(position.move_toward(current_target, delta*current_speed))
+		if not stopped:
+			global_position = global_position.move_toward(current_target, delta * current_speed)
+		
 	position.x = clamp(position.x, 0, screen_size.x)
 	position.y = clamp(position.y, 0, screen_size.y)
 
@@ -208,8 +219,12 @@ func _unhandled_input(event):
 	# Deselct when clicked outside the squadron
 	if event is InputEventMouseButton \
 	and event.button_index == 1 \
-	and event.pressed and self.selected:
-		self.deselect()
+	and event.pressed:
+		if self.selected:
+			self.deselect()
+		
+		if self.placing:
+			self.stop_placing()
 
 func handle_right_click(placement):
 	if selected:
@@ -225,6 +240,20 @@ func handle_right_click(placement):
 			#var angle = placement.angle_to_point(position) + (PI / 2)
 			current_target = placement
 			
+
+func start_placing():
+	placing = true
+	
+	global_position = get_viewport().get_mouse_position()
+	
+	get_node("IslandCollision").disabled = true
+	
+func stop_placing():
+	placing = false
+	
+	get_node("IslandCollision").disabled = false
+	
+	current_target = self.global_position
 
 # More input functions, related to hotkeys
 func stop(): stopped = true

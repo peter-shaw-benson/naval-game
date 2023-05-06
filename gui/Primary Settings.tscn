@@ -1,0 +1,138 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://fonts/outline-pixel7/outline_pixel-7.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://gui/Primary Settings.gd" type="Script" id=2]
+[ext_resource path="res://fonts/outline-pixel7/outline_pixel-7_solid.ttf" type="DynamicFontData" id=3]
+
+[sub_resource type="DynamicFont" id=1]
+size = 60
+font_data = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=2]
+font_data = ExtResource( 3 )
+
+[node name="Settings" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchor_left = 0.000690461
+anchor_top = -0.00117839
+anchor_right = 1.00069
+anchor_bottom = 0.998822
+color = Color( 0.0862745, 0.0862745, 0.0901961, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.0
+alignment = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Title" type="RichTextLabel" parent="VBoxContainer"]
+margin_right = 1024.0
+margin_bottom = 414.0
+rect_clip_content = false
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_fonts/normal_font = SubResource( 1 )
+bbcode_enabled = true
+bbcode_text = "[center]Settings"
+text = "Settings"
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+margin_top = 418.0
+margin_right = 1024.0
+margin_bottom = 600.0
+custom_constants/margin_right = 300
+custom_constants/margin_top = 0
+custom_constants/margin_left = 300
+custom_constants/margin_bottom = 50
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="options" type="VBoxContainer" parent="VBoxContainer/MarginContainer"]
+margin_left = 300.0
+margin_right = 724.0
+margin_bottom = 132.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/separation = 20
+
+[node name="MakeFleets" type="Button" parent="VBoxContainer/MarginContainer/options"]
+margin_right = 424.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+text = "Make Fleets"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer/options"]
+margin_top = 40.0
+margin_right = 424.0
+margin_bottom = 92.0
+alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer/options/HBoxContainer"]
+margin_right = 210.0
+margin_bottom = 52.0
+rect_min_size = Vector2( 200, 50 )
+size_flags_horizontal = 3
+custom_constants/separation = 10
+alignment = 1
+
+[node name="Num Islands" type="RichTextLabel" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer"]
+margin_top = 1.0
+margin_right = 210.0
+margin_bottom = 21.0
+rect_min_size = Vector2( 0, 20 )
+size_flags_horizontal = 3
+custom_fonts/normal_font = SubResource( 2 )
+text = "Num. Islands"
+
+[node name="Faction" type="RichTextLabel" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer"]
+margin_top = 31.0
+margin_right = 210.0
+margin_bottom = 51.0
+rect_min_size = Vector2( 0, 20 )
+size_flags_horizontal = 3
+custom_fonts/normal_font = SubResource( 2 )
+text = "Player Faction"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/MarginContainer/options/HBoxContainer"]
+margin_left = 214.0
+margin_right = 424.0
+margin_bottom = 52.0
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="Islands" type="SpinBox" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2"]
+margin_right = 210.0
+margin_bottom = 24.0
+max_value = 10.0
+
+[node name="Faction" type="SpinBox" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2"]
+margin_top = 28.0
+margin_right = 210.0
+margin_bottom = 52.0
+max_value = 2.0
+
+[node name="Main Menu" type="Button" parent="VBoxContainer/MarginContainer/options"]
+margin_top = 112.0
+margin_right = 424.0
+margin_bottom = 132.0
+text = "Main Menu"
+[connection signal="pressed" from="VBoxContainer/MarginContainer/options/MakeFleets" to="." method="_on_MakeFleets_pressed"]
+[connection signal="value_changed" from="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2/Islands" to="." method="_on_Islands_value_changed"]
+[connection signal="value_changed" from="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2/Faction" to="." method="_on_Faction_value_changed"]
+[connection signal="pressed" from="VBoxContainer/MarginContainer/options/Main Menu" to="." method="_on_BackButton_pressed"]

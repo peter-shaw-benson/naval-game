@@ -12,7 +12,7 @@ func _process(delta):
 	update()
 	
 func _draw():
-	draw_circle(Vector2(400, 300), 5, Color.black)
+	#draw_circle(Vector2(400, 300), 5, Color.black)
 	
 	if squad_list != null:
 		for squad in squad_list:

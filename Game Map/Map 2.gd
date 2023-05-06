@@ -14,27 +14,7 @@ onready var LineRenderer = get_node("LineDrawer")
 onready var IslandTexture = get_node("IslandTexture")
 
 func init(squadron_list, num_islands):
-	playerFaction = GameState.get_playerFaction()
-	
-	for s in squadron_list:
-		#print(s)
-		squad = squadron_scene.instance()
-		
-		squad.init(s.ships, s.position, s.faction)
-		
-		squad_list.append(squad)
-		
-		add_child(squad)
-		
-		# Connect squad hit signal to this 
-		squad.connect("hit", self, "_on_squad_crash")
-		squad.connect("squadron_spotted", self, "_on_squad_spotting")
-		squad.connect("ship_lost", self, "_on_ship_lost")
-		squad.connect("squadron_lost", self, "_on_squadron_lost")
-	
-	LineRenderer.init(squad_list)
-	
-	# Add Islands
+	# Display stuff
 	var screen_size = get_viewport().size
 	
 	var map_center = Vector2(screen_size.x / 2, screen_size.y /2)
@@ -49,17 +29,37 @@ func init(squadron_list, num_islands):
 			# Add to scene
 			add_child(island)
 	
+	playerFaction = GameState.get_playerFaction()
+	
+	for s in squadron_list:
+		#print(s)
+		squad = squadron_scene.instance()
+		
+		squad.init(s.ships, get_viewport().get_mouse_position(), s.faction)
+		
+		squad_list.append(squad)
+		
+		add_child(squad)
+		
+		place_squadron(squad)
+		
+		# Connect squad hit signal to this 
+		squad.connect("hit", self, "_on_squad_crash")
+		squad.connect("squadron_spotted", self, "_on_squad_spotting")
+		squad.connect("ship_lost", self, "_on_ship_lost")
+		squad.connect("squadron_lost", self, "_on_squadron_lost")
+	
+	LineRenderer.init(squad_list)
+	
 	# Hide enemy squadrons
 	for s in squad_list:
 		if s.faction != playerFaction:
 			s.hide()
 	
-func place_squadron():
+func place_squadron(squad):
 	# Find mouse position, set squadron position based on it
-	
-	# Stop placing on Left Click
-	
-	pass
+	squad.start_placing()
+
 
 func _input(event):
 			

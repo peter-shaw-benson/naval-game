@@ -42,7 +42,7 @@ __meta__ = {
 
 [node name="Title" type="RichTextLabel" parent="VBoxContainer"]
 margin_right = 1024.0
-margin_bottom = 256.0
+margin_bottom = 226.0
 rect_clip_content = false
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -52,7 +52,7 @@ bbcode_text = "[center]Fleet Creator[/center]"
 text = "Fleet Creator"
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
-margin_top = 260.0
+margin_top = 230.0
 margin_right = 1024.0
 margin_bottom = 600.0
 custom_constants/margin_right = 300
@@ -66,19 +66,19 @@ __meta__ = {
 [node name="options" type="VBoxContainer" parent="VBoxContainer/MarginContainer"]
 margin_left = 300.0
 margin_right = 724.0
-margin_bottom = 290.0
+margin_bottom = 320.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/separation = 20
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer/options"]
 margin_right = 424.0
-margin_bottom = 170.0
+margin_bottom = 200.0
 alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer/options/HBoxContainer"]
 margin_right = 210.0
-margin_bottom = 170.0
+margin_bottom = 200.0
 rect_min_size = Vector2( 200, 50 )
 size_flags_horizontal = 3
 custom_constants/separation = 10
@@ -141,17 +141,27 @@ custom_fonts/normal_font = SubResource( 2 )
 text = "Battleships"
 scroll_active = false
 
+[node name="Name" type="RichTextLabel" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer"]
+margin_top = 180.0
+margin_right = 210.0
+margin_bottom = 200.0
+rect_min_size = Vector2( 0, 20 )
+size_flags_horizontal = 3
+custom_fonts/normal_font = SubResource( 2 )
+text = "Task Force Name"
+scroll_active = false
+
 [node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/MarginContainer/options/HBoxContainer"]
 margin_left = 214.0
 margin_right = 424.0
-margin_bottom = 170.0
+margin_bottom = 200.0
 size_flags_horizontal = 3
 alignment = 1
 
 [node name="Budget" type="RichTextLabel" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2"]
-margin_top = 5.0
+margin_top = 6.0
 margin_right = 210.0
-margin_bottom = 25.0
+margin_bottom = 26.0
 rect_min_size = Vector2( 0, 20 )
 size_flags_horizontal = 3
 custom_fonts/normal_font = SubResource( 2 )
@@ -159,61 +169,83 @@ text = "100"
 scroll_active = false
 
 [node name="Faction" type="SpinBox" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2"]
-margin_top = 29.0
+margin_top = 30.0
 margin_right = 210.0
-margin_bottom = 53.0
+margin_bottom = 54.0
 max_value = 2.0
 
 [node name="Destroyer_Number" type="SpinBox" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2"]
-margin_top = 57.0
+margin_top = 58.0
 margin_right = 210.0
-margin_bottom = 81.0
+margin_bottom = 82.0
 rect_min_size = Vector2( 20, 0 )
 min_value = 1.0
 value = 1.0
 
 [node name="Torp Check" type="CheckBox" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2"]
-margin_top = 85.0
+margin_top = 86.0
 margin_right = 210.0
-margin_bottom = 109.0
+margin_bottom = 110.0
 
 [node name="CruiserNumber" type="SpinBox" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2"]
-margin_top = 113.0
+margin_top = 114.0
 margin_right = 210.0
-margin_bottom = 137.0
+margin_bottom = 138.0
 rect_min_size = Vector2( 20, 0 )
 
 [node name="BattleshipNumber" type="SpinBox" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2"]
-margin_top = 141.0
+margin_top = 142.0
 margin_right = 210.0
-margin_bottom = 165.0
+margin_bottom = 166.0
 rect_min_size = Vector2( 20, 0 )
 
+[node name="TF Name" type="LineEdit" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2"]
+margin_top = 170.0
+margin_right = 210.0
+margin_bottom = 194.0
+
 [node name="ContinueButton" type="Button" parent="VBoxContainer/MarginContainer/options"]
-margin_top = 190.0
+margin_top = 220.0
 margin_right = 424.0
-margin_bottom = 210.0
+margin_bottom = 240.0
 size_flags_horizontal = 3
 text = "Continue"
 
 [node name="PlaceButton" type="Button" parent="VBoxContainer/MarginContainer/options"]
-margin_top = 230.0
+margin_top = 260.0
 margin_right = 424.0
-margin_bottom = 250.0
+margin_bottom = 280.0
 size_flags_horizontal = 3
 text = "Place Fleets"
 
 [node name="BackButton" type="Button" parent="VBoxContainer/MarginContainer/options"]
-margin_top = 270.0
+margin_top = 300.0
 margin_right = 424.0
-margin_bottom = 290.0
+margin_bottom = 320.0
 text = "Back"
+
+[node name="OverBudget" type="AcceptDialog" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -147.0
+margin_top = -63.0
+margin_right = 147.0
+margin_bottom = 63.0
+window_title = "Over Budget!"
+dialog_text = "Remove some ships!
+ You are over budget for this fleet."
+__meta__ = {
+"_edit_use_anchors_": false
+}
 [connection signal="value_changed" from="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2/Faction" to="." method="_on_Faction_value_changed"]
 [connection signal="value_changed" from="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2/Destroyer_Number" to="." method="_on_Destroyer_Number_value_changed"]
 [connection signal="value_changed" from="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2/Destroyer_Number" to="." method="_on_SpinBox_value_changed"]
 [connection signal="toggled" from="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2/Torp Check" to="." method="_on_Torp_Check_toggled"]
 [connection signal="value_changed" from="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2/CruiserNumber" to="." method="_on_CruiserNumber_value_changed"]
 [connection signal="value_changed" from="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2/BattleshipNumber" to="." method="_on_BattleshipNumber_value_changed"]
+[connection signal="text_changed" from="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2/TF Name" to="." method="_on_TF_Name_text_changed"]
 [connection signal="pressed" from="VBoxContainer/MarginContainer/options/ContinueButton" to="." method="_on_ContinueButton_pressed"]
 [connection signal="pressed" from="VBoxContainer/MarginContainer/options/PlaceButton" to="." method="_on_PlaceButton_pressed"]
 [connection signal="pressed" from="VBoxContainer/MarginContainer/options/BackButton" to="." method="_on_BackButton_pressed"]

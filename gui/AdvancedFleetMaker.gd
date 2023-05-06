@@ -6,9 +6,6 @@ const TorpDestroyer = preload("res://Entities/Ships/TorpDestroyer.gd")
 const Cruiser = preload("res://Entities/Ships/Cruiser.gd")
 const Battleship = preload("res://Entities/Ships/Battleship.gd")
 
-var start_budget = 200
-var budget = 200
-
 # Budget costs:
 var destroyer_price = 10
 var cruiser_price = 20
@@ -25,9 +22,18 @@ var position_y = 0
 var num_islands = 0
 
 var faction = 0
+var start_budget
+var budget
+
+var fleet_name: String
 
 func _ready():
+	# Budget should be by faction
+	start_budget = GameState.get_faction_budget(faction)
+	var budget = start_budget
+
 	update_budget()
+	
 
 func get_squadron():
 	# Create a new squadron here, reading from the number boxes
@@ -41,7 +47,8 @@ func get_squadron():
 	
 	return {"ships": ship_list,
 			"position": initial_pos,
-			"faction": faction}
+			"faction": faction,
+			"name": fleet_name}
 
 func make_destroyer_array(length):
 	var destroyer_array = []
@@ -138,17 +145,26 @@ func _on_BattleshipNumber_value_changed(value):
 func _on_ContinueButton_pressed():
 	print(get_squadron())
 	# Check if budget < 0
-	if budget > 0:
-		pass
+	if budget >= 0:
+		GameState.add_fleet(get_squadron())
+		
+		GameState.use_budget(budget, faction)
+		
+		GameState.goto_scene("res://gui/AdvancedFleetMaker.tscn")
 	else:
-		# make popup 
-		pass
-
+		get_node("OverBudget").popup()
 
 func _on_PlaceButton_pressed():
 	# Check if budget < 0
-	if budget > 0:
-		pass
+	if budget >= 0:
+		GameState.add_fleet(get_squadron())
+		
+		GameState.use_budget(budget, faction)
+		
+		GameState.goto_main_map2("res://Game Map/Map 2.tscn")
 	else:
-		# make popup 
-		pass
+		get_node("OverBudget").popup()
+
+
+func _on_TF_Name_text_changed(new_text):
+	fleet_name = new_text

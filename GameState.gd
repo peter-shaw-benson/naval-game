@@ -7,6 +7,12 @@ var combatPace: float
 var rangeFactor: float
 var crewAccuracyFactor: float
 
+var building = false
+var num_islands = 0
+
+var squad_list = []
+var faction_budgets = {0: 200, 1: 200, 2: 200}
+
 func _ready():
 	# Global variables
 	combatPace = 2
@@ -65,8 +71,33 @@ func goto_main_map(path, squadron_data, num_islands):
 	
 	current_scene.init(squadron_data, num_islands)
 
+func goto_main_map2(path):
+	# It is now safe to remove the current scene
+	current_scene.free()
+
+	# Load the new scene.
+	var s = ResourceLoader.load(path)
+
+	# Instance the new scene.
+	current_scene = s.instance()
+
+	# Add it to the active scene, as child of root.
+	get_tree().root.add_child(current_scene)
+
+	# Optionally, to make it compatible with the SceneTree.change_scene_to_file() API.
+	get_tree().current_scene = current_scene
+	
+	current_scene.init(squad_list, num_islands)
+
 func change_playerFaction(new_faction):
 	playerFaction = new_faction
+
+func set_game_settings(settings):
+	# dict of budgets, combat_pace, range_factor, crew_factor
+	faction_budgets = settings["budgets"]
+	combatPace = settings["combat_pace"]
+	rangeFactor = settings["range_factor"]
+	crewAccuracyFactor = settings["crew_factor"]
 
 func get_playerFaction():
 	return playerFaction
@@ -79,3 +110,16 @@ func get_rangeFactor():
 
 func get_crewAccuracyFactor():
 	return crewAccuracyFactor
+
+func add_fleet(squadron):
+	squad_list.append(squadron)
+
+func get_faction_budget(faction):
+	return faction_budgets[faction]
+
+func use_budget(budget, faction):
+	faction_budgets[faction] = budget
+
+func set_num_islands(islands):
+	num_islands = islands
+	
