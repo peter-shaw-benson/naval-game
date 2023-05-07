@@ -2,9 +2,11 @@ extends Node
 
 export var squadron_scene: PackedScene
 export var island_scene: PackedScene
+export var airbase_scene: PackedScene
 
 var squad: Squadron
 var island: Island
+var airbase: Airbase
 
 var playerFaction
 
@@ -17,7 +19,7 @@ var game_time = 0
 onready var LineRenderer = get_node("LineDrawer")
 onready var IslandTexture = get_node("IslandTexture")
 
-func init(squadron_list, num_islands):
+func init(squadron_data, num_islands):
 	# Display stuff
 	var screen_size = get_viewport().size
 	
@@ -38,7 +40,14 @@ func init(squadron_list, num_islands):
 	
 	playerFaction = GameState.get_playerFaction()
 	
-	squadron_data = squadron_list
+	# add airbase
+	airbase = airbase_scene.instance()
+	airbase.init(Vector2(300, 300), [], playerFaction)
+	add_child(airbase)
+	
+	airbase.connect("plane_launch", self, "launch_plane_squad")
+	airbase.connect("planes_recovered", self, "recover_plane_squad")
+	
 	place_list = range(len(squadron_data))
 	place_next_squadron(place_list, squadron_data)
 
@@ -96,6 +105,8 @@ func _input(event):
 	if event is InputEventMouseButton and event.pressed and event.button_index == 2:
 		for s in squad_list:
 			s.handle_right_click(event.position)
+		
+		airbase.handle_right_click(event.position)
 
 # Handle collisions with Islands
 func _on_squad_crash(s):
@@ -175,3 +186,14 @@ func squad_deselected(squad):
 func update_squad_info(new_info):
 	if get_node("SquadSelected").visible == true:
 		get_node("SquadSelected/SquadInfo").text = new_info
+
+# PLANE STUFF
+
+func place_airbase():
+	pass
+
+func launch_plane_squad(plane_squad):
+	add_child(plane_squad)
+
+func recover_plane_squad(plane_squad):
+	plane_squad.queue_free()

@@ -3,6 +3,8 @@ extends Control
 const Squadron = preload("res://Squad/Squadron.gd")
 const Destroyer = preload("res://Entities/Ships/Destroyer.gd")
 
+const ScoutPlane = preload("res://Entities/Planes/ScoutPlane.gd")
+
 var num_destroyers = 0
 var position_x = 0
 var position_y = 0

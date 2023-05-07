@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Game Map/Map 2.gd" type="Script" id=1]
 [ext_resource path="res://Squad/Squadron.tscn" type="PackedScene" id=2]
@@ -7,8 +7,9 @@
 [ext_resource path="res://gui/Crash Popup.tscn" type="PackedScene" id=5]
 [ext_resource path="res://fonts/neon-pixel-7/neon_pixel-7.ttf" type="DynamicFontData" id=6]
 [ext_resource path="res://fonts/basic_font.tres" type="DynamicFont" id=7]
+[ext_resource path="res://Entities/Airbase/Airbase.tscn" type="PackedScene" id=8]
 
-[sub_resource type="DynamicFont" id=1]
+[sub_resource type="DynamicFont" id=2]
 size = 36
 font_data = ExtResource( 6 )
 
@@ -16,6 +17,7 @@ font_data = ExtResource( 6 )
 script = ExtResource( 1 )
 squadron_scene = ExtResource( 2 )
 island_scene = ExtResource( 4 )
+airbase_scene = ExtResource( 8 )
 
 [node name="ColorRect" type="ColorRect" parent="."]
 anchor_right = 1.0
@@ -45,7 +47,7 @@ margin_left = -99.2928
 margin_top = 13.636
 margin_right = -0.292847
 margin_bottom = 53.636
-custom_fonts/normal_font = SubResource( 1 )
+custom_fonts/normal_font = SubResource( 2 )
 text = "12:20"
 __meta__ = {
 "_edit_use_anchors_": false

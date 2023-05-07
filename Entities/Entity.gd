@@ -29,6 +29,9 @@ func init(speed, turn_weight, hit_points, armor, hide_range, visibility, crew):
 func set_class(entity_class):
 	self.entity_class = entity_class
 
+func get_class():
+	return entity_class
+
 func set_name(ship_name):
 	self.ship_name = ship_name
 
