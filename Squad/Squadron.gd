@@ -340,7 +340,7 @@ func construct_weapon_dict():
 	return weapon_dict
 
 func set_enemy_squadron(potential_squad):
-	if potential_squad.faction != self.faction:
+	if potential_squad.get_faction() != self.faction:
 		enter_combat(potential_squad)
 
 func exit_combat():

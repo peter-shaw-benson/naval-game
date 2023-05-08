@@ -86,10 +86,13 @@ func place_squadron(squad_data):
 	squad.start_placing()
 
 func place_next_squadron(place_list, squadron_data):
+	print(place_list)
+	print(squadron_data)
+	
 	if len(place_list) > 0:
 		print("placing next squad, current place list:", place_list)
 		var squad_index = place_list[0]
-		print(squadron_data[squad_index])
+		#print(squadron_data[squad_index])
 		place_squadron(squadron_data[squad_index])
 		place_list.remove(0)
 

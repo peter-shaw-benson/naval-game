@@ -50,6 +50,9 @@ func get_base_speed():
 func get_strike():
 	return strike_force
 
+func get_faction():
+	return faction
+
 func _process(delta):
 	if global_position.distance_to(current_target) < 10:
 		current_target = airbase_origin
