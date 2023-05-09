@@ -409,6 +409,9 @@ func take_damage(weapon: Weapon, distance_to_squad):
 			emit_signal("ship_lost", ships[damage_index])
 			ships.remove(damage_index)
 			
+			# update weapon list
+			self.weapon_dict = construct_weapon_dict()
+			
 			if len(ships) <= 0:
 				emit_signal("squadron_lost", self, current_enemy_squadron)
 				
