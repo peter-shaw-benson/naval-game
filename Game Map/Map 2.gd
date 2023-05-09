@@ -19,7 +19,7 @@ var game_time = 0
 onready var LineRenderer = get_node("LineDrawer")
 onready var IslandTexture = get_node("IslandTexture")
 
-func init(squadron_data, num_islands):
+func init(input_squadron_data, num_islands):
 	# Display stuff
 	var screen_size = get_viewport().size
 	
@@ -48,8 +48,9 @@ func init(squadron_data, num_islands):
 	airbase.connect("plane_launch", self, "launch_plane_squad")
 	airbase.connect("planes_recovered", self, "recover_plane_squad")
 	
+	squadron_data = input_squadron_data
 	place_list = range(len(squadron_data))
-	place_next_squadron(place_list, squadron_data)
+	place_next_squadron(place_list)
 
 func hide_enemies():
 	print("hiding enemies")
@@ -85,7 +86,7 @@ func place_squadron(squad_data):
 	# Find mouse position, set squadron position based on it
 	squad.start_placing()
 
-func place_next_squadron(place_list, squadron_data):
+func place_next_squadron(place_list):
 	print(place_list)
 	print(squadron_data)
 	
@@ -98,7 +99,7 @@ func place_next_squadron(place_list, squadron_data):
 
 func _on_squadron_stopped_placement():
 	if len(place_list) > 0:
-		place_next_squadron(place_list, squadron_data)
+		place_next_squadron(place_list)
 	else:
 		hide_enemies()
 		

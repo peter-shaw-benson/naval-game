@@ -9,7 +9,7 @@
 [ext_resource path="res://fonts/basic_font.tres" type="DynamicFont" id=7]
 [ext_resource path="res://Entities/Airbase/Airbase.tscn" type="PackedScene" id=8]
 
-[sub_resource type="DynamicFont" id=2]
+[sub_resource type="DynamicFont" id=1]
 size = 36
 font_data = ExtResource( 6 )
 
@@ -47,7 +47,7 @@ margin_left = -99.2928
 margin_top = 13.636
 margin_right = -0.292847
 margin_bottom = 53.636
-custom_fonts/normal_font = SubResource( 2 )
+custom_fonts/normal_font = SubResource( 1 )
 text = "12:20"
 __meta__ = {
 "_edit_use_anchors_": false
