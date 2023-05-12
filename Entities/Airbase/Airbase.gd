@@ -64,7 +64,7 @@ func organize_aircraft(plane_list):
 		else:
 			plane_dict["strike"].append(aircraft)
 	
-	print(plane_dict)
+	#print(plane_dict)
 
 # Press "S" for scouting, press Z for strike
 # for now, scouting force is 2 scout planes 

@@ -7,6 +7,7 @@
 [ext_resource path="res://art/Squadron Sprites 2/sprite_1.png" type="Texture" id=5]
 [ext_resource path="res://art/Squadron Sprites 2/sprite_3.png" type="Texture" id=6]
 [ext_resource path="res://art/Squadron Sprites 2/sprite_5.png" type="Texture" id=7]
+[ext_resource path="res://Miscellaneous/Detection Area.tscn" type="PackedScene" id=8]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -31,9 +32,6 @@ script/source = "extends AnimatedSprite
 [sub_resource type="RectangleShape2D" id=3]
 extents = Vector2( 27.15, 31.3493 )
 
-[sub_resource type="CircleShape2D" id=4]
-radius = 72.1165
-
 [sub_resource type="StyleBoxFlat" id=5]
 bg_color = Color( 0.105882, 0.764706, 0.164706, 1 )
 
@@ -48,6 +46,7 @@ bg_color = Color( 0.831373, 0.878431, 0.137255, 1 )
 ]]
 position = Vector2( 134, 76.75 )
 script = ExtResource( 1 )
+detector_scene = ExtResource( 8 )
 
 [node name="Sprite" type="AnimatedSprite" parent="."]
 position = Vector2( 0.0883942, 0 )
@@ -71,14 +70,6 @@ margin_bottom = 25.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
-
-[node name="Detection Area" type="Area2D" parent="."]
-collision_layer = 4
-collision_mask = 2147483652
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Detection Area"]
-position = Vector2( -0.707092, 0 )
-shape = SubResource( 4 )
 
 [node name="HealthBar" type="ProgressBar" parent="."]
 margin_left = -31.0
@@ -109,6 +100,4 @@ __meta__ = {
 [node name="ShotTimer" type="Timer" parent="."]
 wait_time = 0.5
 [connection signal="area_entered" from="." to="." method="_on_Squadron_area_entered"]
-[connection signal="area_entered" from="Detection Area" to="." method="_on_Hiding_Area_area_entered"]
-[connection signal="area_exited" from="Detection Area" to="." method="_on_Detection_Area_area_exited"]
 [connection signal="timeout" from="ShotTimer" to="." method="_on_ShotTimer_timeout"]

@@ -73,7 +73,6 @@ func place_squadron(squad_data):
 	add_child(squad)
 	
 	squad.connect("hit", self, "_on_squad_crash")
-	squad.connect("squadron_spotted", self, "_on_squad_spotting")
 	squad.connect("ship_lost", self, "_on_ship_lost")
 	squad.connect("squadron_lost", self, "_on_squadron_lost")
 	squad.connect("stopped_placing", self, "_on_squadron_stopped_placement")
@@ -87,11 +86,11 @@ func place_squadron(squad_data):
 	squad.start_placing()
 
 func place_next_squadron(place_list):
-	print(place_list)
-	print(squadron_data)
+	#print(place_list)
+	#print(squadron_data)
 	
 	if len(place_list) > 0:
-		print("placing next squad, current place list:", place_list)
+		#print("placing next squad, current place list:", place_list)
 		var squad_index = place_list[0]
 		#print(squadron_data[squad_index])
 		place_squadron(squadron_data[squad_index])
@@ -146,11 +145,6 @@ func _on_squadron_lost(s: Squadron, enemy_squad):
 	
 	if enemy_squad:
 		enemy_squad.exit_combat()
-
-func _on_squad_spotting(sq, enemy_location):
-	var enemy_squad = get_squadron_at(enemy_location)
-	
-	sq.set_enemy_squadron(enemy_squad)
 	
 
 func _on_Ship_Popup_Timer_timeout():

@@ -35,6 +35,11 @@ _global_script_classes=[ {
 "path": "res://Entities/Ships/Destroyer.gd"
 }, {
 "base": "Area2D",
+"class": "DetectionArea",
+"language": "GDScript",
+"path": "res://Miscellaneous/Detection Area.gd"
+}, {
+"base": "Area2D",
 "class": "Island",
 "language": "GDScript",
 "path": "res://Game Map/Islands/Island.gd"
@@ -75,6 +80,7 @@ _global_script_class_icons={
 "CombatPlane": "",
 "Cruiser": "",
 "Destroyer": "",
+"DetectionArea": "",
 "Island": "",
 "PlaneSquadron": "",
 "Ship": "",

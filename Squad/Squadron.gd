@@ -1,6 +1,8 @@
 class_name Squadron
 extends Area2D
 
+export var detector_scene: PackedScene
+
 signal new_course_change(current_target, placement)
 signal reached_target()
 # used when it hits an island
@@ -75,6 +77,7 @@ var task_force_name: String
 
 var visibility: float
 var hiding: float
+var detector: DetectionArea
 
 # Combat Vars
 var faction = 0
@@ -106,9 +109,13 @@ func init(ship_array, initial_position, faction):
 	var visibility_scale = visibility * 5
 	#var hiding_scale = hiding * 10
 	
-	get_node("Detection Area/CollisionShape2D").shape.radius = visibility_scale
-	# Disable this at game start
-	get_node("Detection Area/CollisionShape2D").disabled = true
+	detector = detector_scene.instance()
+	detector.init(visibility_scale)
+	
+	add_child(detector)
+	
+	detector.connect("entered_spotting_area", self, "on_detection_entered")
+	detector.connect("left_spotting_area", self, "on_detection_left")
 	
 	self.initial_pos = initial_position
 	self.current_speed = get_min_speed()
@@ -262,11 +269,12 @@ func stop_placing():
 	emit_signal("stopped_placing")
 	
 	get_node("IslandCollision").disabled = false
+	detector.enable_spotting()
 	
 	current_target = self.global_position
 
 func enable_spotting():
-	get_node("Detection Area/CollisionShape2D").disabled = false
+	detector.enable_spotting()
 
 # More input functions, related to hotkeys
 func stop(): stopped = true
@@ -283,15 +291,21 @@ func _on_Squadron_area_entered(area):
 
 func get_class(): return "Squadron"
 
-func _on_Hiding_Area_area_entered(area):
-	print("This Squadron Spotted!")
-	emit_signal("squadron_spotted", self, area.global_position)
+func on_detection_entered(other_thing):
+	#print("found other thing:")
+	#print(other_thing.get_name())
+	#print("Squadron" in other_thing.get_name())
+	
+	if "Squadron" in other_thing.get_name():
+		self.set_enemy_squadron(other_thing)
+		
+	if "PlaneSquadron" in other_thing.get_name():
+		pass
 	
 	if self.faction != GameState.get_playerFaction():
-		
 		show()
 	
-func _on_Detection_Area_area_exited(area):
+func on_detection_left():
 	if in_combat == true:
 		self.exit_combat()
 	
@@ -340,6 +354,8 @@ func construct_weapon_dict():
 	return weapon_dict
 
 func set_enemy_squadron(potential_squad):
+	#print(potential_squad.get_faction())
+	#print(self.faction)
 	if potential_squad.get_faction() != self.faction:
 		enter_combat(potential_squad)
 
