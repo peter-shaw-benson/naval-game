@@ -1,40 +1,22 @@
-extends Area2D
+extends "res://Squad/CombatUnitsWrapper.gd"
 class_name PlaneSquadron
 
 signal planes_recovered(plane_squad)
 
-var plane_list = []
-
-var target: Vector2
 var airbase_origin: Vector2
-var current_target: Vector2
 var strike_force: bool
 
-var faction = 0
-var base_speed
 var max_range = 300
 
 var weapon_list = []
 
 func _ready():
+	airbase_origin = global_position
 	pass
-
-func init(plane_list, initial_pos, target, faction, strike=false):
-	self.plane_list = plane_list
-	
-	global_position = initial_pos
-	
-	target = target
-	current_target = target
-	airbase_origin = initial_pos
+			
+func set_strike(strike):
 	strike_force = strike
 	
-	base_speed = get_base_speed()
-	faction = faction
-	
-	if faction != GameState.get_playerFaction(): 
-		self.hide()
-
 	# Set animations
 	if strike:
 		get_node("AnimatedSprite").animation = "fighterDeselected"
@@ -43,11 +25,18 @@ func init(plane_list, initial_pos, target, faction, strike=false):
 			
 	get_node("AnimatedSprite").frame = faction
 	get_node("AirbaseCollision").disabled = true
-			
+
+func set_target(target):
+	current_target = target
+
 	rotation = global_position.angle_to_point(target) - PI/2
 
-func get_base_speed():
-	return 120
+# plane squadrons can't be selected (yet)
+func select():
+	pass
+	
+func deselect():
+	pass
 
 func get_strike():
 	return strike_force
@@ -58,8 +47,8 @@ func get_faction():
 func get_weapon_list():
 	weapon_list = []
 	
-	for p in plane_list:
-		for w in p.get_weapons():
+	for u in units:
+		for w in u.get_weapons():
 			weapon_list.append(w)
 	
 func take_damage(weapon: Weapon, distance):

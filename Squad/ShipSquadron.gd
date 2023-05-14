@@ -20,7 +20,11 @@ func _ready():
 	
 	screen_size = get_viewport_rect().size
 	
-	#current_target = self.global_position
+	get_node("HealthBar").set_max(get_total_health())
+	get_node("ArmorBar").set_max(get_total_armor())
+	
+	self.update_healthbar()
+	self.update_armorbar()
 	
 	# Make sure it doesn't crash until we're done placing
 	get_node("IslandCollision").disabled = true

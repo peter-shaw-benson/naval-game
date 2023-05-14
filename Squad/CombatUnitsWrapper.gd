@@ -119,11 +119,6 @@ func init(unit_array, initial_position, faction):
 	self.rotation = self.initial_rot
 	turn_speed = int(self.base_speed / 2)
 	# Set max of health bar and Armor Bar
-	get_node("HealthBar").set_max(get_total_health())
-	get_node("ArmorBar").set_max(get_total_armor())
-	
-	self.update_healthbar()
-	self.update_armorbar()
 	
 	print("squad created")
 

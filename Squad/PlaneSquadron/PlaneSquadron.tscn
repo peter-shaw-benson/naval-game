@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://art/Plane Sprites/sprite_2.png" type="Texture" id=1]
 [ext_resource path="res://art/Plane Sprites/sprite_1.png" type="Texture" id=2]
@@ -12,20 +12,11 @@
 [ext_resource path="res://art/Fighter Sprites/sprite_3.png" type="Texture" id=10]
 [ext_resource path="res://art/Fighter Sprites/sprite_5.png" type="Texture" id=11]
 [ext_resource path="res://art/Fighter Sprites/sprite_4.png" type="Texture" id=12]
-[ext_resource path="res://Entities/PlaneSquadron/PlaneSquadron.gd" type="Script" id=13]
+[ext_resource path="res://Squad/PlaneSquadron/PlaneSquadron.gd" type="Script" id=13]
+[ext_resource path="res://Miscellaneous/Detection Area.tscn" type="PackedScene" id=14]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
-"frames": [ ExtResource( 8 ), ExtResource( 7 ), ExtResource( 12 ) ],
-"loop": true,
-"name": "fighterDeselected",
-"speed": 5.0
-}, {
-"frames": [ ExtResource( 4 ), ExtResource( 3 ), ExtResource( 2 ) ],
-"loop": true,
-"name": "scoutPlaneSelected",
-"speed": 5.0
-}, {
 "frames": [ ExtResource( 6 ), ExtResource( 1 ), ExtResource( 5 ) ],
 "loop": true,
 "name": "scoutPlaneDeselected",
@@ -34,6 +25,16 @@ animations = [ {
 "frames": [ ExtResource( 10 ), ExtResource( 9 ), ExtResource( 11 ) ],
 "loop": true,
 "name": "fighterSelected",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 4 ), ExtResource( 3 ), ExtResource( 2 ) ],
+"loop": true,
+"name": "scoutPlaneSelected",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 8 ), ExtResource( 7 ), ExtResource( 12 ) ],
+"loop": true,
+"name": "fighterDeselected",
 "speed": 5.0
 } ]
 
@@ -47,6 +48,7 @@ radius = 91.9078
 collision_layer = 2
 collision_mask = 2
 script = ExtResource( 13 )
+detector_scene = ExtResource( 14 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 1 )

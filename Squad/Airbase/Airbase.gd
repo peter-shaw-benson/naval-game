@@ -94,7 +94,9 @@ func send_out_planes(placement, type):
 	if type == "strike":
 		is_strike = true
 		
-	plane_squad.init(plane_list, initial_pos, target, faction, is_strike)
+	plane_squad.init(plane_list, initial_pos, faction)
+	plane_squad.set_strike(is_strike)
+	plane_squad.set_target(target)
 	
 	emit_signal("plane_launch", plane_squad)
 	

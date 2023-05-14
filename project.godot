@@ -52,7 +52,7 @@ _global_script_classes=[ {
 "base": "Area2D",
 "class": "PlaneSquadron",
 "language": "GDScript",
-"path": "res://Entities/PlaneSquadron/PlaneSquadron.gd"
+"path": "res://Squad/PlaneSquadron/PlaneSquadron.gd"
 }, {
 "base": "",
 "class": "Ship",
