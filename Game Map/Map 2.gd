@@ -42,7 +42,7 @@ func init(input_squadron_data, num_islands):
 	
 	# add airbase
 	airbase = airbase_scene.instance()
-	airbase.init(Vector2(300, 300), [], playerFaction)
+	airbase.init([], Vector2(300, 300), playerFaction)
 	add_child(airbase)
 	
 	airbase.connect("plane_launch", self, "launch_plane_squad")

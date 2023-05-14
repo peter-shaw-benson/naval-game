@@ -9,7 +9,7 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "CombatUnitWrapper",
+"base": "Area2D",
 "class": "Airbase",
 "language": "GDScript",
 "path": "res://Squad/Airbase/Airbase.gd"
@@ -62,7 +62,7 @@ _global_script_classes=[ {
 "base": "Node2D",
 "class": "SquadFull",
 "language": "GDScript",
-"path": "res://Squad/SquadFull.gd"
+"path": "res://Miscellaneous/SquadFull.gd"
 }, {
 "base": "Area2D",
 "class": "Squadron",

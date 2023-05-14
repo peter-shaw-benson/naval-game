@@ -81,12 +81,11 @@ var current_speed
 # var a = 2
 # var b = "text"
 
-func init(unit_array, initial_position, faction, sprite_type):
+func init(unit_array, initial_position, faction):
 	units = unit_array
 	#print(ships[0].speed)
 	self.faction = faction
 	print("faction ", self.faction)
-	self.sprite_type = sprite_type
 	
 	# for some reason, we need to use deselect() 
 	# just don't change it 
@@ -142,6 +141,9 @@ func deselect():
 	$Sprite.set_frame(faction)
 	
 	emit_signal("squad_deselected", self)
+
+func set_sprite_type(new_type):
+	self.sprite_type = new_type
 
 func on_click():
 	if selected:
