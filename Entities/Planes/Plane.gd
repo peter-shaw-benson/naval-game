@@ -1,5 +1,5 @@
 class_name CombatPlane
-extends "../CombatUnit.gd"
+extends "../Entity.gd"
 
 var agility = 0.5
 
