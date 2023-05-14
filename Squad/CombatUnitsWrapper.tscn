@@ -1,13 +1,12 @@
-[gd_scene load_steps=21 format=2]
+[gd_scene load_steps=20 format=2]
 
-[ext_resource path="res://Squad/Squadron.gd" type="Script" id=1]
+[ext_resource path="res://Squad/ShipSquadron.gd" type="Script" id=1]
 [ext_resource path="res://art/Squadron Sprites 2/sprite_4.png" type="Texture" id=2]
 [ext_resource path="res://art/Squadron Sprites 2/sprite_2.png" type="Texture" id=3]
 [ext_resource path="res://art/Squadron Sprites 2/sprite_0.png" type="Texture" id=4]
 [ext_resource path="res://art/Squadron Sprites 2/sprite_1.png" type="Texture" id=5]
 [ext_resource path="res://art/Squadron Sprites 2/sprite_3.png" type="Texture" id=6]
 [ext_resource path="res://art/Squadron Sprites 2/sprite_5.png" type="Texture" id=7]
-[ext_resource path="res://Miscellaneous/Detection Area.tscn" type="PackedScene" id=8]
 [ext_resource path="res://art/Plane Sprites/sprite_2.png" type="Texture" id=9]
 [ext_resource path="res://art/Plane Sprites/sprite_5.png" type="Texture" id=10]
 [ext_resource path="res://art/Plane Sprites/sprite_1.png" type="Texture" id=11]
@@ -62,7 +61,6 @@ bg_color = Color( 0.831373, 0.878431, 0.137255, 1 )
 ]]
 position = Vector2( 134, 76.75 )
 script = ExtResource( 1 )
-detector_scene = ExtResource( 8 )
 
 [node name="Sprite" type="AnimatedSprite" parent="."]
 position = Vector2( 0.0883942, 0 )
