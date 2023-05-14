@@ -125,9 +125,8 @@ func init(ship_array, initial_position, faction):
 	# stopped, half, full ahead, flank
 	var speed_array = [0, speed / 2, speed, int(speed * 1.2)]
 	
-	# Combat Variables:
-	get_node("ShotTimer").wait_time = GameState.get_combatPace()
-	
+	self.rotation = self.initial_rot
+	turn_speed = int(self.base_speed / 2)
 	# Set max of health bar and Armor Bar
 	get_node("HealthBar").set_max(get_total_health())
 	get_node("ArmorBar").set_max(get_total_armor())
@@ -183,14 +182,15 @@ var current_speed
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	
-	self.rotation = self.initial_rot
+	# Combat Variables:
+	get_node("ShotTimer").wait_time = GameState.get_combatPace()
+	self.weapon_dict = construct_weapon_dict()
 	
 	self.scale = Vector2(0.6, 0.6)
 	
 	screen_size = get_viewport_rect().size
 	
 	#current_target = self.global_position
-	turn_speed = int(self.base_speed / 2)
 	
 	# Make sure it doesn't crash until we're done placing
 	get_node("IslandCollision").disabled = true

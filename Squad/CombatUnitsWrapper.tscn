@@ -1,0 +1,118 @@
+[gd_scene load_steps=21 format=2]
+
+[ext_resource path="res://Squad/Squadron.gd" type="Script" id=1]
+[ext_resource path="res://art/Squadron Sprites 2/sprite_4.png" type="Texture" id=2]
+[ext_resource path="res://art/Squadron Sprites 2/sprite_2.png" type="Texture" id=3]
+[ext_resource path="res://art/Squadron Sprites 2/sprite_0.png" type="Texture" id=4]
+[ext_resource path="res://art/Squadron Sprites 2/sprite_1.png" type="Texture" id=5]
+[ext_resource path="res://art/Squadron Sprites 2/sprite_3.png" type="Texture" id=6]
+[ext_resource path="res://art/Squadron Sprites 2/sprite_5.png" type="Texture" id=7]
+[ext_resource path="res://Miscellaneous/Detection Area.tscn" type="PackedScene" id=8]
+[ext_resource path="res://art/Plane Sprites/sprite_2.png" type="Texture" id=9]
+[ext_resource path="res://art/Plane Sprites/sprite_5.png" type="Texture" id=10]
+[ext_resource path="res://art/Plane Sprites/sprite_1.png" type="Texture" id=11]
+[ext_resource path="res://art/Plane Sprites/sprite_3.png" type="Texture" id=12]
+[ext_resource path="res://art/Plane Sprites/sprite_0.png" type="Texture" id=13]
+[ext_resource path="res://art/Plane Sprites/sprite_4.png" type="Texture" id=14]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 13 ), ExtResource( 9 ), ExtResource( 14 ) ],
+"loop": true,
+"name": "scout_plane_basic",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 11 ), ExtResource( 12 ), ExtResource( 10 ) ],
+"loop": true,
+"name": "scout_plane_clicked",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 4 ), ExtResource( 3 ), ExtResource( 2 ) ],
+"loop": true,
+"name": "ship_basic",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 5 ), ExtResource( 6 ), ExtResource( 7 ) ],
+"loop": true,
+"name": "ship_clicked",
+"speed": 5.0
+} ]
+
+[sub_resource type="GDScript" id=2]
+script/source = "extends AnimatedSprite
+
+
+	
+"
+
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 27.15, 31.3493 )
+
+[sub_resource type="StyleBoxFlat" id=4]
+bg_color = Color( 0.105882, 0.764706, 0.164706, 1 )
+
+[sub_resource type="StyleBoxFlat" id=5]
+bg_color = Color( 0.12549, 0.12549, 0.12549, 1 )
+
+[sub_resource type="StyleBoxFlat" id=6]
+bg_color = Color( 0.831373, 0.878431, 0.137255, 1 )
+
+[node name="Squadron" type="Area2D" groups=["squad_group"]]
+position = Vector2( 134, 76.75 )
+script = ExtResource( 1 )
+detector_scene = ExtResource( 8 )
+
+[node name="Sprite" type="AnimatedSprite" parent="."]
+position = Vector2( 0.0883942, 0 )
+frames = SubResource( 1 )
+animation = "scout_plane_clicked"
+script = SubResource( 2 )
+
+[node name="IslandCollision" type="CollisionShape2D" parent="."]
+shape = SubResource( 3 )
+
+[node name="ReferenceRect" type="ReferenceRect" parent="."]
+visible = false
+show_behind_parent = true
+anchor_left = -20.0
+anchor_top = -20.0
+anchor_bottom = 20.0
+margin_left = -20.0
+margin_top = -22.0
+margin_right = 20.0
+margin_bottom = 25.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HealthBar" type="ProgressBar" parent="."]
+margin_left = -31.0
+margin_top = 34.0
+margin_right = 31.0
+margin_bottom = 41.0
+custom_styles/fg = SubResource( 4 )
+custom_styles/bg = SubResource( 5 )
+value = 50.0
+percent_visible = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ArmorBar" type="ProgressBar" parent="."]
+margin_left = -31.125
+margin_top = 44.0
+margin_right = 30.875
+margin_bottom = 51.0
+custom_styles/fg = SubResource( 6 )
+custom_styles/bg = SubResource( 5 )
+value = 25.0
+percent_visible = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ShotTimer" type="Timer" parent="."]
+wait_time = 0.5
+
+[connection signal="area_entered" from="." to="." method="_on_Squadron_area_entered"]
+[connection signal="timeout" from="ShotTimer" to="." method="_on_ShotTimer_timeout"]
