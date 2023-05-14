@@ -296,6 +296,7 @@ func on_detection_entered(other_thing):
 	#print(other_thing.get_name())
 	#print("Squadron" in other_thing.get_name())
 	
+	# Not gonna work for plane squadrons
 	if "Squadron" in other_thing.get_name():
 		self.set_enemy_squadron(other_thing)
 		

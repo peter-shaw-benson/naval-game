@@ -14,6 +14,8 @@ var faction = 0
 var base_speed
 var max_range = 300
 
+var weapon_list = []
+
 func _ready():
 	pass
 
@@ -52,6 +54,18 @@ func get_strike():
 
 func get_faction():
 	return faction
+
+func get_weapon_list():
+	weapon_list = []
+	
+	for p in plane_list:
+		for w in p.get_weapons():
+			weapon_list.append(w)
+	
+func take_damage(weapon: Weapon, distance):
+	# determine weapon's anti-air
+	# aircraft are damaged when they spot an enemy fleet
+	pass
 
 func _process(delta):
 	if global_position.distance_to(current_target) < 10:
