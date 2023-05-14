@@ -24,6 +24,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://Entities/Planes/Plane.gd"
 }, {
+"base": "Area2D",
+"class": "CombatUnitsWrapper",
+"language": "GDScript",
+"path": "res://Squad/CombatUnitsWrapper.gd"
+}, {
 "base": "Ship",
 "class": "Cruiser",
 "language": "GDScript",
@@ -78,6 +83,7 @@ _global_script_class_icons={
 "Airbase": "",
 "Battleship": "",
 "CombatPlane": "",
+"CombatUnitsWrapper": "",
 "Cruiser": "",
 "Destroyer": "",
 "DetectionArea": "",

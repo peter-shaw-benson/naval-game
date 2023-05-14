@@ -5,11 +5,11 @@ var speed: int
 var turn_weight: float
 var entity_class: String
 # Combat Variables
+var hide_range: int
+var visibility_range: int
+var crew: float
 var hit_points: float
 var armor: float
-var visibility_range: float
-var hide_range: float
-var crew: float
 
 var weapons_list: Array
 var aircraft_list = []
@@ -67,17 +67,6 @@ func get_armor():
 func get_weapons():
 	return self.weapons_list
 
-func _to_string():
-	print("Speed: \t", self.speed)
-	print("Turn Weight: \t", self.turn_weight)
-	print("HP: \t", self.hit_points)
-	print("Armor: \t", self.armor)
-	print("Visibility Range: \t", self.visibility_range)
-	print("Crew: \t", self.crew)
-	
-	print("\nWEAPONS\n")
-	
-	print(self.weapons_to_string())
 
 # Combat function
 func damage(weapon: Weapon, t_crossed, distance):
@@ -120,3 +109,15 @@ func damage(weapon: Weapon, t_crossed, distance):
 				damage_result *= 2
 
 		hit_points -= damage_result
+
+func _to_string():
+	print("Speed: \t", self.speed)
+	print("Turn Weight: \t", self.turn_weight)
+	print("HP: \t", self.hit_points)
+	print("Armor: \t", self.armor)
+	print("Visibility Range: \t", self.visibility_range)
+	print("Crew: \t", self.crew)
+	
+	print("\nWEAPONS\n")
+	
+	print(self.weapons_to_string())
