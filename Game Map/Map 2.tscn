@@ -9,7 +9,6 @@
 [ext_resource path="res://fonts/basic_font.tres" type="DynamicFont" id=7]
 [ext_resource path="res://Squad/Airbase/Airbase.tscn" type="PackedScene" id=8]
 
-
 [sub_resource type="DynamicFont" id=1]
 size = 36
 font_data = ExtResource( 6 )

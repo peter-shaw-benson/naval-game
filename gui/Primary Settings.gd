@@ -19,3 +19,9 @@ func _on_MakeFleets_pressed():
 
 func _on_BackButton_pressed():
 	GameState.goto_scene("res://gui/MainMenu.tscn")
+
+
+func _on_Aircraft_pressed():
+	GameState.goto_scene("res://gui/AirbaseSettings.tscn")
+	
+	GameState.set_num_islands(num_islands)

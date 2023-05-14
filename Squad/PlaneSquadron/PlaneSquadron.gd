@@ -9,11 +9,16 @@ var strike_force: bool
 var max_range = 300
 
 var weapon_list = []
+var plane_list = []
 
 func _ready():
 	airbase_origin = global_position
-	pass
-			
+	
+	weapon_list = get_weapon_list()
+
+	for u in self.get_units():
+		plane_list.append(u)
+	
 func set_strike(strike):
 	strike_force = strike
 	
@@ -50,7 +55,7 @@ func get_weapon_list():
 	for u in units:
 		for w in u.get_weapons():
 			weapon_list.append(w)
-	
+
 func take_damage(weapon: Weapon, distance):
 	# determine weapon's anti-air
 	# aircraft are damaged when they spot an enemy fleet
@@ -69,4 +74,5 @@ func _on_PlaneSquad_area_entered(area):
 	#print("plane hit base")
 	
 	if airbase_origin.distance_to(area.global_position) < 5:
+		
 		emit_signal("planes_recovered", self)

@@ -111,13 +111,14 @@ func damage(weapon: Weapon, t_crossed, distance):
 		hit_points -= damage_result
 
 func _to_string():
-	print("Speed: \t", self.speed)
-	print("Turn Weight: \t", self.turn_weight)
-	print("HP: \t", self.hit_points)
-	print("Armor: \t", self.armor)
-	print("Visibility Range: \t", self.visibility_range)
-	print("Crew: \t", self.crew)
+	var s = ""
+	s += "Speed: \t" + str(self.speed)
+	s += "Turn Weight: \t" + str(self.turn_weight)
+	s += "HP: \t" + str(self.hit_points)
+	s += "Armor: \t" + str(self.armor)
+	s += "Visibility Range: \t" + str(self.visibility_range)
+	s += "Crew: \t" + str(self.crew)
 	
-	print("\nWEAPONS\n")
+	s += "\nWEAPONS\n"
 	
-	print(self.weapons_to_string())
+	s += self.weapons_to_string()

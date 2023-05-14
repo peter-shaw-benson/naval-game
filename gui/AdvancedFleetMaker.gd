@@ -48,7 +48,8 @@ func get_squadron():
 	return {"ships": ship_list,
 			"position": initial_pos,
 			"faction": faction,
-			"name": fleet_name}
+			"name": fleet_name,
+			"type": "squadron"}
 
 func make_destroyer_array(length):
 	var destroyer_array = []
@@ -150,7 +151,7 @@ func _on_ContinueButton_pressed():
 	#print(get_squadron())
 	# Check if budget < 0
 	if budget >= 0:
-		GameState.add_fleet(get_squadron())
+		GameState.add_unit(get_squadron())
 		
 		GameState.use_budget(budget, str(faction))
 		print(GameState.faction_budgets)
@@ -162,7 +163,7 @@ func _on_ContinueButton_pressed():
 func _on_PlaceButton_pressed():
 	# Check if budget < 0
 	if budget >= 0:
-		GameState.add_fleet(get_squadron())
+		GameState.add_unit(get_squadron())
 		
 		GameState.use_budget(budget, faction)
 		

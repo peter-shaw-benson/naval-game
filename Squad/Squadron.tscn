@@ -1,6 +1,6 @@
 [gd_scene load_steps=15 format=2]
 
-[ext_resource path="res://Squad/Squadron.gd" type="Script" id=1]
+[ext_resource path="res://Squad/ShipSquadron.gd" type="Script" id=1]
 [ext_resource path="res://art/Squadron Sprites 2/sprite_4.png" type="Texture" id=2]
 [ext_resource path="res://art/Squadron Sprites 2/sprite_2.png" type="Texture" id=3]
 [ext_resource path="res://art/Squadron Sprites 2/sprite_0.png" type="Texture" id=4]

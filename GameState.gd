@@ -10,7 +10,7 @@ var crewAccuracyFactor: float
 var building = false
 var num_islands = 0
 
-var squad_list = []
+var unit_list = []
 var default_budgets = {"0": 200, "1": 200, "2": 200}
 var faction_budgets = {"0": 200, "1": 200, "2": 200}
 
@@ -91,7 +91,7 @@ func goto_main_map2(path):
 	# Optionally, to make it compatible with the SceneTree.change_scene_to_file() API.
 	get_tree().current_scene = current_scene
 	
-	current_scene.init(squad_list, num_islands)
+	current_scene.init(unit_list, num_islands)
 
 func change_playerFaction(new_faction):
 	playerFaction = new_faction
@@ -115,8 +115,8 @@ func get_rangeFactor():
 func get_crewAccuracyFactor():
 	return crewAccuracyFactor
 
-func add_fleet(squadron):
-	squad_list.append(squadron)
+func add_unit(unit):
+	unit_list.append(unit)
 
 func get_faction_budget(faction):
 	return faction_budgets[faction]

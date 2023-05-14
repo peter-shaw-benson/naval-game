@@ -11,15 +11,18 @@ var airbase: Airbase
 var playerFaction
 
 var squad_list = []
+var airbase_list = []
+
 var place_list
-var squadron_data
+var unit_data
+var airbase_data
 
 var game_time = 0
 
 onready var LineRenderer = get_node("LineDrawer")
 onready var IslandTexture = get_node("IslandTexture")
 
-func init(input_squadron_data, num_islands):
+func init(input_unit_list, num_islands):
 	# Display stuff
 	var screen_size = get_viewport().size
 	
@@ -40,21 +43,14 @@ func init(input_squadron_data, num_islands):
 	
 	playerFaction = GameState.get_playerFaction()
 	
-	# add airbase
-	airbase = airbase_scene.instance()
-	airbase.init([], Vector2(300, 300), playerFaction)
-	add_child(airbase)
-	
-	airbase.connect("plane_launch", self, "launch_plane_squad")
-	airbase.connect("planes_recovered", self, "recover_plane_squad")
-	
-	squadron_data = input_squadron_data
-	place_list = range(len(squadron_data))
-	place_next_squadron(place_list)
+	unit_data = input_unit_list
+	place_list = range(len(unit_data))
+	place_next_unit(place_list)
 
 func hide_enemies():
 	print("hiding enemies")
 	
+	print(squad_list)
 	LineRenderer.init(squad_list)
 	# Hide enemy squadrons, start visibility
 	for s in squad_list:
@@ -66,7 +62,8 @@ func hide_enemies():
 func place_squadron(squad_data):
 	var squad = squadron_scene.instance()
 		
-	squad.init(squad_data.ships, get_viewport().get_mouse_position(), squad_data.faction)
+	squad.init(squad_data.ships, get_viewport().get_mouse_position(), 
+	squad_data.faction, squad_data.type)
 		
 	squad_list.append(squad)
 		
@@ -85,20 +82,38 @@ func place_squadron(squad_data):
 	# Find mouse position, set squadron position based on it
 	squad.start_placing()
 
-func place_next_squadron(place_list):
+func place_airbase(airbase_data):
+	var airbase = airbase_scene.instance()
+	airbase.init(airbase_data["planes"], get_viewport().get_mouse_position(), 
+	airbase_data["faction"], airbase_data["type"])
+	
+	airbase_list.append(airbase)
+	
+	add_child(airbase)
+	
+	airbase.connect("plane_launch", self, "launch_plane_squad")
+	airbase.connect("planes_recovered", self, "recover_plane_squad")
+	airbase.connect("stopped_placing", self, "_on_squadron_stopped_placement")
+		
+	airbase.start_placing()
+
+func place_next_unit(place_list):
 	#print(place_list)
-	#print(squadron_data)
+	#print(unit_data)
 	
 	if len(place_list) > 0:
 		#print("placing next squad, current place list:", place_list)
 		var squad_index = place_list[0]
 		#print(squadron_data[squad_index])
-		place_squadron(squadron_data[squad_index])
+		if unit_data[squad_index]["type"] == "airbase":
+			place_airbase(unit_data[squad_index])
+		elif unit_data[squad_index]["type"] == "squadron":
+			place_squadron(unit_data[squad_index])
 		place_list.remove(0)
 
 func _on_squadron_stopped_placement():
 	if len(place_list) > 0:
-		place_next_squadron(place_list)
+		place_next_unit(place_list)
 	else:
 		hide_enemies()
 		
@@ -109,7 +124,8 @@ func _input(event):
 		for s in squad_list:
 			s.handle_right_click(event.position)
 		
-		airbase.handle_right_click(event.position)
+		for a in airbase_list:
+			a.handle_right_click(event.position)
 
 # Handle collisions with Islands
 func _on_squad_crash(s):
@@ -186,9 +202,6 @@ func update_squad_info(new_info):
 		get_node("SquadSelected/SquadInfo").text = new_info
 
 # PLANE STUFF
-
-func place_airbase():
-	pass
 
 func launch_plane_squad(plane_squad):
 	add_child(plane_squad)

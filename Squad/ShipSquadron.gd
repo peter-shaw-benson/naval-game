@@ -29,6 +29,19 @@ func _ready():
 	# Make sure it doesn't crash until we're done placing
 	get_node("IslandCollision").disabled = true
 
+func handle_right_click(placement):
+	if selected:
+		#print("right clicked for course")
+		# Turn logic is here for now?
+		if Input.is_action_pressed("queue"):
+			target_array.append(placement)
+			
+			emit_signal("new_course_change", current_target, placement)
+			#print(target_array)
+		else:
+			target_array = []
+			#var angle = placement.angle_to_point(position) + (PI / 2)
+			current_target = placement
 
 func _physics_process(delta):
 	

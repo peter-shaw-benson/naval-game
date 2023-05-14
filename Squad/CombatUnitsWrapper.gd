@@ -3,6 +3,12 @@ class_name CombatUnitsWrapper
 
 export var detector_scene: PackedScene
 
+# signals
+signal stopped_placing()
+signal squad_selected(squad)
+signal squad_deselected(squad)
+signal update_squad_info(new_info)
+
 func get_min_speed():
 	
 	if len(units) == 0:
@@ -77,15 +83,18 @@ var placing = false
 var initial_rot = 0
 var screen_size
 var current_speed
+
+# what kind of combat unit is it?
+var type
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
 
-func init(unit_array, initial_position, faction):
+func init(unit_array, initial_position, faction, type):
 	units = unit_array
 	#print(ships[0].speed)
 	self.faction = faction
-	print("faction ", self.faction)
+	#print("faction ", self.faction)
 	
 	# for some reason, we need to use deselect() 
 	# just don't change it 
@@ -120,7 +129,10 @@ func init(unit_array, initial_position, faction):
 	turn_speed = int(self.base_speed / 2)
 	# Set max of health bar and Armor Bar
 	
-	print("squad created")
+	#print("squad created")
+
+func get_units():
+	return self.units
 
 func select():
 	if faction == GameState.get_playerFaction():
@@ -179,7 +191,7 @@ func start_placing():
 	
 func stop_placing():
 	placing = false
-	
+
 	emit_signal("stopped_placing")
 	
 	get_node("IslandCollision").disabled = false
@@ -203,11 +215,10 @@ func on_detection_entered(other_thing):
 	#print("Squadron" in other_thing.get_name())
 	
 	# Not gonna work for plane squadrons
-	if "Squadron" in other_thing.get_name():
-		self.set_enemy_squadron(other_thing)
-		
-	if "PlaneSquadron" in other_thing.get_name():
+	if "Plane" in other_thing.get_name():
 		pass
+	elif "Squadron" in other_thing.get_name():
+		self.set_enemy_squadron(other_thing)
 	
 	if self.faction != GameState.get_playerFaction():
 		show()
@@ -262,11 +273,3 @@ func get_squad_info():
 	squad_text += "Health: " + str(get_total_health()) + " Armor: " + str(get_total_armor()) + " Speed: " + str(base_speed)
 
 	return squad_text
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
