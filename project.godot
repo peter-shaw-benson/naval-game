@@ -9,10 +9,10 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "Area2D",
+"base": "CombatUnitWrapper",
 "class": "Airbase",
 "language": "GDScript",
-"path": "res://Entities/Airbase/Airbase.gd"
+"path": "res://Squad/Airbase/Airbase.gd"
 }, {
 "base": "Ship",
 "class": "Battleship",

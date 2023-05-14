@@ -1,4 +1,4 @@
-extends Area2D
+extends CombatUnitWrapper
 class_name Airbase
 
 export var PlaneSquadScene: PackedScene

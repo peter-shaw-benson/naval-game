@@ -7,7 +7,8 @@
 [ext_resource path="res://gui/Crash Popup.tscn" type="PackedScene" id=5]
 [ext_resource path="res://fonts/neon-pixel-7/neon_pixel-7.ttf" type="DynamicFontData" id=6]
 [ext_resource path="res://fonts/basic_font.tres" type="DynamicFont" id=7]
-[ext_resource path="res://Entities/Airbase/Airbase.tscn" type="PackedScene" id=8]
+[ext_resource path="res://Squad/Airbase/Airbase.tscn" type="PackedScene" id=8]
+
 
 [sub_resource type="DynamicFont" id=1]
 size = 36
