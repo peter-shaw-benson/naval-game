@@ -1,6 +1,7 @@
 class_name Squadron
 extends Area2D
 
+# detector scene needs to be defined separately?
 export var detector_scene: PackedScene
 
 signal new_course_change(current_target, placement)

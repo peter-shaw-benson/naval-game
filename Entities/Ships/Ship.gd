@@ -1,5 +1,5 @@
 class_name Ship
-extends "../Entity.gd"
+extends "../CombatUnit.gd"
 
 # Navigation Variables
 var ship_name: String

@@ -1,4 +1,5 @@
 extends Area2D
+class_name CombatUnitsWrapper
 
 export var detector_scene: PackedScene
 
@@ -69,13 +70,6 @@ var detector: DetectionArea
 var faction = 0
 var in_combat = false
 
-var t_crossed = false
-
-var weapon_dict = {}
-var stopped = false
-var current_shot_count = 0 
-var current_enemy_squadron: Squadron
-
 var current_target = Vector2()
 var velocity = Vector2()
 var selected = false
@@ -87,11 +81,12 @@ var current_speed
 # var a = 2
 # var b = "text"
 
-func init(unit_array, initial_position, faction):
+func init(unit_array, initial_position, faction, sprite_type):
 	units = unit_array
 	#print(ships[0].speed)
 	self.faction = faction
 	print("faction ", self.faction)
+	self.sprite_type = sprite_type
 	
 	# for some reason, we need to use deselect() 
 	# just don't change it 
@@ -195,6 +190,9 @@ func stop_placing():
 	
 	current_target = self.global_position
 
+func enable_spotting():
+	detector.enable_spotting()
+
 func set_enemy_squadron(potential_squad):
 	#print(potential_squad.get_faction())
 	#print(self.faction)
@@ -224,20 +222,23 @@ func on_detection_left():
 	if self.faction != GameState.get_playerFaction():
 		
 		hide()
+		
+func exit_combat():
+	in_combat = false
 
 func get_total_health():
 	var tot_health = 0
 	
-	for s in ships:
-		tot_health += s.get_health()
+	for u in units:
+		tot_health += u.get_health()
 	
 	return tot_health
 
 func get_total_armor():
 	var tot_armor = 0
 	
-	for s in ships:
-		tot_armor += s.get_armor()
+	for u in units:
+		tot_armor += u.get_armor()
 	
 	return tot_armor
 
