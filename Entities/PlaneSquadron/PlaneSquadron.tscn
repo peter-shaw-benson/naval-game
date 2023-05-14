@@ -16,9 +16,9 @@
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
-"frames": [ ExtResource( 10 ), ExtResource( 9 ), ExtResource( 11 ) ],
+"frames": [ ExtResource( 8 ), ExtResource( 7 ), ExtResource( 12 ) ],
 "loop": true,
-"name": "fighterSelected",
+"name": "fighterDeselected",
 "speed": 5.0
 }, {
 "frames": [ ExtResource( 4 ), ExtResource( 3 ), ExtResource( 2 ) ],
@@ -26,14 +26,14 @@ animations = [ {
 "name": "scoutPlaneSelected",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 8 ), ExtResource( 7 ), ExtResource( 12 ) ],
-"loop": true,
-"name": "fighterDeselected",
-"speed": 5.0
-}, {
 "frames": [ ExtResource( 6 ), ExtResource( 1 ), ExtResource( 5 ) ],
 "loop": true,
 "name": "scoutPlaneDeselected",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 10 ), ExtResource( 9 ), ExtResource( 11 ) ],
+"loop": true,
+"name": "fighterSelected",
 "speed": 5.0
 } ]
 
@@ -57,6 +57,7 @@ position = Vector2( 0.125, 19.625 )
 shape = SubResource( 2 )
 
 [node name="Detection" type="Area2D" parent="."]
+visible = false
 collision_layer = 4
 collision_mask = 4
 
