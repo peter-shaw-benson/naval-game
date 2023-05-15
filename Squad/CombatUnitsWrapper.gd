@@ -59,6 +59,18 @@ func get_hiding():
 		
 		return hide
 
+#wind resist is average of all unit wind resists
+func get_squad_wind_resist():
+	if len(units) == 0:
+		return 0
+	else:
+		var resist = 0
+		var i = 0
+		while i < len(units):
+			resist += units[i].get_wind_resist()
+			i += 1
+		return resist / i
+
 var units: Array
 var speed: int
 var base_speed: int
@@ -71,18 +83,21 @@ var sprite_type: String
 var visibility: float
 var hiding: float
 var detector: DetectionArea
+var wind_resist: float
 
 # Combat Vars
 var faction = 0
 var in_combat = false
 
 var current_target = Vector2()
-var velocity = Vector2()
 var selected = false
 var placing = false
 var initial_rot = 0
 var screen_size
 var current_speed
+var actual_speed
+var applied_wind: Vector2
+var velocity_vector: Vector2
 
 # what kind of combat unit is it?
 var type
@@ -104,6 +119,8 @@ func init(unit_array, initial_position, faction, type):
 	turn_weight = get_min_turn_weight()
 	visibility = get_visibility()
 	hiding = get_hiding()
+	self.wind_resist = get_squad_wind_resist()
+	
 	
 	# Set up Visibility Collider and Hiding Collider
 	var visibility_scale = visibility * 5
@@ -119,6 +136,7 @@ func init(unit_array, initial_position, faction, type):
 	
 	self.initial_pos = initial_position
 	self.current_speed = get_min_speed()
+	self.velocity_vector = Vector2(0, 0)
 	
 	self.position = self.initial_pos
 	
@@ -127,10 +145,22 @@ func init(unit_array, initial_position, faction, type):
 	
 	self.rotation = self.initial_rot
 	turn_speed = int(self.base_speed / 2)
+	
+	self.applied_wind = Vector2(0, 0)
 	# Set max of health bar and Armor Bar
 	
 	#print("squad created")
 
+#creates new velocity vector with applied wind
+func calc_new_velocity():
+	var unit_velocity_cartesian = Vector2(current_speed * cos(global_rotation), current_speed * sin(global_rotation))
+	self.velocity_vector = unit_velocity_cartesian + 100 * applied_wind
+
+#calculates the wind vector on wind change
+func calc_new_wind_vector(wind_cartesian):
+	applied_wind = (1 - wind_resist) * wind_cartesian
+	
+	
 func get_units():
 	return self.units
 

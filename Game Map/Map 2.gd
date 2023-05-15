@@ -30,7 +30,6 @@ func init(input_unit_list, num_islands):
 	
 	update_clock_display()
 	get_node("GameClock").start()
-	
 	# Create the Island Instances
 	if num_islands > 0:
 		for i in range(num_islands):
@@ -181,9 +180,15 @@ func update_clock_display():
 	
 	get_node("ClockDisplay").text = clock_text
 
+func update_weather():
+	get_node("Weather").calc_new_wind_direction()
+	get_node("Weather").calc_new_wind_speed()
+	for unit in squad_list:
+		unit.calc_new_wind_vector($Weather.get_wind_velocity_cartesian())
+
 func _on_GameClock_timeout():
 	game_time += 1
-	
+	update_weather()
 	update_clock_display()
 
 func display_selected_squad(squad):
