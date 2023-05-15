@@ -267,7 +267,7 @@ func update_armorbar():
 	get_node("ArmorBar").value = get_total_armor()
 	
 func shoot_guns(weapon_shooting_list, enemy_squadron):
-	if enemy_squadron:
+	if enemy_squadron and weapon_shooting_list:
 		#print(len(weapon_shooting_list))
 		for w in weapon_shooting_list:
 			enemy_squadron.take_damage(w, global_position.distance_to(enemy_squadron.global_position))
@@ -277,11 +277,8 @@ func shoot_guns(weapon_shooting_list, enemy_squadron):
 func take_plane_damage(plane_squad):
 	if plane_squad.get_faction() != self.get_faction():
 		
-		print("planes dealing damage")
-		print(len(plane_squad.get_weapon_list()))
-		
-		plane_squad.shoot_guns(plane_squad.get_weapon_list(), self)
 		self.shoot_guns(self.get_weapon_list(), plane_squad)
+		plane_squad.shoot_guns(plane_squad.get_weapon_list(), self)
 
 func get_weapon_list():
 	pass

@@ -49,6 +49,12 @@ func handle_right_click(placement):
 			#var angle = placement.angle_to_point(position) + (PI / 2)
 			current_target = placement
 
+func _input(event):
+	if selected:
+		if Input.is_action_pressed("stop"):
+			self.current_target = self.global_position
+			self.target_array = []
+
 func _on_Squadron_area_entered(area):
 	# Entered Hiding Area 
 	hide()

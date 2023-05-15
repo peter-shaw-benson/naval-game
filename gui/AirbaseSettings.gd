@@ -30,6 +30,7 @@ func _on_MakeFleets_pressed():
 	airbase_data["player_plane_list"] = make_player_plane_list()
 	airbase_data["enemy_plane_list"] = make_enemy_plane_list()
 	
+	print(make_player_plane_list())
 	
 	if player_airbases == 1:
 		var player_airbase = {\
@@ -95,7 +96,7 @@ func _on_PStrike_value_changed(value):
 
 
 func _on_PBomb_value_changed(value):
-	player_bombers
+	player_bombers = value
 
 
 func _on_EAirbase_value_changed(value):

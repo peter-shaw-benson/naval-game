@@ -89,6 +89,9 @@ func organize_aircraft(plane_list):
 		else:
 			plane_dict["strike"].append(aircraft)
 	
+	print(plane_dict)
+	print(plane_dict["bomber"])
+	
 
 # Press "S" for scouting, press Z for strike
 # for now, scouting force is 2 scout planes 
@@ -103,8 +106,13 @@ func handle_right_click(placement):
 			
 		elif Input.is_action_pressed("strike") and len(plane_dict["strike"]) > 0:
 			send_out_planes(placement, "strike")
+		
+		elif Input.is_action_pressed("bomb") and len(plane_dict["bomber"]) > 0:
+			send_out_planes(placement, "bomber")
 
 func send_out_planes(placement, type):
+	print(type)
+	
 	var plane_squad = PlaneSquadScene.instance()
 	
 	var plane_list = [] 
@@ -120,15 +128,19 @@ func send_out_planes(placement, type):
 	# initial posiiton is airbase position
 	# plane composition is the scout planes
 	# faction
-	if type == "strike":
+	if type != "scout":
 		is_strike = true
 	
 	print(len(plane_list))
 	
+	var type_map = {"scout":"scoutPlane",
+					"strike":"fighter",
+					"bomber": "levelBomber"}
+	
 	if len(plane_list) > 0:
 		#print(len(plane_list))
 		plane_squad.init(plane_list, initial_pos, faction, "planesquadron")
-		plane_squad.set_strike(is_strike)
+		plane_squad.set_animation(is_strike, type_map[type])
 		plane_squad.set_target(target)
 		
 		emit_signal("plane_launch", plane_squad)
@@ -150,8 +162,10 @@ func plane_squad_recovered(plane_squad):
 	#print(recovered_planes)
 	
 	for p in recovered_planes:
-		if plane_squad.get_strike():
+		if plane_squad.get_sprite_type() == "fighter":
 			plane_dict["strike"].append(p)
+		elif plane_squad.get_sprite_type() == "levelBomber":
+			plane_dict["bomber"].append(p)
 		else:
 			plane_dict["scout"].append(p)
 	

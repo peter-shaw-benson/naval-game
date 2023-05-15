@@ -22,15 +22,12 @@ func _ready():
 	
 	update_weapon_list()
 	
-func set_strike(strike):
+func set_animation(strike, type):
 	strike_force = strike
+	sprite_type = type
 	
-	# Set animations
-	if strike:
-		get_node("AnimatedSprite").animation = "fighterDeselected"
-	else:
-		get_node("AnimatedSprite").animation = "scoutPlaneDeselected"
-			
+	get_node("AnimatedSprite").animation = sprite_type + "_clicked"
+	
 	get_node("AnimatedSprite").frame = faction
 	get_node("AirbaseCollision").disabled = true
 
@@ -38,6 +35,9 @@ func set_target(target):
 	current_target = target
 
 	rotation = global_position.angle_to_point(target) - PI/2
+
+func get_sprite_type():
+	return self.sprite_type
 
 func get_min_range():
 	
