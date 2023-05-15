@@ -134,6 +134,9 @@ func init(unit_array, initial_position, faction, type):
 func get_units():
 	return self.units
 
+func get_type():
+	return self.type
+
 func select():
 	if faction == GameState.get_playerFaction():
 		selected = true
@@ -214,11 +217,18 @@ func on_detection_entered(other_thing):
 	#print(other_thing.get_name())
 	#print("Squadron" in other_thing.get_name())
 	
+	# this is a REALLY BAD way to do it – 
+	# the plane squad name is PlaneSquad, not PlaneSquadron
+	var is_ship_squad = "ron" in other_thing.get_name()
+	var is_plane_squad = "Plane" in other_thing.get_name()
+	
 	# Not gonna work for plane squadrons
-	if "Plane" in other_thing.get_name():
-		pass
-	elif "Squadron" in other_thing.get_name():
+	#print(other_thing.get_type())
+	if is_ship_squad:
+		#print("ships detected, entering combat")
 		self.set_enemy_squadron(other_thing)
+	if is_plane_squad:
+		self.take_plane_damage(other_thing)
 	
 	if self.faction != GameState.get_playerFaction():
 		show()
@@ -256,13 +266,26 @@ func update_healthbar():
 func update_armorbar():
 	get_node("ArmorBar").value = get_total_armor()
 	
-func shoot_guns(weapon_shooting_list, enemy_squadron: Squadron):
+func shoot_guns(weapon_shooting_list, enemy_squadron):
 	if enemy_squadron:
+		#print(len(weapon_shooting_list))
 		for w in weapon_shooting_list:
 			enemy_squadron.take_damage(w, global_position.distance_to(enemy_squadron.global_position))
 			enemy_squadron.update_armorbar()
 			enemy_squadron.update_healthbar()
-			
+
+func take_plane_damage(plane_squad):
+	if plane_squad.get_faction() != self.get_faction():
+		
+		print("planes dealing damage")
+		print(len(plane_squad.get_weapon_list()))
+		
+		plane_squad.shoot_guns(plane_squad.get_weapon_list(), self)
+		self.shoot_guns(self.get_weapon_list(), plane_squad)
+
+func get_weapon_list():
+	pass
+
 func get_squad_info():
 	# Name, HP, armor, speed, composition
 	var squad_text = ""

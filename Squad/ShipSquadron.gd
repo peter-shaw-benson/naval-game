@@ -1,13 +1,19 @@
 extends "res://Squad/CombatUnitsWrapper.gd"
 
 
+signal new_course_change(current_target, placement)
+signal reached_target()
+signal squadron_lost(this_squad, enemy_squadron)
+signal ship_lost(ship)
+signal hit(squad)
+
 var t_crossed = false
 var target_array = []
 
 var weapon_dict = {}
 var stopped = false
 var current_shot_count = 0 
-var current_enemy_squadron: Squadron
+var current_enemy_squadron: CombatUnitsWrapper
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -27,7 +33,7 @@ func _ready():
 	self.update_armorbar()
 	
 	# Make sure it doesn't crash until we're done placing
-	get_node("IslandCollision").disabled = true
+	get_node("IslandCollision").disabled = false
 
 func handle_right_click(placement):
 	if selected:
@@ -42,6 +48,16 @@ func handle_right_click(placement):
 			target_array = []
 			#var angle = placement.angle_to_point(position) + (PI / 2)
 			current_target = placement
+
+func _on_Squadron_area_entered(area):
+	# Entered Hiding Area 
+	hide()
+	self.current_target = self.global_position
+	self.target_array = []
+	
+	emit_signal("hit", self)
+	
+	get_node("IslandCollision").set_deferred("disabled", true)
 
 func _physics_process(delta):
 	
@@ -87,6 +103,15 @@ func construct_weapon_dict():
 	
 	return weapon_dict
 
+func get_weapon_list():
+	var weapon_list = []
+	
+	for u in units:
+		for w in u.get_weapons():
+			weapon_list.append(w)
+	
+	return weapon_list
+
 func set_enemy_squadron(potential_squad):
 	#print(potential_squad.get_faction())
 	#print(self.faction)
@@ -118,6 +143,7 @@ func enter_combat(enemy_squad):
 	get_node("ShotTimer").start()
 
 func take_damage(weapon: Weapon, distance_to_squad):
+	#print("ships taking damages")
 	# for now, the first ship will bear the brunt of the damage. ouch!
 	if len(units) <= 0:
 		emit_signal("squadron_lost", self, current_enemy_squadron)
@@ -138,10 +164,11 @@ func take_damage(weapon: Weapon, distance_to_squad):
 			
 			if len(units) <= 0:
 				emit_signal("squadron_lost", self, current_enemy_squadron)
+				print("ship sqaudron lost")
 				
 	emit_signal("update_squad_info", get_squad_info())
 
-func shoot_guns(weapon_shooting_list, enemy_squadron: Squadron):
+func shoot_guns(weapon_shooting_list, enemy_squadron):
 	if enemy_squadron:
 		for w in weapon_shooting_list:
 			enemy_squadron.take_damage(w, global_position.distance_to(enemy_squadron.global_position))

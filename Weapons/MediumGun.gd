@@ -6,7 +6,7 @@ var weapon_stats = {
 	"damage": 3,
 	"piercing": 7,
 	"armor_damage": 0.5,
-	"anti_air": 1,
+	"anti_air": 0.2,
 	"base_accuracy": 0.2,
 	"accuracy_gain": 0.03
 }

@@ -71,16 +71,9 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/separation = 20
 
-[node name="MakeFleets" type="Button" parent="VBoxContainer/MarginContainer/options"]
-margin_right = 424.0
-margin_bottom = 20.0
-size_flags_horizontal = 3
-text = "Make Fleets"
-
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer/options"]
-margin_top = 40.0
 margin_right = 424.0
-margin_bottom = 288.0
+margin_bottom = 248.0
 alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer/options/HBoxContainer"]
@@ -236,12 +229,18 @@ margin_right = 210.0
 margin_bottom = 248.0
 max_value = 2.0
 
+[node name="MakeFleets" type="Button" parent="VBoxContainer/MarginContainer/options"]
+margin_top = 268.0
+margin_right = 424.0
+margin_bottom = 288.0
+size_flags_horizontal = 3
+text = "Make Fleets"
+
 [node name="Main Menu" type="Button" parent="VBoxContainer/MarginContainer/options"]
 margin_top = 308.0
 margin_right = 424.0
 margin_bottom = 328.0
 text = "Main Menu"
-[connection signal="pressed" from="VBoxContainer/MarginContainer/options/MakeFleets" to="." method="_on_MakeFleets_pressed"]
 [connection signal="value_changed" from="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2/PAirbase" to="." method="_on_PAirbase_value_changed"]
 [connection signal="value_changed" from="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2/PScout" to="." method="_on_PScout_value_changed"]
 [connection signal="value_changed" from="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2/PStrike" to="." method="_on_PStrike_value_changed"]
@@ -251,4 +250,5 @@ text = "Main Menu"
 [connection signal="value_changed" from="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2/EScout" to="." method="_on_EScout_value_changed"]
 [connection signal="value_changed" from="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2/EStrike" to="." method="_on_EStrike_value_changed"]
 [connection signal="value_changed" from="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2/EBomb" to="." method="_on_EBomb_value_changed"]
+[connection signal="pressed" from="VBoxContainer/MarginContainer/options/MakeFleets" to="." method="_on_MakeFleets_pressed"]
 [connection signal="pressed" from="VBoxContainer/MarginContainer/options/Main Menu" to="." method="_on_BackButton_pressed"]

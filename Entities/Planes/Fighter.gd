@@ -8,7 +8,7 @@ var plane_stats = {
 	"hit_points": 1.5,
 	"armor": 0,
 	"hide": 20,
-	"visibility": 40,
+	"visibility": 10,
 	"crew": 1,
 	"class": "Fighter",
 	"weapons": [MG.new()]

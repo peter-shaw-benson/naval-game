@@ -9,7 +9,7 @@ var plane_stats = {
 	"hit_points": 3,
 	"armor": 0,
 	"hide": 20,
-	"visibility": 40,
+	"visibility": 15,
 	"crew": 2,
 	"class": "DiveBomber",
 	"weapons": [DiveBomb.new(), MG.new()]

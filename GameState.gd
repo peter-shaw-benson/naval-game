@@ -13,6 +13,7 @@ var num_islands = 0
 var unit_list = []
 var default_budgets = {"0": 200, "1": 200, "2": 200}
 var faction_budgets = {"0": 200, "1": 200, "2": 200}
+var strike_multiplier = 8
 
 func _ready():
 	# Global variables
@@ -129,4 +130,6 @@ func restore_budgets():
 
 func set_num_islands(islands):
 	num_islands = islands
-	
+
+func get_strike_multiplier():
+	return strike_multiplier

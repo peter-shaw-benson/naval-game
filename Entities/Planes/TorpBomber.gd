@@ -9,7 +9,7 @@ var plane_stats = {
 	"hit_points": 3,
 	"armor": 1,
 	"hide": 20,
-	"visibility": 40,
+	"visibility": 10,
 	"crew": 3,
 	"class": "TorpedoBomber",
 	"weapons": [AirTorpedo.new(), MG.new()]

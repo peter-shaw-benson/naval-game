@@ -50,7 +50,7 @@ func init(input_unit_list, num_islands):
 func hide_enemies():
 	print("hiding enemies")
 	
-	print(squad_list)
+	#print(squad_list)
 	LineRenderer.init(squad_list)
 	# Hide enemy squadrons, start visibility
 	for s in squad_list:
@@ -154,14 +154,13 @@ func _on_ship_lost(ship: Ship):
 	get_node("Ship Funeral").popup()
 	get_node("Ship Popup Timer").start()
 
-func _on_squadron_lost(s: Squadron, enemy_squad):
+func _on_squadron_lost(s, enemy_squad):
 	squad_list.remove(squad_list.find(s, 0))
 	
 	s.queue_free()
 	
 	if enemy_squad:
 		enemy_squad.exit_combat()
-	
 
 func _on_Ship_Popup_Timer_timeout():
 	get_node("Ship Funeral").hide()

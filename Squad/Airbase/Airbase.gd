@@ -18,6 +18,8 @@ var launching = false
 
 var plane_dict = {"scout": [], "strike": [], "bomber": []}
 
+
+
 func _ready():
 	self.deselect()
 	
@@ -107,7 +109,8 @@ func send_out_planes(placement, type):
 	
 	var plane_list = [] 
 	# make plane list a copy, not a reference
-	plane_list.append(plane_dict[type][0])
+	for i in range(len(plane_dict[type])):
+		plane_list.append(plane_dict[type][i])
 	
 	var initial_pos = global_position
 	var target = placement
@@ -120,6 +123,8 @@ func send_out_planes(placement, type):
 	if type == "strike":
 		is_strike = true
 	
+	print(len(plane_list))
+	
 	if len(plane_list) > 0:
 		#print(len(plane_list))
 		plane_squad.init(plane_list, initial_pos, faction, "planesquadron")
@@ -129,10 +134,12 @@ func send_out_planes(placement, type):
 		emit_signal("plane_launch", plane_squad)
 		
 		plane_squad.connect("planes_recovered", self, "plane_squad_recovered")
+		plane_squad.connect("plane_squad_lost", self, "plane_squad_death")
 		
-		plane_dict[type].remove(0)
+		for i in range(len(plane_dict[type])):
+			plane_dict[type].remove(0)
 		
-		print("sent planes to ", placement)
+		#print("sent planes to ", placement)
 
 func plane_squad_recovered(plane_squad):
 	#print("recovering at base")
@@ -153,3 +160,6 @@ func plane_squad_recovered(plane_squad):
 	emit_signal("planes_recovered", plane_squad)
 
 	#print(plane_dict)
+
+func plane_squad_death(plane_squad):
+	plane_squad.queue_free()

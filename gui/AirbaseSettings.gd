@@ -20,6 +20,8 @@ var airbase_data = {"player_airbases": 0, \
 				"player_plane_list": [],\
 				"enemy_airbases": 0, \
 				"enemy_plane_list": []}
+				
+var strike_multiplier = GameState.get_strike_multiplier()
 
 func _on_MakeFleets_pressed():
 	
@@ -56,7 +58,7 @@ func make_player_plane_list():
 	for i in range(player_scouts):
 		plane_list.append(ScoutPlane.new())
 	
-	for i in range(player_strikes):
+	for i in range(player_strikes*strike_multiplier):
 		plane_list.append(DiveBomber.new())
 		plane_list.append(TorpBomber.new())
 	
