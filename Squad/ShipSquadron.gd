@@ -88,7 +88,8 @@ func _physics_process(delta):
 		
 		#print(position.move_toward(current_target, delta*current_speed))
 		if not stopped:
-			global_position = global_position.move_toward(current_target, delta * current_speed)
+			self.calc_new_velocity()
+			global_position = global_position.move_toward(current_target + applied_wind, delta*(velocity_vector.length()))
 		
 	position.x = clamp(position.x, 0, screen_size.x)
 	position.y = clamp(position.y, 0, screen_size.y)

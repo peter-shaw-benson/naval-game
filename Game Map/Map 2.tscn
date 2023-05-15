@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://Game Map/Map 2.gd" type="Script" id=1]
 [ext_resource path="res://Squad/Squadron.tscn" type="PackedScene" id=2]
@@ -8,6 +8,7 @@
 [ext_resource path="res://fonts/neon-pixel-7/neon_pixel-7.ttf" type="DynamicFontData" id=6]
 [ext_resource path="res://fonts/basic_font.tres" type="DynamicFont" id=7]
 [ext_resource path="res://Squad/Airbase/Airbase.tscn" type="PackedScene" id=8]
+[ext_resource path="res://Game Map/Weather/Weather.gd" type="Script" id=9]
 
 [sub_resource type="DynamicFont" id=1]
 size = 36
@@ -88,9 +89,6 @@ margin_left = -473.586
 margin_top = -78.293
 margin_right = 0.414246
 margin_bottom = 0.707031
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="SquadInfo" type="RichTextLabel" parent="SquadSelected"]
 anchor_left = 0.5
@@ -112,6 +110,10 @@ __meta__ = {
 wait_time = 0.5
 
 [node name="GameClock" type="Timer" parent="."]
+
+[node name="Weather" type="Node" parent="."]
+script = ExtResource( 9 )
+
 [connection signal="id_pressed" from="CrashPopup" to="." method="_on_CrashPopup_id_pressed"]
 [connection signal="timeout" from="Ship Popup Timer" to="." method="_on_Ship_Popup_Timer_timeout"]
 [connection signal="timeout" from="GameClock" to="." method="_on_GameClock_timeout"]

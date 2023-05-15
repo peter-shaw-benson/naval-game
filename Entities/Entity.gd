@@ -4,6 +4,7 @@ extends Node
 var speed: int
 var turn_weight: float
 var entity_class: String
+var wind_resistance: float
 # Combat Variables
 var hide_range: int
 var visibility_range: int
@@ -25,9 +26,13 @@ func init(speed, turn_weight, hit_points, armor, hide_range, visibility, crew):
 	self.hide_range = hide_range
 	self.visibility_range = visibility
 	self.crew = crew
+	self.wind_resistance = 0.9
 
 func set_class(entity_class):
 	self.entity_class = entity_class
+	
+func get_wind_resist():
+	return wind_resistance
 
 func get_class():
 	return entity_class
