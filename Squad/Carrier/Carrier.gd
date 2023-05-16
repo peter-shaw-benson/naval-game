@@ -332,7 +332,6 @@ func _on_ShotTimer_timeout():
 
 # PLANE STUFF
 
-
 func send_out_planes(placement, type):
 	print(type)
 	
@@ -377,15 +376,17 @@ func send_out_planes(placement, type):
 		
 		#print("sent planes to ", placement)
 
-
 func _on_Carrier_area_entered(area):
-	#print("carrier hit island")
-	# Entered Hiding Area 
-	hide()
-	self.current_target = self.global_position
-	self.target_array = []
+	print(area.get_name())
 	
-	emit_signal("hit", self)
+	if "Island" in area.get_name():
+		print("carrier hit island")
+		
+		hide()
+		self.current_target = self.global_position
+		self.target_array = []
+		
+		emit_signal("hit", self)
+		
+		get_node("IslandCollision").set_deferred("disabled", true)
 	
-	get_node("IslandCollision").set_deferred("disabled", true)
-

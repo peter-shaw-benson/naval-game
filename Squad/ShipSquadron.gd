@@ -34,7 +34,7 @@ func _ready():
 	self.update_armorbar()
 	
 	# Make sure it doesn't crash until we're done placing
-	get_node("IslandCollision").disabled = false
+	get_node("IslandCollision").disabled = true
 
 func handle_right_click(placement):
 	if selected:
