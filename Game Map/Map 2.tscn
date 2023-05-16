@@ -1,4 +1,5 @@
-[gd_scene load_steps=12 format=2]
+
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://Game Map/Map 2.gd" type="Script" id=1]
 [ext_resource path="res://Squad/Squadron.tscn" type="PackedScene" id=2]
@@ -9,6 +10,9 @@
 [ext_resource path="res://fonts/basic_font.tres" type="DynamicFont" id=7]
 [ext_resource path="res://Squad/Airbase/Airbase.tscn" type="PackedScene" id=8]
 [ext_resource path="res://Game Map/Weather/Weather.gd" type="Script" id=9]
+[ext_resource path="res://art/Untitled.png" type="Texture" id=10]
+[ext_resource path="res://Game Map/WindSpeed.gd" type="Script" id=11]
+[ext_resource path="res://Game Map/WindBox.gd" type="Script" id=12]
 [ext_resource path="res://Squad/Carrier/Carrier.tscn" type="PackedScene" id=10]
 
 [sub_resource type="DynamicFont" id=1]
@@ -25,13 +29,14 @@ carrier_scene = ExtResource( 10 )
 [node name="ColorRect" type="ColorRect" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
+margin_left = 3.0
+margin_top = 2.0
+margin_right = 3.0
+margin_bottom = 2.0
 mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 color = Color( 0.215686, 0.427451, 0.501961, 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="CrashPopup" parent="." instance=ExtResource( 5 )]
 visible = false
@@ -52,9 +57,6 @@ margin_right = -0.292847
 margin_bottom = 53.636
 custom_fonts/normal_font = SubResource( 1 )
 text = "12:20"
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Ship Funeral" type="PopupPanel" parent="."]
 anchor_top = 1.0
@@ -115,6 +117,32 @@ wait_time = 0.5
 
 [node name="Weather" type="Node" parent="."]
 script = ExtResource( 9 )
+
+[node name="WindBox" type="Control" parent="."]
+margin_right = 168.0
+margin_bottom = 184.0
+script = ExtResource( 12 )
+
+[node name="ArrowSprite" type="Sprite" parent="WindBox"]
+position = Vector2( 80, 80 )
+rotation = -1.5708
+scale = Vector2( 4, 4 )
+texture = ExtResource( 10 )
+
+[node name="WindSpeedText" type="RichTextLabel" parent="WindBox"]
+anchor_left = 0.999309
+anchor_top = 0.00117851
+anchor_right = 0.999309
+anchor_bottom = 0.00117851
+margin_left = -131.884
+margin_top = 155.783
+margin_right = -1.88391
+margin_bottom = 195.783
+custom_fonts/normal_font = SubResource( 1 )
+text = "0 kt"
+fit_content_height = true
+script = ExtResource( 11 )
+
 [connection signal="id_pressed" from="CrashPopup" to="." method="_on_CrashPopup_id_pressed"]
 [connection signal="timeout" from="Ship Popup Timer" to="." method="_on_Ship_Popup_Timer_timeout"]
 [connection signal="timeout" from="GameClock" to="." method="_on_GameClock_timeout"]
