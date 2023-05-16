@@ -66,10 +66,6 @@ func _on_Squadron_area_entered(area):
 	
 	get_node("IslandCollision").set_deferred("disabled", true)
 
-#calculates movement vector that will be the target in physics_process
-func get_movement_vector():
-	var current_speed = velocity_vector.length()
-	return global_position + applied_wind + Vector2(current_speed * cos(global_rotation), current_speed * sin(global_rotation)).rotated(3*PI/2)
 	
 func _physics_process(delta):
 	

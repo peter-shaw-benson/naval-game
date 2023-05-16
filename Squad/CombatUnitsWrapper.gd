@@ -160,6 +160,13 @@ func calc_new_velocity():
 func calc_new_wind_vector(wind_cartesian):
 	applied_wind = (1 - wind_resist) * wind_cartesian
 
+#calculates movement vector that will be the target in physics_process
+func get_movement_vector():
+	var current_speed = velocity_vector.length()
+	return global_position + applied_wind + \
+	 Vector2(current_speed * cos(global_rotation), \
+	 current_speed * sin(global_rotation)).rotated(3*PI/2)
+
 func get_units():
 	return self.units
 
