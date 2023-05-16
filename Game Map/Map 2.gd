@@ -185,6 +185,7 @@ func update_weather():
 	get_node("Weather").calc_new_wind_speed()
 	for unit in squad_list:
 		unit.calc_new_wind_vector($Weather.get_wind_velocity_cartesian())
+	$WindBox.update_weather_display($Weather.get_wind_dir_angle(), $Weather.get_wind_speed_kt())
 
 func _on_GameClock_timeout():
 	game_time += 1

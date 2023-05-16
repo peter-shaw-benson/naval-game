@@ -41,9 +41,7 @@ bg_color = Color( 0.12549, 0.12549, 0.12549, 1 )
 [sub_resource type="StyleBoxFlat" id=6]
 bg_color = Color( 0.831373, 0.878431, 0.137255, 1 )
 
-[node name="Squadron" type="Area2D" groups=[
-"squad_group",
-]]
+[node name="Squadron" type="Area2D" groups=["squad_group"]]
 position = Vector2( 134, 76.75 )
 script = ExtResource( 1 )
 detector_scene = ExtResource( 8 )
@@ -99,5 +97,6 @@ __meta__ = {
 
 [node name="ShotTimer" type="Timer" parent="."]
 wait_time = 0.5
+
 [connection signal="area_entered" from="." to="." method="_on_Squadron_area_entered"]
 [connection signal="timeout" from="ShotTimer" to="." method="_on_ShotTimer_timeout"]
