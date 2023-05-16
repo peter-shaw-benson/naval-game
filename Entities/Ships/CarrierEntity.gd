@@ -1,4 +1,4 @@
-class_name Battleship
+class_name CarrierEntity
 extends Ship
 
 var LightGun = preload("res://Weapons/LightGun.gd")
@@ -12,7 +12,7 @@ var CarrierNames = ["HMS Glorious",
 ]
 
 var ship_stats = {
-	"speed": 30,
+	"speed": 15,
 	"turn_weight": 0.06,
 	"hit_points": 20,
 	"armor": 7,
