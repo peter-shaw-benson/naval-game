@@ -356,7 +356,8 @@ func send_out_planes(placement, type):
 	print(len(plane_list))
 	
 	var type_map = {"scout":"scoutPlane",
-					"strike":"fighter",
+					"fighter":"fighter",
+					"strike":"torpBomber",
 					"bomber": "levelBomber"}
 	
 	if len(plane_list) > 0:
