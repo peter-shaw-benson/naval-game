@@ -240,6 +240,8 @@ func update_squad_info(new_info):
 
 func launch_plane_squad(plane_squad):
 	add_child(plane_squad)
+	squad_list.append(plane_squad)
 
 func recover_plane_squad(plane_squad):
+	squad_list.remove(squad_list.find(plane_squad))
 	plane_squad.queue_free()

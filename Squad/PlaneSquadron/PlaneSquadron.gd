@@ -123,7 +123,8 @@ func _process(delta):
 	
 		rotation = global_position.angle_to_point(current_target)-+ PI/2
 	
-	global_position = global_position.move_toward(current_target, delta * base_speed)
+	calc_new_velocity()
+	global_position = global_position.move_toward(get_movement_vector(), delta*(velocity_vector.length()))
 
 func _on_PlaneSquad_area_entered(area):
 	#print("plane hit base")
