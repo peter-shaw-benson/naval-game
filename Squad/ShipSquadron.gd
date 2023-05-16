@@ -12,6 +12,7 @@ var target_array = []
 
 var weapon_dict = {}
 var stopped = false
+var patrolling = false
 var current_shot_count = 0 
 var current_enemy_squadron: CombatUnitsWrapper
 
@@ -33,7 +34,7 @@ func _ready():
 	self.update_armorbar()
 	
 	# Make sure it doesn't crash until we're done placing
-	get_node("IslandCollision").disabled = false
+	get_node("IslandCollision").disabled = true
 
 func handle_right_click(placement):
 	if selected:
@@ -44,7 +45,17 @@ func handle_right_click(placement):
 			
 			emit_signal("new_course_change", current_target, placement)
 			#print(target_array)
+		elif Input.is_action_pressed("patrol"):
+			patrolling = true
+			current_target = placement
+			target_array.append(self.global_position)
+			
+			#print(str(current_target) + str(target_array))
+			
+			emit_signal("new_course_change", current_target, placement)
+			
 		else:
+			patrolling = false
 			target_array = []
 			#var angle = placement.angle_to_point(position) + (PI / 2)
 			stopped = false
@@ -79,6 +90,8 @@ func _physics_process(delta):
 		#remove the target from the queue and update the current target
 		if global_position.distance_to(current_target) < 10 and len(target_array) > 0:
 			emit_signal("reached_target")
+			if patrolling: 
+				target_array.append(current_target)
 			
 			current_target = target_array[0]
 			

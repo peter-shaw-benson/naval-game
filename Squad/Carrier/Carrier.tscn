@@ -1,0 +1,92 @@
+[gd_scene load_steps=15 format=2]
+
+[ext_resource path="res://art/carrier sprites/sprite_0.png" type="Texture" id=1]
+[ext_resource path="res://Squad/Carrier/Carrier.gd" type="Script" id=2]
+[ext_resource path="res://Miscellaneous/Detection Area.tscn" type="PackedScene" id=3]
+[ext_resource path="res://art/carrier sprites/sprite_1.png" type="Texture" id=4]
+[ext_resource path="res://art/carrier sprites/sprite_2.png" type="Texture" id=5]
+[ext_resource path="res://art/carrier sprites/sprite_3.png" type="Texture" id=6]
+[ext_resource path="res://art/carrier sprites/carrier_sprite-6.png" type="Texture" id=7]
+[ext_resource path="res://art/carrier sprites/sprite_4.png" type="Texture" id=8]
+[ext_resource path="res://Squad/PlaneSquadron/PlaneSquadron.tscn" type="PackedScene" id=9]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 9.62756, 29.6435 )
+
+[sub_resource type="SpriteFrames" id=2]
+animations = [ {
+"frames": [ ExtResource( 1 ), ExtResource( 4 ), ExtResource( 5 ) ],
+"loop": true,
+"name": "carrier_basic",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 6 ), ExtResource( 8 ), ExtResource( 7 ) ],
+"loop": true,
+"name": "carrier_clicked",
+"speed": 5.0
+} ]
+
+[sub_resource type="StyleBoxFlat" id=3]
+bg_color = Color( 0.105882, 0.764706, 0.164706, 1 )
+
+[sub_resource type="StyleBoxFlat" id=4]
+bg_color = Color( 0.12549, 0.12549, 0.12549, 1 )
+
+[sub_resource type="StyleBoxFlat" id=5]
+bg_color = Color( 0.831373, 0.878431, 0.137255, 1 )
+
+[node name="Carrier" type="Area2D"]
+position = Vector2( 0.5, 0.125 )
+collision_layer = 2
+collision_mask = 3
+script = ExtResource( 2 )
+detector_scene = ExtResource( 3 )
+PlaneSquadScene = ExtResource( 9 )
+DetectorScene = ExtResource( 3 )
+
+[node name="IslandCollision" type="CollisionShape2D" parent="."]
+position = Vector2( -0.127563, -0.181458 )
+shape = SubResource( 1 )
+
+[node name="Sprite" type="AnimatedSprite" parent="."]
+frames = SubResource( 2 )
+animation = "carrier_basic"
+
+[node name="HealthBar" type="ProgressBar" parent="."]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -31.2877
+margin_top = 33.1768
+margin_right = 30.7123
+margin_bottom = 40.1768
+custom_styles/fg = SubResource( 3 )
+custom_styles/bg = SubResource( 4 )
+value = 2.0
+percent_visible = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ArmorBar" type="ProgressBar" parent="."]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -31.1109
+margin_top = 44.3137
+margin_right = 30.8891
+margin_bottom = 51.3137
+custom_styles/fg = SubResource( 5 )
+custom_styles/bg = SubResource( 4 )
+value = 2.0
+percent_visible = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ShotTimer" type="Timer" parent="."]
+[connection signal="area_entered" from="." to="." method="_on_Carrier_area_entered"]
+[connection signal="input_event" from="." to="." method="_on_AirbaseArea_input_event"]
+[connection signal="timeout" from="ShotTimer" to="." method="_on_ShotTimer_timeout"]

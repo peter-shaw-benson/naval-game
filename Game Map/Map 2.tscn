@@ -1,3 +1,4 @@
+
 [gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://Game Map/Map 2.gd" type="Script" id=1]
@@ -12,6 +13,7 @@
 [ext_resource path="res://art/Untitled.png" type="Texture" id=10]
 [ext_resource path="res://Game Map/WindSpeed.gd" type="Script" id=11]
 [ext_resource path="res://Game Map/WindBox.gd" type="Script" id=12]
+[ext_resource path="res://Squad/Carrier/Carrier.tscn" type="PackedScene" id=10]
 
 [sub_resource type="DynamicFont" id=1]
 size = 36
@@ -22,6 +24,7 @@ script = ExtResource( 1 )
 squadron_scene = ExtResource( 2 )
 island_scene = ExtResource( 4 )
 airbase_scene = ExtResource( 8 )
+carrier_scene = ExtResource( 10 )
 
 [node name="ColorRect" type="ColorRect" parent="."]
 anchor_right = 1.0

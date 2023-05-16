@@ -16,9 +16,7 @@ var airbase_armor = 100
 
 var launching = false
 
-var plane_dict = {"scout": [], "strike": [], "bomber": []}
-
-
+var plane_dict = {"scout": [], "strike": [], "bomber": [], "fighter": []}
 
 func _ready():
 	self.deselect()
@@ -89,8 +87,8 @@ func organize_aircraft(plane_list):
 		else:
 			plane_dict["strike"].append(aircraft)
 	
-	print(plane_dict)
-	print(plane_dict["bomber"])
+	#print(plane_dict)
+	#print(plane_dict["bomber"])
 	
 
 # Press "S" for scouting, press Z for strike
@@ -134,7 +132,8 @@ func send_out_planes(placement, type):
 	print(len(plane_list))
 	
 	var type_map = {"scout":"scoutPlane",
-					"strike":"fighter",
+					"strike":"torpBomber",
+					"fighter": "fighter",
 					"bomber": "levelBomber"}
 	
 	if len(plane_list) > 0:
@@ -163,9 +162,11 @@ func plane_squad_recovered(plane_squad):
 	
 	for p in recovered_planes:
 		if plane_squad.get_sprite_type() == "fighter":
-			plane_dict["strike"].append(p)
+			plane_dict["fighter"].append(p)
 		elif plane_squad.get_sprite_type() == "levelBomber":
 			plane_dict["bomber"].append(p)
+		elif plane_squad.get_sprite_type() == "torpBomber":
+			plane_dict["strike"].append(p)
 		else:
 			plane_dict["scout"].append(p)
 	
