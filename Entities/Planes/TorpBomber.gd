@@ -6,7 +6,7 @@ var MG = preload("res://Weapons/PlaneWeapons/Machinegun.gd")
 var plane_stats = {
 	"speed": 90,
 	"turn_weight": 0.15,
-	"hit_points": 3,
+	"hit_points": 10,
 	"armor": 1,
 	"hide": 20,
 	"visibility": 10,

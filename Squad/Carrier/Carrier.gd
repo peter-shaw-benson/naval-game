@@ -84,6 +84,7 @@ func _ready():
 	
 	get_node("ShotTimer").wait_time = GameState.get_combatPace()
 	self.weapon_dict = construct_weapon_dict()
+	#print(weapon_dict)
 	
 	screen_size = get_viewport_rect().size
 	
@@ -233,6 +234,23 @@ func _physics_process(delta):
 	position.x = clamp(position.x, 0, screen_size.x)
 	position.y = clamp(position.y, 0, screen_size.y)
 
+## COMBAT STUFFS
+
+func get_total_health():
+	var tot_health = 0
+	
+	for u in units:
+		tot_health += u.get_health()
+	
+	return tot_health
+
+func get_total_armor():
+	var tot_armor = 0
+	
+	for u in units:
+		tot_armor += u.get_armor()
+	
+	return tot_armor
 
 func construct_weapon_dict():
 	weapon_dict = {} 
@@ -324,16 +342,19 @@ func shoot_guns(weapon_shooting_list, enemy_squadron):
 func _on_ShotTimer_timeout():
 	#check_t_crossed()
 	current_shot_count += 1
+	#print(weapon_dict)
 	
 	for f in weapon_dict:
 		if current_shot_count % int(f) == 0:
+			#print("carrier shooting guns")
+			#print("carrier weapons length:" + str(len(weapon_dict[f])))
 			shoot_guns(weapon_dict[f], current_enemy_squadron)
 
 
 # PLANE STUFF
 
 func send_out_planes(placement, type):
-	print(type)
+	#print(type)
 	
 	var plane_squad = PlaneSquadScene.instance()
 	

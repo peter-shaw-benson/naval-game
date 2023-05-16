@@ -249,8 +249,9 @@ func on_detection_entered(other_thing):
 	
 	# this is a REALLY BAD way to do it – 
 	# the plane squad name is PlaneSquad, not PlaneSquadron
-	var is_ship_squad = "ron" in other_thing.get_name()
-	var is_plane_squad = "Plane" in other_thing.get_name()
+	var other_name = other_thing.get_name()
+	var is_ship_squad = ("ron" in other_name) or ("Carrier" in other_name)
+	var is_plane_squad = "Plane" in other_name
 	
 	# Not gonna work for plane squadrons
 	#print(other_thing.get_type())
@@ -297,6 +298,7 @@ func update_armorbar():
 	get_node("ArmorBar").value = get_total_armor()
 	
 func shoot_guns(weapon_shooting_list, enemy_squadron):
+	
 	if enemy_squadron and weapon_shooting_list:
 		#print(len(weapon_shooting_list))
 		for w in weapon_shooting_list:

@@ -16,7 +16,7 @@ var airbase_armor = 100
 
 var launching = false
 
-var plane_dict = {"scout": [], "strike": [], "bomber": []}
+var plane_dict = {"scout": [], "strike": [], "bomber": [], "fighter": []}
 
 func _ready():
 	self.deselect()
@@ -162,9 +162,11 @@ func plane_squad_recovered(plane_squad):
 	
 	for p in recovered_planes:
 		if plane_squad.get_sprite_type() == "fighter":
-			plane_dict["strike"].append(p)
+			plane_dict["fighter"].append(p)
 		elif plane_squad.get_sprite_type() == "levelBomber":
 			plane_dict["bomber"].append(p)
+		elif plane_squad.get_sprite_type() == "torpBomber":
+			plane_dict["strike"].append(p)
 		else:
 			plane_dict["scout"].append(p)
 	
