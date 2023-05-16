@@ -47,6 +47,7 @@ func handle_right_click(placement):
 		else:
 			target_array = []
 			#var angle = placement.angle_to_point(position) + (PI / 2)
+			stopped = false
 			current_target = placement
 
 func _input(event):
@@ -65,6 +66,11 @@ func _on_Squadron_area_entered(area):
 	
 	get_node("IslandCollision").set_deferred("disabled", true)
 
+#calculates movement vector that will be the target in physics_process
+func get_movement_vector():
+	var current_speed = velocity_vector.length()
+	return global_position + applied_wind + Vector2(current_speed * cos(global_rotation), current_speed * sin(global_rotation)).rotated(3*PI/2)
+	
 func _physics_process(delta):
 	
 	if placing:
@@ -73,23 +79,26 @@ func _physics_process(delta):
 		current_target = self.global_position
 	
 	else:
-		
-		if global_position.distance_to(current_target) < (turn_speed) and len(target_array) > 0:
-			#print("updating current target")
+		#if distance to target is small and there are queued targets,
+		#remove the target from the queue and update the current target
+		if global_position.distance_to(current_target) < 10 and len(target_array) > 0:
 			emit_signal("reached_target")
 			
 			current_target = target_array[0]
-			#print(current_target)
 			
 			target_array.remove(0)
-			
+		
+		#if we are close to the last target, set stopped to true
+		elif global_position.distance_to(current_target) < 10:
+			emit_signal("reached_target")
+			stopped = true
+
 		if int(global_position.distance_to(current_target)) > 1:
 			self.rotation = lerp_angle(self.rotation, (current_target - self.global_position).normalized().angle() + PI/2, self.turn_weight)
-		
 		#print(position.move_toward(current_target, delta*current_speed))
 		if not stopped:
 			self.calc_new_velocity()
-			global_position = global_position.move_toward(current_target + applied_wind, delta*(velocity_vector.length()))
+			global_position = global_position.move_toward(get_movement_vector(), delta*(velocity_vector.length()))
 		
 	position.x = clamp(position.x, 0, screen_size.x)
 	position.y = clamp(position.y, 0, screen_size.y)

@@ -159,8 +159,7 @@ func calc_new_velocity():
 #calculates the wind vector on wind change
 func calc_new_wind_vector(wind_cartesian):
 	applied_wind = (1 - wind_resist) * wind_cartesian
-	
-	
+
 func get_units():
 	return self.units
 
