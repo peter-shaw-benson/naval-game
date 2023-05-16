@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Untitled.png-31e8243e4ee38e92901b3a1ec68b938f.stex"
+path="res://.import/wind_arrow.png-ee8874e0b77830bd203cb044b10127b8.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/Untitled.png"
-dest_files=[ "res://.import/Untitled.png-31e8243e4ee38e92901b3a1ec68b938f.stex" ]
+source_file="res://art/map_assets/wind_arrow.png"
+dest_files=[ "res://.import/wind_arrow.png-ee8874e0b77830bd203cb044b10127b8.stex" ]
 
 [params]
 

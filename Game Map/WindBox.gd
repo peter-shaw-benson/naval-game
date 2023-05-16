@@ -3,6 +3,7 @@ extends Control
 var angle_target
 var speed_target
 var current_speed
+var arrow_texture = load("res://art/map_assets/wind_arrow.png")
 
 func update_weather_display(angle, speed):
 	#set lerp targets
@@ -20,9 +21,4 @@ func _ready():
 	angle_target = 0
 	current_speed = 0
 	speed_target = 0
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+	$ArrowSprite.set_texture(arrow_texture)
