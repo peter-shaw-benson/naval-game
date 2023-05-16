@@ -18,8 +18,6 @@ var launching = false
 
 var plane_dict = {"scout": [], "strike": [], "bomber": []}
 
-
-
 func _ready():
 	self.deselect()
 	
@@ -89,8 +87,8 @@ func organize_aircraft(plane_list):
 		else:
 			plane_dict["strike"].append(aircraft)
 	
-	print(plane_dict)
-	print(plane_dict["bomber"])
+	#print(plane_dict)
+	#print(plane_dict["bomber"])
 	
 
 # Press "S" for scouting, press Z for strike

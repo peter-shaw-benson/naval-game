@@ -6,6 +6,8 @@ signal plane_squad_lost(plane_squad)
 
 var airbase_origin: Vector2
 var strike_force: bool
+var carrier_origin: Carrier
+var reached_target = false
 
 var max_range = 300
 
@@ -111,15 +113,27 @@ func _process(delta):
 	if global_position.distance_to(current_target) < 10:
 		current_target = airbase_origin
 		rotation = global_position.angle_to_point(current_target) - PI/2
+		reached_target = true
 		
 		get_node("AirbaseCollision").disabled = false
-		
+	
+	# go back to carrier
+	if carrier_origin and reached_target:
+		update_carrier_pos()
+	
+		rotation = global_position.angle_to_point(current_target)-+ PI/2
+	
 	global_position = global_position.move_toward(current_target, delta * base_speed)
 
 func _on_PlaneSquad_area_entered(area):
 	#print("plane hit base")
 	
-	if airbase_origin.distance_to(area.global_position) < 5:
+	if current_target.distance_to(area.global_position) < 5:
 		
 		emit_signal("planes_recovered", self)
 
+func carrier_launch(carrier):
+	carrier_origin = carrier
+
+func update_carrier_pos():
+	current_target = carrier_origin.global_position

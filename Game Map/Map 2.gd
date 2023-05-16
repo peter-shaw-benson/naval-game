@@ -3,6 +3,7 @@ extends Node
 export var squadron_scene: PackedScene
 export var island_scene: PackedScene
 export var airbase_scene: PackedScene
+export var carrier_scene: PackedScene
 
 var squad: Squadron
 var island: Island
@@ -96,6 +97,34 @@ func place_airbase(airbase_data):
 		
 	airbase.start_placing()
 
+func place_carrier(carrier_data):
+	var carrier = carrier_scene.instance()
+	
+	carrier.init([], get_viewport().get_mouse_position(), 
+	carrier_data.faction, carrier_data.type)
+		
+	squad_list.append(carrier)
+		
+	add_child(carrier)
+	
+	carrier.connect("hit", self, "_on_squad_crash")
+	carrier.connect("ship_lost", self, "_on_ship_lost")
+	carrier.connect("squadron_lost", self, "_on_squadron_lost")
+	carrier.connect("stopped_placing", self, "_on_squadron_stopped_placement")
+	
+	carrier.connect("squad_selected", self, "display_selected_squad")
+	carrier.connect("squad_deselected", self, "squad_deselected")
+	carrier.connect("update_squad_info", self, "update_squad_info")
+	
+	# Airbase Signals
+	carrier.connect("plane_launch", self, "launch_plane_squad")
+	carrier.connect("planes_recovered", self, "recover_plane_squad")
+	carrier.connect("stopped_placing", self, "_on_squadron_stopped_placement")
+		
+	#place_squadron(squad)
+	# Find mouse position, set squadron position based on it
+	carrier.start_placing()
+
 func place_next_unit(place_list):
 	#print(place_list)
 	#print(unit_data)
@@ -104,7 +133,9 @@ func place_next_unit(place_list):
 		#print("placing next squad, current place list:", place_list)
 		var squad_index = place_list[0]
 		#print(squadron_data[squad_index])
-		if unit_data[squad_index]["type"] == "airbase":
+		if unit_data[squad_index]["type"] == "carrier":
+			place_carrier(unit_data[squad_index])
+		elif unit_data[squad_index]["type"] == "airbase":
 			place_airbase(unit_data[squad_index])
 		elif unit_data[squad_index]["type"] == "squadron":
 			place_squadron(unit_data[squad_index])

@@ -1,11 +1,19 @@
-extends "res://Squad/CombatUnitsWrapper.gd"
+extends Airbase
+class_name Carrier
 
+var DiveBomber = preload("res://Entities/Planes/DiveBomber.gd")
+var TorpBomber = preload("res://Entities/Planes/TorpBomber.gd")
 
+var CarrierEntity = preload("res://Entities/Ships/CarrierEntity.gd")
+
+# Ship Signals
 signal new_course_change(current_target, placement)
 signal reached_target()
 signal squadron_lost(this_squad, enemy_squadron)
 signal ship_lost(ship)
 signal hit(squad)
+
+var carrier_default_planes = [DiveBomber.new(), TorpBomber.new()]
 
 var t_crossed = false
 var target_array = []
@@ -16,14 +24,66 @@ var patrolling = false
 var current_shot_count = 0 
 var current_enemy_squadron: CombatUnitsWrapper
 
+var plane_list
+
+
+func init(unit_array, initial_position, faction, type):
+	plane_list = carrier_default_planes
+	units = [CarrierEntity.new()]
+	
+	type = type
+	
+	organize_aircraft(plane_list)
+	
+	#print(ships[0].speed)
+	self.faction = faction
+	#print("faction ", self.faction)
+	
+	# for some reason, we need to use deselect() 
+	# just don't change it 
+	self.deselect()
+	
+	base_speed = get_min_speed()
+	turn_weight = get_min_turn_weight()
+	visibility = get_visibility()
+	hiding = get_hiding()
+	self.wind_resist = get_squad_wind_resist()
+	
+	# Set up Visibility Collider and Hiding Collider
+	var visibility_scale = visibility * 5
+	#var hiding_scale = hiding * 10
+	
+	detector = detector_scene.instance()
+	detector.init(visibility_scale)
+	
+	add_child(detector)
+	
+	detector.connect("entered_spotting_area", self, "on_detection_entered")
+	detector.connect("left_spotting_area", self, "on_detection_left")
+	
+	self.initial_pos = initial_position
+	self.current_speed = get_min_speed()
+	self.velocity_vector = Vector2(0, 0)
+	
+	self.position = self.initial_pos
+	
+	# stopped, half, full ahead, flank
+	var speed_array = [0, speed / 2, speed, int(speed * 1.2)]
+	
+	self.rotation = self.initial_rot
+	turn_speed = int(self.base_speed / 2)
+	
+	self.applied_wind = Vector2(0, 0)
+	# Set max of health bar and Armor Bar
+	
+	#print("squad created")
+
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	
-	# Combat Variables:
 	get_node("ShotTimer").wait_time = GameState.get_combatPace()
 	self.weapon_dict = construct_weapon_dict()
-	
-	self.scale = Vector2(0.6, 0.6)
 	
 	screen_size = get_viewport_rect().size
 	
@@ -35,6 +95,56 @@ func _ready():
 	
 	# Make sure it doesn't crash until we're done placing
 	get_node("IslandCollision").disabled = false
+
+func get_min_speed():
+	
+	if len(units) == 0:
+		return 0
+	else:
+		var min_speed = units[0].get_speed()
+		
+		for unit in units:
+			if unit.get_speed() < min_speed:
+				min_speed = unit.get_speed()
+		
+		return min_speed
+
+func get_min_turn_weight():
+	
+	if len(units) == 0:
+		return 0
+	else:
+		var min_turn_weight = units[0].get_turn_weight()
+		
+		for unit in units:
+			if unit.get_turn_weight() < min_turn_weight:
+				min_turn_weight = unit.get_turn_weight()
+		
+		return min_turn_weight
+
+func get_visibility():
+	if len(units) == 0:
+		return 0
+	else:
+		var vis = units[0].get_visibility()
+		
+		for unit in units:
+			if unit.get_visibility() > vis:
+				vis = unit.get_visibility()
+		
+		return vis
+
+func get_hiding():
+	if len(units) == 0:
+		return 0
+	else:
+		var hide = units[0].get_hiding()
+		
+		for unit in units:
+			if unit.get_hiding() > hide:
+				hide = unit.get_hiding()
+		
+		return hide
 
 func handle_right_click(placement):
 	if selected:
@@ -54,27 +164,43 @@ func handle_right_click(placement):
 			
 			emit_signal("new_course_change", current_target, placement)
 			
+		elif Input.is_action_pressed("scout") and len(plane_dict["scout"]) > 0:
+			# Send planes
+			send_out_planes(placement, "scout")
+			
+		elif Input.is_action_pressed("strike") and len(plane_dict["strike"]) > 0:
+			send_out_planes(placement, "strike")
+		
+		elif Input.is_action_pressed("bomb") and len(plane_dict["bomber"]) > 0:
+			send_out_planes(placement, "bomber")
+		
 		else:
 			patrolling = false
 			target_array = []
 			#var angle = placement.angle_to_point(position) + (PI / 2)
 			current_target = placement
 
+
+func select():
+	if faction == GameState.get_playerFaction():
+		selected = true
+		$Sprite.animation = sprite_type + "_clicked"
+		$Sprite.set_frame(faction)
+		
+		emit_signal("squad_selected", self)
+		
+func deselect():
+	selected = false
+	$Sprite.animation = sprite_type + "_basic"
+	$Sprite.set_frame(faction)
+	
+	emit_signal("squad_deselected", self)
+
 func _input(event):
 	if selected:
 		if Input.is_action_pressed("stop"):
 			self.current_target = self.global_position
 			self.target_array = []
-
-func _on_Squadron_area_entered(area):
-	# Entered Hiding Area 
-	hide()
-	self.current_target = self.global_position
-	self.target_array = []
-	
-	emit_signal("hit", self)
-	
-	get_node("IslandCollision").set_deferred("disabled", true)
 
 func _physics_process(delta):
 	
@@ -202,3 +328,64 @@ func _on_ShotTimer_timeout():
 	for f in weapon_dict:
 		if current_shot_count % int(f) == 0:
 			shoot_guns(weapon_dict[f], current_enemy_squadron)
+
+
+# PLANE STUFF
+
+
+func send_out_planes(placement, type):
+	print(type)
+	
+	var plane_squad = PlaneSquadScene.instance()
+	
+	var plane_list = [] 
+	# make plane list a copy, not a reference
+	for i in range(len(plane_dict[type])):
+		plane_list.append(plane_dict[type][i])
+	
+	var initial_pos = global_position
+	var target = placement
+	var is_strike = false
+	
+	# Init plane scene
+	# initial posiiton is airbase position
+	# plane composition is the scout planes
+	# faction
+	if type != "scout":
+		is_strike = true
+	
+	print(len(plane_list))
+	
+	var type_map = {"scout":"scoutPlane",
+					"strike":"fighter",
+					"bomber": "levelBomber"}
+	
+	if len(plane_list) > 0:
+		#print(len(plane_list))
+		plane_squad.init(plane_list, initial_pos, faction, "planesquadron")
+		plane_squad.set_animation(is_strike, type_map[type])
+		plane_squad.set_target(target)
+		plane_squad.carrier_launch(self)
+		
+		emit_signal("plane_launch", plane_squad)
+		
+		plane_squad.connect("planes_recovered", self, "plane_squad_recovered")
+		plane_squad.connect("plane_squad_lost", self, "plane_squad_death")
+		
+		for i in range(len(plane_dict[type])):
+			plane_dict[type].remove(0)
+		
+		#print("sent planes to ", placement)
+
+
+func _on_Carrier_area_entered(area):
+	#print("carrier hit island")
+	# Entered Hiding Area 
+	hide()
+	self.current_target = self.global_position
+	self.target_array = []
+	
+	emit_signal("hit", self)
+	
+	get_node("IslandCollision").set_deferred("disabled", true)
+

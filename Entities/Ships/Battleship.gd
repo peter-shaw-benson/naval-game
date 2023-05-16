@@ -1,4 +1,4 @@
-class_name Battleship
+class_name CarrierEntity
 extends Ship
 
 var LightGun = preload("res://Weapons/LightGun.gd")

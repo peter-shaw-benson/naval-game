@@ -5,6 +5,8 @@ var DiveBomber = preload("res://Entities/Planes/DiveBomber.gd")
 var TorpBomber = preload("res://Entities/Planes/TorpBomber.gd")
 var LevelBomber = preload("res://Entities/Planes/LevelBomber.gd")
 
+var player_carriers = 0
+
 var player_airbases = 0
 var player_scouts = 1
 var player_strikes = 0
@@ -24,6 +26,12 @@ var airbase_data = {"player_airbases": 0, \
 var strike_multiplier = GameState.get_strike_multiplier()
 
 func _on_MakeFleets_pressed():
+	
+	if player_carriers > 0:
+		var player_carrier = {"faction": GameState.get_playerFaction(),
+							"type": "carrier"}
+		
+		GameState.add_unit(player_carrier)
 	
 	airbase_data["player_airbases"] = player_airbases
 	airbase_data["enemy_airbases"] = enemy_airbases
@@ -117,3 +125,6 @@ func _on_EBomb_value_changed(value):
 
 func _on_E_Faction_value_changed(value):
 	enemy_faction = value
+
+func _on_PCarriers_value_changed(value):
+	player_carriers = value
