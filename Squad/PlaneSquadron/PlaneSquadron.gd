@@ -147,8 +147,14 @@ func _process(delta):
 			patrolling = true
 	
 	if patrolling:
+		var patrol_center
+		
+		if carrier_origin:
+			patrol_center = carrier_origin.global_position
+		else:
+			patrol_center = airbase_origin
 			# get angle to airbase origin, normalize
-		var angle_to_airbase = global_position.angle_to_point(airbase_origin) + ((PI / 2) /  cap_resolution)
+		var angle_to_airbase = global_position.angle_to_point(patrol_center) + ((PI / 2) /  cap_resolution)
 		var angle_vector = Vector2(
 			cos(angle_to_airbase),
 			sin(angle_to_airbase)
@@ -156,8 +162,7 @@ func _process(delta):
 			# multiply by max range
 		current_target = angle_vector * max_range
 			
-		rotation = global_position.angle_to_point(airbase_origin)
-			
+		rotation = global_position.angle_to_point(patrol_center)
 		#print("CAP timer time left:" + str(get_node("CAPTimer").time_left))
 	
 	get_node("HealthBar").value = lerp(get_node("HealthBar").value, get_total_health(), get_process_delta_time())

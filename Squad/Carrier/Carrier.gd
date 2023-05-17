@@ -3,6 +3,7 @@ class_name Carrier
 
 var DiveBomber = preload("res://Entities/Planes/DiveBomber.gd")
 var TorpBomber = preload("res://Entities/Planes/TorpBomber.gd")
+var Fighter = preload("res://Entities/Planes/Fighter.gd")
 
 var CarrierEntity = preload("res://Entities/Ships/CarrierEntity.gd")
 
@@ -13,7 +14,7 @@ signal squadron_lost(this_squad, enemy_squadron)
 signal ship_lost(ship)
 signal hit(squad)
 
-var carrier_default_planes = [DiveBomber.new(), TorpBomber.new()]
+var carrier_default_planes = [DiveBomber.new(), TorpBomber.new(), Fighter.new()]
 
 var t_crossed = false
 var target_array = []
@@ -180,6 +181,11 @@ func handle_right_click(placement):
 			send_out_planes(placement, "bomber")
 			
 			last_button = ""
+			
+		elif last_button == "CAP" and len(plane_dict["fighter"]) > 0:
+			send_out_planes(placement, "fighter", true)
+			
+			last_button = ""
 		
 		else:
 			patrolling = false
@@ -237,6 +243,8 @@ func _input(event):
 			last_button = "strike"
 		elif Input.is_action_pressed("bomb"):
 			last_button = "bomb"
+		elif Input.is_action_pressed("fighter"):
+			last_button = "CAP"
 		elif Input.is_action_pressed("cancel"):
 			last_button = ""
 			
@@ -430,6 +438,7 @@ func send_out_planes(placement, type, is_cap=false):
 		plane_squad.init(plane_list, initial_pos, faction, "planesquadron")
 		plane_squad.set_animation(is_strike, type_map[type])
 		plane_squad.set_target(target)
+		plane_squad.set_combat_air_patrol(is_cap)
 		plane_squad.carrier_launch(self)
 		
 		emit_signal("plane_launch", plane_squad)
