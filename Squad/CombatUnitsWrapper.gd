@@ -59,6 +59,18 @@ func get_hiding():
 		
 		return hide
 
+func get_max_range():
+	if len(units) == 0:
+		return 0
+	else:
+		var max_r = units[0].get_range()
+		
+		for unit in units:
+			if unit.get_range() < max_r:
+				max_r = unit.get_range()
+		
+		return max_r
+
 #wind resist is average of all unit wind resists
 func get_squad_wind_resist():
 	if len(units) == 0:
@@ -73,6 +85,7 @@ func get_squad_wind_resist():
 
 var units: Array
 var speed: int
+var max_range: int
 var base_speed: int
 var turn_speed: int
 var turn_weight: float
@@ -122,6 +135,7 @@ func init(unit_array, initial_position, faction, type):
 	turn_weight = get_min_turn_weight()
 	visibility = get_visibility()
 	hiding = get_hiding()
+	max_range = get_max_range()
 	self.wind_resist = get_squad_wind_resist()
 	
 	
@@ -177,6 +191,8 @@ func select():
 		$Sprite.set_frame(faction)
 		
 		emit_signal("squad_selected", self)
+		
+		last_button = ""
 		
 func deselect():
 	selected = false

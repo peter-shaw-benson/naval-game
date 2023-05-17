@@ -8,8 +8,7 @@ var airbase_origin: Vector2
 var strike_force: bool
 var carrier_origin: Carrier
 var reached_target = false
-
-var max_range = 300
+var combat_air_patrol = false
 
 var weapon_list = []
 var plane_list = []
@@ -113,7 +112,8 @@ func take_damage(weapon: Weapon, distance):
 	emit_signal("update_squad_info", get_squad_info())
 
 func _process(delta):
-	if global_position.distance_to(current_target) < 10:
+	if global_position.distance_to(current_target) < 10\
+	or global_position.distance_to(airbase_origin) > max_range:
 		current_target = airbase_origin
 		rotation = global_position.angle_to_point(current_target) - PI/2
 		reached_target = true

@@ -74,6 +74,9 @@ func get_armor():
 func get_weapons():
 	return self.weapons_list
 
+func get_range():
+	return self.max_range
+
 # Combat function
 func damage(weapon: Weapon, t_crossed, distance):
 	var accuracy_roll = roller.randf()
