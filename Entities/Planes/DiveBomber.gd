@@ -5,6 +5,7 @@ var MG = preload("res://Weapons/PlaneWeapons/Machinegun.gd")
 
 var plane_stats = {
 	"speed": 100,
+	"range": 200,
 	"turn_weight": 0.15,
 	"hit_points": 8,
 	"armor": 0,
@@ -17,7 +18,7 @@ var plane_stats = {
 
 func _init():
 	
-	self.init(plane_stats["speed"], plane_stats["turn_weight"], \
+	self.init(plane_stats["speed"], plane_stats["range"], plane_stats["turn_weight"], \
 	plane_stats["hit_points"], plane_stats["armor"], \
 	plane_stats["hide"], plane_stats["visibility"], \
 	plane_stats["crew"])

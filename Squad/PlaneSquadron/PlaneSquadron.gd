@@ -8,8 +8,7 @@ var airbase_origin: Vector2
 var strike_force: bool
 var carrier_origin: Carrier
 var reached_target = false
-
-var max_range = 300
+var combat_air_patrol = false
 
 var weapon_list = []
 var plane_list = []
@@ -23,6 +22,12 @@ func _ready():
 		plane_list.append(u)
 	
 	update_weapon_list()
+	
+	enable_spotting()
+	
+	get_node("HealthBar").set_max(get_total_health())
+	update_healthbar()
+	#get_node("ArmorBar").set_max(get_total_armor())
 	
 func set_animation(strike, type):
 	strike_force = strike
@@ -71,9 +76,6 @@ func deselect():
 func update_armorbar():
 	pass
 	
-func update_healthbar():
-	pass
-
 func get_strike():
 	return strike_force
 
@@ -110,12 +112,17 @@ func take_damage(weapon: Weapon, distance):
 	emit_signal("update_squad_info", get_squad_info())
 
 func _process(delta):
-	if global_position.distance_to(current_target) < 10:
+	if global_position.distance_to(current_target) < 10\
+	or global_position.distance_to(airbase_origin) > max_range:
 		current_target = airbase_origin
 		rotation = global_position.angle_to_point(current_target) - PI/2
 		reached_target = true
 		
 		get_node("AirbaseCollision").disabled = false
+	
+	get_node("HealthBar").value = lerp(get_node("HealthBar").value, get_total_health(), get_process_delta_time())
+	#get_node("ArmorBar").value = lerp(get_node("ArmorBar").value, get_total_health(), get_process_delta_time())
+
 	
 	# go back to carrier
 	if carrier_origin and reached_target:

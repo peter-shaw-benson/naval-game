@@ -33,6 +33,8 @@ func _ready():
 	self.update_healthbar()
 	self.update_armorbar()
 	
+	last_button = ""
+	
 	# Make sure it doesn't crash until we're done placing
 	get_node("IslandCollision").disabled = true
 
@@ -45,14 +47,14 @@ func handle_right_click(placement):
 			
 			emit_signal("new_course_change", current_target, placement)
 			#print(target_array)
-		elif Input.is_action_pressed("patrol"):
+		elif last_button == "patrol":
 			patrolling = true
 			current_target = placement
 			target_array.append(self.global_position)
 			
-			#print(str(current_target) + str(target_array))
-			
 			emit_signal("new_course_change", current_target, placement)
+			
+			last_button = ""
 			
 		else:
 			patrolling = false
@@ -66,16 +68,23 @@ func _input(event):
 		if Input.is_action_pressed("stop"):
 			self.current_target = self.global_position
 			self.target_array = []
+		
+		elif Input.is_action_pressed("patrol"):
+			last_button = "patrol"
+		
+		elif Input.is_action_pressed("cancel"):
+			last_button = ""
 
 func _on_Squadron_area_entered(area):
-	# Entered Hiding Area 
-	hide()
-	self.current_target = self.global_position
-	self.target_array = []
-	
-	emit_signal("hit", self)
-	
-	get_node("IslandCollision").set_deferred("disabled", true)
+	if area.get_faction() == 4:
+		# Entered Hiding Area 
+		hide()
+		self.current_target = self.global_position
+		self.target_array = []
+		
+		emit_signal("hit", self)
+		
+		get_node("IslandCollision").set_deferred("disabled", true)
 
 	
 func _physics_process(delta):
@@ -112,6 +121,10 @@ func _physics_process(delta):
 	position.x = clamp(position.x, 0, screen_size.x)
 	position.y = clamp(position.y, 0, screen_size.y)
 
+func _process(delta):
+	
+	get_node("HealthBar").value = lerp(get_node("HealthBar").value, get_total_health(), get_process_delta_time())
+	get_node("ArmorBar").value = lerp(get_node("ArmorBar").value, get_total_health(), get_process_delta_time())
 
 func construct_weapon_dict():
 	weapon_dict = {} 
@@ -197,8 +210,8 @@ func shoot_guns(weapon_shooting_list, enemy_squadron):
 	if enemy_squadron:
 		for w in weapon_shooting_list:
 			enemy_squadron.take_damage(w, global_position.distance_to(enemy_squadron.global_position))
-			enemy_squadron.update_armorbar()
-			enemy_squadron.update_healthbar()
+			#enemy_squadron.update_armorbar()
+			#enemy_squadron.update_healthbar()
 
 func _on_ShotTimer_timeout():
 	#check_t_crossed()

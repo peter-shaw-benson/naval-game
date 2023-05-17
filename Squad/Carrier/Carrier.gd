@@ -95,7 +95,7 @@ func _ready():
 	self.update_armorbar()
 	
 	# Make sure it doesn't crash until we're done placing
-	get_node("IslandCollision").disabled = false
+	get_node("IslandCollision").disabled = true
 
 func get_min_speed():
 	
@@ -156,24 +156,30 @@ func handle_right_click(placement):
 			
 			emit_signal("new_course_change", current_target, placement)
 			#print(target_array)
-		elif Input.is_action_pressed("patrol"):
+		elif last_button == "patrol":
 			patrolling = true
 			current_target = placement
 			target_array.append(self.global_position)
 			
-			#print(str(current_target) + str(target_array))
-			
 			emit_signal("new_course_change", current_target, placement)
 			
-		elif Input.is_action_pressed("scout") and len(plane_dict["scout"]) > 0:
+			last_button = ""
+			
+		elif last_button == "scout" and len(plane_dict["scout"]) > 0:
 			# Send planes
 			send_out_planes(placement, "scout")
 			
-		elif Input.is_action_pressed("strike") and len(plane_dict["strike"]) > 0:
+			last_button = ""
+			
+		elif last_button == "strike" and len(plane_dict["strike"]) > 0:
 			send_out_planes(placement, "strike")
+			
+			last_button = ""
 		
-		elif Input.is_action_pressed("bomb") and len(plane_dict["bomber"]) > 0:
+		elif last_button == "bomb" and len(plane_dict["bomber"]) > 0:
 			send_out_planes(placement, "bomber")
+			
+			last_button = ""
 		
 		else:
 			patrolling = false
@@ -181,6 +187,25 @@ func handle_right_click(placement):
 			#var angle = placement.angle_to_point(position) + (PI / 2)
 			current_target = placement
 
+func start_placing():
+	#print("started placing: " + self.get_name())
+	placing = true
+	
+	global_position = get_viewport().get_mouse_position()
+	
+	get_node("IslandCollision").disabled = true
+
+func stop_placing():
+	#print("stopped placing: " + self.get_name())
+	placing = false
+
+	emit_signal("stopped_placing")
+	
+	get_node("IslandCollision").disabled = false
+	#print(get_node("IslandCollision").disabled)
+	detector.enable_spotting()
+	
+	current_target = self.global_position
 
 func select():
 	if faction == GameState.get_playerFaction():
@@ -202,6 +227,17 @@ func _input(event):
 		if Input.is_action_pressed("stop"):
 			self.current_target = self.global_position
 			self.target_array = []
+		elif Input.is_action_pressed("patrol"):
+			last_button = "patrol"
+		elif Input.is_action_pressed("scout"):
+			last_button = "scout"
+		elif Input.is_action_pressed("strike"):
+			last_button = "strike"
+		elif Input.is_action_pressed("bomb"):
+			last_button = "bomb"
+		elif Input.is_action_pressed("cancel"):
+			last_button = ""
+			
 
 func _physics_process(delta):
 	
@@ -233,6 +269,12 @@ func _physics_process(delta):
 		
 	position.x = clamp(position.x, 0, screen_size.x)
 	position.y = clamp(position.y, 0, screen_size.y)
+
+func _process(delta):
+	
+	get_node("HealthBar").value = lerp(get_node("HealthBar").value, get_total_health(), get_process_delta_time())
+	get_node("ArmorBar").value = lerp(get_node("ArmorBar").value, get_total_health(), get_process_delta_time())
+
 
 ## COMBAT STUFFS
 

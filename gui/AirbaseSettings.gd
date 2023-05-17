@@ -33,11 +33,6 @@ func _on_MakeFleets_pressed():
 		
 		GameState.add_unit(player_carrier)
 	
-	airbase_data["player_airbases"] = player_airbases
-	airbase_data["enemy_airbases"] = enemy_airbases
-	airbase_data["player_plane_list"] = make_player_plane_list()
-	airbase_data["enemy_plane_list"] = make_enemy_plane_list()
-	
 	print(make_player_plane_list())
 	
 	if player_airbases == 1:
@@ -53,7 +48,9 @@ func _on_MakeFleets_pressed():
 							"planes": make_enemy_plane_list(),
 							"faction": enemy_faction,
 							"type": "airbase"}
-	
+							
+		#print("enemy airbase faction:" + str(enemy_faction))
+		
 		GameState.add_unit(enemy_airbase)
 	
 	GameState.goto_scene("res://gui/AdvancedFleetMaker.tscn")

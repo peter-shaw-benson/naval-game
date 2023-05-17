@@ -11,18 +11,18 @@
 [ext_resource path="res://Squad/PlaneSquadron/PlaneSquadron.tscn" type="PackedScene" id=9]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 9.62756, 29.6435 )
+extents = Vector2( 14.1449, 29.6435 )
 
 [sub_resource type="SpriteFrames" id=2]
 animations = [ {
-"frames": [ ExtResource( 1 ), ExtResource( 4 ), ExtResource( 5 ) ],
-"loop": true,
-"name": "carrier_basic",
-"speed": 5.0
-}, {
 "frames": [ ExtResource( 6 ), ExtResource( 8 ), ExtResource( 7 ) ],
 "loop": true,
 "name": "carrier_clicked",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 1 ), ExtResource( 4 ), ExtResource( 5 ) ],
+"loop": true,
+"name": "carrier_basic",
 "speed": 5.0
 } ]
 
@@ -42,13 +42,13 @@ collision_mask = 3
 script = ExtResource( 2 )
 detector_scene = ExtResource( 3 )
 PlaneSquadScene = ExtResource( 9 )
-DetectorScene = ExtResource( 3 )
 
 [node name="IslandCollision" type="CollisionShape2D" parent="."]
 position = Vector2( -0.127563, -0.181458 )
 shape = SubResource( 1 )
 
 [node name="Sprite" type="AnimatedSprite" parent="."]
+position = Vector2( 0.176773, 0 )
 frames = SubResource( 2 )
 animation = "carrier_basic"
 
