@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://Game Map/Map 2.gd" type="Script" id=1]
 [ext_resource path="res://Squad/Squadron.tscn" type="PackedScene" id=2]
@@ -12,6 +12,7 @@
 [ext_resource path="res://art/map_assets/wind_arrow.png" type="Texture" id=10]
 [ext_resource path="res://Game Map/WindSpeed.gd" type="Script" id=11]
 [ext_resource path="res://Game Map/WindBox.gd" type="Script" id=12]
+[ext_resource path="res://Squad/Carrier/Carrier.tscn" type="PackedScene" id=13]
 
 [sub_resource type="DynamicFont" id=1]
 size = 36
@@ -22,6 +23,7 @@ script = ExtResource( 1 )
 squadron_scene = ExtResource( 2 )
 island_scene = ExtResource( 4 )
 airbase_scene = ExtResource( 8 )
+carrier_scene = ExtResource( 13 )
 
 [node name="ColorRect" type="ColorRect" parent="."]
 anchor_right = 1.0
@@ -139,7 +141,6 @@ custom_fonts/normal_font = SubResource( 1 )
 text = "0 kt"
 fit_content_height = true
 script = ExtResource( 11 )
-
 [connection signal="id_pressed" from="CrashPopup" to="." method="_on_CrashPopup_id_pressed"]
 [connection signal="timeout" from="Ship Popup Timer" to="." method="_on_Ship_Popup_Timer_timeout"]
 [connection signal="timeout" from="GameClock" to="." method="_on_GameClock_timeout"]

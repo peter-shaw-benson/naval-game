@@ -215,6 +215,8 @@ func select():
 		
 		emit_signal("squad_selected", self)
 		
+		last_button = ""
+		
 func deselect():
 	selected = false
 	$Sprite.animation = sprite_type + "_basic"
