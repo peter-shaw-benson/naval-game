@@ -105,6 +105,9 @@ var type
 # var a = 2
 # var b = "text"
 
+# GUI variables
+var last_button = ""
+
 func init(unit_array, initial_position, faction, type):
 	units = unit_array
 	#print(ships[0].speed)
@@ -216,6 +219,7 @@ func _unhandled_input(event):
 			self.stop_placing()
 
 func start_placing():
+	#print("started placing: " + self.get_name())
 	placing = true
 	
 	global_position = get_viewport().get_mouse_position()
@@ -223,11 +227,13 @@ func start_placing():
 	get_node("IslandCollision").disabled = true
 	
 func stop_placing():
+	#print("stopped placing: " + self.get_name())
 	placing = false
 
 	emit_signal("stopped_placing")
 	
 	get_node("IslandCollision").disabled = false
+	#print(get_node("IslandCollision").disabled)
 	detector.enable_spotting()
 	
 	current_target = self.global_position
@@ -245,6 +251,7 @@ func set_enemy_squadron(potential_squad):
 func on_detection_entered(other_thing):
 	#print("found other thing:")
 	#print(other_thing.get_name())
+	#print(self.get_name())
 	#print("Squadron" in other_thing.get_name())
 	
 	# this is a REALLY BAD way to do it – 
@@ -303,8 +310,8 @@ func shoot_guns(weapon_shooting_list, enemy_squadron):
 		#print(len(weapon_shooting_list))
 		for w in weapon_shooting_list:
 			enemy_squadron.take_damage(w, global_position.distance_to(enemy_squadron.global_position))
-			enemy_squadron.update_armorbar()
-			enemy_squadron.update_healthbar()
+			#enemy_squadron.update_armorbar()
+			#enemy_squadron.update_healthbar()
 
 func take_plane_damage(plane_squad):
 	if plane_squad.get_faction() != self.get_faction():

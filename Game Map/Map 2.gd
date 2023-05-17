@@ -59,6 +59,10 @@ func hide_enemies():
 		if s.faction != playerFaction:
 			s.hide()
 	
+	for a in airbase_list:
+		if a.faction != playerFaction:
+			a.hide()
+	
 func place_squadron(squad_data):
 	var squad = squadron_scene.instance()
 		
@@ -123,6 +127,7 @@ func place_carrier(carrier_data):
 		
 	#place_squadron(squad)
 	# Find mouse position, set squadron position based on it
+	#print("about to start placing carrier")
 	carrier.start_placing()
 
 func place_next_unit(place_list):
@@ -134,6 +139,7 @@ func place_next_unit(place_list):
 		var squad_index = place_list[0]
 		#print(squadron_data[squad_index])
 		if unit_data[squad_index]["type"] == "carrier":
+			#print("next on place list is a carrier")
 			place_carrier(unit_data[squad_index])
 		elif unit_data[squad_index]["type"] == "airbase":
 			place_airbase(unit_data[squad_index])
@@ -185,6 +191,8 @@ func _on_ship_lost(ship: Ship):
 	get_node("Ship Popup Timer").start()
 
 func _on_squadron_lost(s, enemy_squad):
+	get_node("SquadSelected").hide()
+	
 	squad_list.remove(squad_list.find(s, 0))
 	
 	s.queue_free()

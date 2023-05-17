@@ -2,6 +2,7 @@ extends Node
 
 # Navigation Variables
 var speed: int
+var max_range: int
 var turn_weight: float
 var entity_class: String
 var wind_resistance: float
@@ -17,8 +18,9 @@ var aircraft_list = []
 
 var roller = RandomNumberGenerator.new()
 
-func init(speed, turn_weight, hit_points, armor, hide_range, visibility, crew):
+func init(speed, max_range, turn_weight, hit_points, armor, hide_range, visibility, crew):
 	self.speed = speed
+	self.max_range = max_range
 	self.turn_weight = turn_weight
 	
 	self.hit_points = hit_points

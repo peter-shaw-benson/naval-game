@@ -24,6 +24,12 @@ func _ready():
 	
 	update_weapon_list()
 	
+	enable_spotting()
+	
+	get_node("HealthBar").set_max(get_total_health())
+	update_healthbar()
+	#get_node("ArmorBar").set_max(get_total_armor())
+	
 func set_animation(strike, type):
 	strike_force = strike
 	sprite_type = type
@@ -71,9 +77,6 @@ func deselect():
 func update_armorbar():
 	pass
 	
-func update_healthbar():
-	pass
-
 func get_strike():
 	return strike_force
 
@@ -116,6 +119,10 @@ func _process(delta):
 		reached_target = true
 		
 		get_node("AirbaseCollision").disabled = false
+	
+	get_node("HealthBar").value = lerp(get_node("HealthBar").value, get_total_health(), get_process_delta_time())
+	#get_node("ArmorBar").value = lerp(get_node("ArmorBar").value, get_total_health(), get_process_delta_time())
+
 	
 	# go back to carrier
 	if carrier_origin and reached_target:

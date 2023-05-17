@@ -2,7 +2,6 @@ extends "res://Squad/CombatUnitsWrapper.gd"
 class_name Airbase
 
 export var PlaneSquadScene: PackedScene
-export var DetectorScene: PackedScene
 
 const ScoutPlane = preload("res://Entities/Planes/ScoutPlane.gd")
 
@@ -22,6 +21,8 @@ func _ready():
 	self.deselect()
 	
 	self.scale = Vector2(0.6, 0.6)
+	
+	last_button = ""
 
 func _process(delta):
 	if placing:
@@ -36,12 +37,28 @@ func init(plane_list, initial_pos, faction, type):
 	type = type
 	
 	organize_aircraft(plane_list)
-	faction = faction
+	self.faction = faction
+	
+	print("airbase faction:")
+	print(self.faction)
+	
+	visibility = get_visibility()
+	
+	var visibility_scale = visibility * 5
+	#var hiding_scale = hiding * 10
+	
+	detector = detector_scene.instance()
+	detector.init(visibility_scale)
+	
+	add_child(detector)
+	
+	detector.connect("entered_spotting_area", self, "on_detection_entered")
+	detector.connect("left_spotting_area", self, "on_detection_left")
 	
 	self.deselect()
 
 func get_visibility():
-	return 1
+	return 10
 func get_min_speed():
 	return 0
 func get_total_health():
@@ -60,6 +77,9 @@ func stop_placing():
 	emit_signal("stopped_placing")
 	
 	current_target = self.global_position
+	
+	enable_spotting()
+
 
 func select():
 	if faction == GameState.get_playerFaction():
@@ -89,7 +109,7 @@ func organize_aircraft(plane_list):
 	
 	#print(plane_dict)
 	#print(plane_dict["bomber"])
-	
+
 
 # Press "S" for scouting, press Z for strike
 # for now, scouting force is 2 scout planes 
@@ -98,15 +118,42 @@ func handle_right_click(placement):
 	if selected:
 		#print("right clicked for course")
 		# Turn logic is here for now?
-		if Input.is_action_pressed("scout") and len(plane_dict["scout"]) > 0:
+		if last_button == "scout" and len(plane_dict["scout"]) > 0:
 			# Send planes
 			send_out_planes(placement, "scout")
 			
-		elif Input.is_action_pressed("strike") and len(plane_dict["strike"]) > 0:
+			last_button = ""
+			
+		elif last_button == "strike" and len(plane_dict["strike"]) > 0:
 			send_out_planes(placement, "strike")
+			
+			last_button = ""
 		
-		elif Input.is_action_pressed("bomb") and len(plane_dict["bomber"]) > 0:
+		elif last_button == "bomb" and len(plane_dict["bomber"]) > 0:
 			send_out_planes(placement, "bomber")
+			
+			last_button = ""
+
+func _input(event):
+	if selected:
+		if Input.is_action_pressed("scout"):
+			last_button = "scout"
+		elif Input.is_action_pressed("strike"):
+			last_button = "strike"
+		elif Input.is_action_pressed("bomb"):
+			last_button = "bomb"
+		elif Input.is_action_pressed("cancel"):
+			last_button = ""
+
+# Combat stuff:
+func take_plane_damage(plane_squad):
+	pass
+
+func set_enemy_squadron(enemy_squad):
+	pass
+
+
+### PLANE STUFF:
 
 func send_out_planes(placement, type):
 	print(type)

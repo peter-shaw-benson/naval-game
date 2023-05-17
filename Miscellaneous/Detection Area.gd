@@ -12,7 +12,7 @@ func init(visibility):
 	
 	get_node("CollisionShape2D").disabled = true
 	
-	print(get_node("CollisionShape2D").shape.radius)
+	#print(get_node("CollisionShape2D").shape.radius)
 	
 func enable_spotting():
 	get_node("CollisionShape2D").disabled = false
