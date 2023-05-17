@@ -101,6 +101,9 @@ func get_weapon_list():
 			
 	return self.weapon_list
 
+func is_patrolling():
+	return patrolling
+
 func take_damage(weapon: Weapon, distance):
 	# determine weapon's anti-air
 	# aircraft are damaged when they spot an enemy fleet

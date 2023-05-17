@@ -190,6 +190,9 @@ func get_units():
 func get_type():
 	return self.type
 
+func is_patrolling():
+	return false
+
 func select():
 	if faction == GameState.get_playerFaction():
 		selected = true
