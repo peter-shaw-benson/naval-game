@@ -138,3 +138,6 @@ func carrier_launch(carrier):
 
 func update_carrier_pos():
 	current_target = carrier_origin.global_position
+
+func handle_right_click(placement):
+	pass

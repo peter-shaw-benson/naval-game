@@ -24,7 +24,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://Squad/Carrier/Carrier.gd"
 }, {
-"base": "Reference",
+"base": "Ship",
 "class": "CarrierEntity",
 "language": "GDScript",
 "path": "res://Entities/Ships/CarrierEntity.gd"
