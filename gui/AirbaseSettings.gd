@@ -4,6 +4,7 @@ var ScoutPlane = preload("res://Entities/Planes/ScoutPlane.gd")
 var DiveBomber = preload("res://Entities/Planes/DiveBomber.gd")
 var TorpBomber = preload("res://Entities/Planes/TorpBomber.gd")
 var LevelBomber = preload("res://Entities/Planes/LevelBomber.gd")
+var Fighter = preload("res://Entities/Planes/Fighter.gd")
 
 var player_carriers = 0
 
@@ -70,6 +71,9 @@ func make_player_plane_list():
 	
 	for i in range(player_bombers):
 		plane_list.append(LevelBomber.new())
+	
+	# this is temporary
+	plane_list.append(Fighter.new())
 	
 	return plane_list
 	

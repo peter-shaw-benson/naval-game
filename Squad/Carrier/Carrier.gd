@@ -397,7 +397,7 @@ func _on_ShotTimer_timeout():
 
 # PLANE STUFF
 
-func send_out_planes(placement, type):
+func send_out_planes(placement, type, is_cap=false):
 	#print(type)
 	
 	var plane_squad = PlaneSquadScene.instance()

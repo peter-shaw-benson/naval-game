@@ -117,4 +117,7 @@ percent_visible = false
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="CAPTimer" type="Timer" parent="."]
 [connection signal="area_entered" from="." to="." method="_on_PlaneSquad_area_entered"]
+[connection signal="timeout" from="CAPTimer" to="." method="_on_CAPTimer_timeout"]

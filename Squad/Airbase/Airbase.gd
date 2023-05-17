@@ -104,6 +104,8 @@ func organize_aircraft(plane_list):
 			plane_dict["scout"].append(aircraft)
 		elif aircraft.get_class() == "LevelBomber":
 			plane_dict["bomber"].append(aircraft)
+		elif aircraft.get_class() == "Fighter":
+			plane_dict["fighter"].append(aircraft)
 		else:
 			plane_dict["strike"].append(aircraft)
 	
@@ -118,6 +120,8 @@ func handle_right_click(placement):
 	if selected:
 		#print("right clicked for course")
 		# Turn logic is here for now?
+		#print(plane_dict)
+		
 		if last_button == "scout" and len(plane_dict["scout"]) > 0:
 			# Send planes
 			send_out_planes(placement, "scout")
@@ -133,6 +137,11 @@ func handle_right_click(placement):
 			send_out_planes(placement, "bomber")
 			
 			last_button = ""
+		
+		elif last_button == "CAP" and len(plane_dict["fighter"]) > 0:
+			send_out_planes(placement, "fighter", true)
+			
+			last_button = ""
 
 func _input(event):
 	if selected:
@@ -142,6 +151,8 @@ func _input(event):
 			last_button = "strike"
 		elif Input.is_action_pressed("bomb"):
 			last_button = "bomb"
+		elif Input.is_action_pressed("fighter"):
+			last_button = "CAP"
 		elif Input.is_action_pressed("cancel"):
 			last_button = ""
 
@@ -155,7 +166,7 @@ func set_enemy_squadron(enemy_squad):
 
 ### PLANE STUFF:
 
-func send_out_planes(placement, type):
+func send_out_planes(placement, type, is_cap=false):
 	print(type)
 	
 	var plane_squad = PlaneSquadScene.instance()
@@ -188,6 +199,7 @@ func send_out_planes(placement, type):
 		plane_squad.init(plane_list, initial_pos, faction, "planesquadron")
 		plane_squad.set_animation(is_strike, type_map[type])
 		plane_squad.set_target(target)
+		plane_squad.set_combat_air_patrol(is_cap)
 		
 		emit_signal("plane_launch", plane_squad)
 		
