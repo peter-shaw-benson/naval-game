@@ -20,6 +20,7 @@ var airbase_data
 
 var game_time = 0
 var paused = false
+var ai_on = true
 
 onready var LineRenderer = get_node("LineDrawer")
 onready var IslandTexture = get_node("IslandTexture")
@@ -256,7 +257,8 @@ func update_weather():
 func _on_GameClock_timeout():
 	game_time += 1
 	update_weather()
-	$Calvinatron.set_new_targets(squad_list)
+	if ai_on:
+		$Calvinatron.set_new_targets(squad_list)
 	update_clock_display()
 
 func display_selected_squad(squad):

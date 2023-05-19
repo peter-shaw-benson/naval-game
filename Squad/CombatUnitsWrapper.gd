@@ -170,7 +170,7 @@ func init(unit_array, initial_position, faction, type):
 #creates new velocity vector with applied wind
 func calc_new_velocity():
 	var unit_velocity_cartesian = Vector2(current_speed * cos(global_rotation), current_speed * sin(global_rotation))
-	self.velocity_vector = unit_velocity_cartesian + 100 * applied_wind
+	self.velocity_vector = unit_velocity_cartesian + 10 * applied_wind
 
 #calculates the wind vector on wind change
 func calc_new_wind_vector(wind_cartesian):
