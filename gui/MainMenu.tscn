@@ -104,6 +104,7 @@ margin_right = 324.0
 margin_bottom = 140.0
 size_flags_vertical = 0
 text = "Quit"
+
 [connection signal="pressed" from="VBoxContainer/MarginContainer3/options/StartButton2" to="." method="_on_StartButton_pressed"]
 [connection signal="pressed" from="VBoxContainer/MarginContainer3/options/Custom Game" to="." method="_on_Custom_Game_pressed"]
 [connection signal="pressed" from="VBoxContainer/MarginContainer3/options/QuitButton" to="." method="_on_QuitButton_pressed"]
