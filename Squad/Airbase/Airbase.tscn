@@ -40,5 +40,9 @@ texture = ExtResource( 1 )
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2( -0.127563, -0.181458 )
 shape = SubResource( 1 )
+
+[node name="LaunchTimer" type="Timer" parent="."]
+one_shot = true
 [connection signal="area_entered" from="." to="." method="_on_AirbaseArea_area_entered"]
 [connection signal="input_event" from="." to="." method="_on_AirbaseArea_input_event"]
+[connection signal="timeout" from="LaunchTimer" to="." method="_on_LaunchTimer_timeout"]

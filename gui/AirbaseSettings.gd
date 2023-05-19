@@ -29,6 +29,7 @@ var strike_multiplier = GameState.get_strike_multiplier()
 func _on_MakeFleets_pressed():
 	
 	if player_carriers > 0:
+		
 		var player_carrier = {"faction": GameState.get_playerFaction(),
 							"type": "carrier"}
 		

@@ -37,6 +37,8 @@ func _ready():
 	
 	# Make sure it doesn't crash until we're done placing
 	get_node("IslandCollision").disabled = true
+	
+	self.deselect()
 
 func handle_right_click(placement):
 	if selected:

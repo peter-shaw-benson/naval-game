@@ -13,7 +13,9 @@ var plane_stats = {
 	"visibility": 10,
 	"crew": 3,
 	"class": "TorpedoBomber",
-	"weapons": [AirTorpedo.new(), MG.new()]
+	"weapons": [AirTorpedo.new(), MG.new()],
+	"launch_time": 2,
+	"agility": 0.15
 }
 
 func _init():
@@ -25,3 +27,5 @@ func _init():
 	
 	self.set_class(plane_stats["class"])
 	self.armament(plane_stats["weapons"])
+	self.set_agility(plane_stats["agility"])
+	self.set_launch_time(plane_stats["launch_time"])

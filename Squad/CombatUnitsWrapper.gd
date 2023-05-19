@@ -122,6 +122,9 @@ var type
 var last_button = ""
 
 func init(unit_array, initial_position, faction, type):
+	self.type = type
+	self.sprite_type = type
+	
 	units = unit_array
 	#print(ships[0].speed)
 	self.faction = faction
@@ -194,8 +197,10 @@ func is_patrolling():
 func select():
 	if faction == GameState.get_playerFaction():
 		selected = true
-		$Sprite.animation = sprite_type + "_clicked"
-		$Sprite.set_frame(faction)
+		get_node("Sprite").animation = sprite_type + "_clicked"
+		get_node("Sprite").set_frame(faction)
+		
+		print(get_node("Sprite").animation)
 		
 		emit_signal("squad_selected", self)
 		
@@ -203,8 +208,10 @@ func select():
 		
 func deselect():
 	selected = false
-	$Sprite.animation = sprite_type + "_basic"
-	$Sprite.set_frame(faction)
+	get_node("Sprite").animation = sprite_type + "_basic"
+	get_node("Sprite").set_frame(faction)
+	
+	print(get_node("Sprite").animation)
 	
 	emit_signal("squad_deselected", self)
 
