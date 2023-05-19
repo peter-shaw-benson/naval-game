@@ -97,6 +97,8 @@ func _ready():
 	
 	# Make sure it doesn't crash until we're done placing
 	get_node("IslandCollision").disabled = true
+	# hide launch bar on game start
+	get_node("LaunchBar").hide()
 
 func get_min_speed():
 	
@@ -168,22 +170,22 @@ func handle_right_click(placement):
 			
 		elif last_button == "scout" and len(plane_dict["scout"]) > 0:
 			# Send planes
-			send_out_planes(placement, "scout")
+			send_out_planes(placement, "scout", true)
 			
 			last_button = ""
 			
 		elif last_button == "strike" and len(plane_dict["strike"]) > 0:
-			send_out_planes(placement, "strike")
+			send_out_planes(placement, "strike", true)
 			
 			last_button = ""
 		
 		elif last_button == "bomb" and len(plane_dict["bomber"]) > 0:
-			send_out_planes(placement, "bomber")
+			send_out_planes(placement, "bomber", true)
 			
 			last_button = ""
 			
 		elif last_button == "CAP" and len(plane_dict["fighter"]) > 0:
-			send_out_planes(placement, "fighter", true)
+			send_out_planes(placement, "fighter", true, true)
 			
 			last_button = ""
 		
@@ -290,6 +292,9 @@ func _physics_process(delta):
 	position.y = clamp(position.y, 0, screen_size.y)
 
 func _process(delta):
+	
+	if launching:
+		get_node("LaunchBar").value = get_node("LaunchTimer").time_left
 	
 	get_node("HealthBar").value = lerp(get_node("HealthBar").value, get_total_health(), get_process_delta_time())
 	get_node("ArmorBar").value = lerp(get_node("ArmorBar").value, get_total_health(), get_process_delta_time())
@@ -426,53 +431,6 @@ func get_launch_time(plane_list):
 		
 		return launch_time
 
-func send_out_planes(placement, type, is_cap=false):
-	#print(type)
-	
-	var plane_squad = PlaneSquadScene.instance()
-	
-	var plane_list = [] 
-	# make plane list a copy, not a reference
-	for i in range(len(plane_dict[type])):
-		plane_list.append(plane_dict[type][i])
-	
-	var initial_pos = global_position
-	var target = placement
-	var is_strike = false
-	
-	# Init plane scene
-	# initial posiiton is airbase position
-	# plane composition is the scout planes
-	# faction
-	if type != "scout":
-		is_strike = true
-	
-	print(len(plane_list))
-	
-	var type_map = {"scout":"scoutPlane",
-					"fighter":"fighter",
-					"strike":"torpBomber",
-					"bomber": "levelBomber"}
-	
-	var squad_launch_time = get_launch_time(plane_list)
-	get_node("LaunchTimer").wait_time = squad_launch_time
-	
-	if len(plane_list) > 0:
-		#print(len(plane_list))
-		plane_squad.init(plane_list, initial_pos, faction, "planesquadron")
-		plane_squad.set_animation(is_strike, type_map[type])
-		plane_squad.set_target(target)
-		plane_squad.set_combat_air_patrol(is_cap)
-		plane_squad.carrier_launch(self)
-		
-		launching_squad = plane_squad
-		get_node("LaunchTimer").start()
-	
-		for i in range(len(plane_dict[type])):
-			plane_dict[type].remove(0)
-		
-		#print("sent planes to ", placement)
-
 func _on_Carrier_area_entered(area):
 	print(area.get_name())
 	
@@ -488,9 +446,4 @@ func _on_Carrier_area_entered(area):
 		get_node("IslandCollision").set_deferred("disabled", true)
 	
 func _on_LaunchTimer_timeout():
-	emit_signal("plane_launch", launching_squad)
-		
-	launching_squad.connect("planes_recovered", self, "plane_squad_recovered")
-	launching_squad.connect("plane_squad_lost", self, "plane_squad_death")
-		
-	launching_squad = null
+	end_launch()
