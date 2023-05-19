@@ -214,7 +214,6 @@ func deselect():
 	#print(get_node("Sprite").animation)
 	
 	emit_signal("squad_deselected", self)
->>>>>>> peter-devbranch
 
 func start_placing():
 	#print("started placing: " + self.get_name())

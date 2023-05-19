@@ -114,12 +114,10 @@ var velocity_vector: Vector2
 
 # what kind of combat unit is it?
 var type
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
 
 # GUI variables
 var last_button = ""
+var show_path = true
 
 func init(unit_array, initial_position, faction, type):
 	self.type = type
@@ -193,6 +191,12 @@ func get_type():
 
 func is_patrolling():
 	return false
+
+func set_path_showing(new_showing):
+	show_path = new_showing
+
+func get_path_showing():
+	return self.show_path
 
 func select():
 	if faction == GameState.get_playerFaction():
