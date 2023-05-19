@@ -59,6 +59,7 @@ func hide_enemies():
 		
 		if s.faction != playerFaction:
 			s.hide()
+			s.set_path_showing(false)
 	
 	for a in airbase_list:
 		if a.faction != playerFaction:
@@ -255,6 +256,7 @@ func update_weather():
 func _on_GameClock_timeout():
 	game_time += 1
 	update_weather()
+	$Calvinatron.set_new_targets(squad_list)
 	update_clock_display()
 
 func display_selected_squad(squad):

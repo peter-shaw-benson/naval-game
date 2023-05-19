@@ -41,7 +41,7 @@ func _ready():
 	self.deselect()
 
 func handle_right_click(placement):
-	if selected:
+	if selected and GameState.get_playerFaction() == get_faction():
 		#print("right clicked for course")
 		# Turn logic is here for now?
 		if Input.is_action_pressed("queue"):
