@@ -39,7 +39,7 @@ func _ready():
 	get_node("IslandCollision").disabled = true
 
 func handle_right_click(placement):
-	if selected:
+	if selected and GameState.get_playerFaction() == get_faction():
 		#print("right clicked for course")
 		# Turn logic is here for now?
 		if Input.is_action_pressed("queue"):
