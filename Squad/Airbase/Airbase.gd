@@ -14,6 +14,7 @@ var airbase_health = 500
 var airbase_armor = 100
 
 var launching = false
+var launching_squad
 
 var plane_dict = {"scout": [], "strike": [], "bomber": [], "fighter": []}
 
@@ -165,6 +166,17 @@ func set_enemy_squadron(enemy_squad):
 
 
 ### PLANE STUFF:
+func get_launch_time(plane_list):
+	if len(plane_list) == 0:
+		return 0
+	else:
+		var launch_time = plane_list[0].get_launch_time()
+		
+		for unit in plane_list:
+			if unit.get_launch_time() > launch_time:
+				launch_time = unit.get_launch_time()
+		
+		return launch_time
 
 func send_out_planes(placement, type, is_cap=false):
 	print(type)
@@ -193,6 +205,9 @@ func send_out_planes(placement, type, is_cap=false):
 					"strike":"torpBomber",
 					"fighter": "fighter",
 					"bomber": "levelBomber"}
+					
+	var squad_launch_time = get_launch_time(plane_list)
+	get_node("LaunchTimer").wait_time = squad_launch_time
 	
 	if len(plane_list) > 0:
 		#print(len(plane_list))
@@ -201,10 +216,8 @@ func send_out_planes(placement, type, is_cap=false):
 		plane_squad.set_target(target)
 		plane_squad.set_combat_air_patrol(is_cap)
 		
-		emit_signal("plane_launch", plane_squad)
-		
-		plane_squad.connect("planes_recovered", self, "plane_squad_recovered")
-		plane_squad.connect("plane_squad_lost", self, "plane_squad_death")
+		launching_squad = plane_squad
+		get_node("LaunchTimer").start()
 		
 		for i in range(len(plane_dict[type])):
 			plane_dict[type].remove(0)
@@ -237,3 +250,12 @@ func plane_squad_recovered(plane_squad):
 
 func plane_squad_death(plane_squad):
 	plane_squad.queue_free()
+
+
+func _on_LaunchTimer_timeout():
+	emit_signal("plane_launch", launching_squad)
+		
+	launching_squad.connect("planes_recovered", self, "plane_squad_recovered")
+	launching_squad.connect("plane_squad_lost", self, "plane_squad_death")
+	
+	launching_squad = null

@@ -2,12 +2,19 @@ class_name CombatPlane
 extends "../Entity.gd"
 
 var agility = 0.5
+var launch_time = 1
 
 func _ready():
 	pass
 	
 func set_agility(new_agility):
 	self.agility = new_agility
+
+func set_launch_time(new_time):
+	self.launch_time = new_time
+
+func get_launch_time():
+	return self.launch_time
 
 func damage(weapon: Weapon, t_crossed, distance):
 	# Should be only based on anti air of the weapon

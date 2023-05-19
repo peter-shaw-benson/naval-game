@@ -28,12 +28,11 @@ var current_enemy_squadron: CombatUnitsWrapper
 
 var plane_list
 
-
 func init(unit_array, initial_position, faction, type):
 	plane_list = carrier_default_planes
 	units = [CarrierEntity.new()]
 	
-	type = type
+	sprite_type = type
 	
 	organize_aircraft(plane_list)
 	
@@ -193,7 +192,29 @@ func handle_right_click(placement):
 			target_array = []
 			#var angle = placement.angle_to_point(position) + (PI / 2)
 			current_target = placement
+
 			stopped = false
+
+			
+func select():
+	if faction == GameState.get_playerFaction():
+		selected = true
+		get_node("Sprite").animation = sprite_type + "_clicked"
+		get_node("Sprite").set_frame(faction)
+		
+		emit_signal("squad_selected", self)
+		
+		last_button = ""
+		
+func deselect():
+	selected = false
+	get_node("Sprite").animation = sprite_type + "_basic"
+	get_node("Sprite").set_frame(faction)
+	
+	#print(get_node("Sprite").animation)
+	
+	emit_signal("squad_deselected", self)
+>>>>>>> peter-devbranch
 
 func start_placing():
 	#print("started placing: " + self.get_name())
@@ -214,23 +235,6 @@ func stop_placing():
 	detector.enable_spotting()
 	
 	current_target = self.global_position
-
-func select():
-	if faction == GameState.get_playerFaction():
-		selected = true
-		$Sprite.animation = sprite_type + "_clicked"
-		$Sprite.set_frame(faction)
-		
-		emit_signal("squad_selected", self)
-		
-		last_button = ""
-		
-func deselect():
-	selected = false
-	$Sprite.animation = sprite_type + "_basic"
-	$Sprite.set_frame(faction)
-	
-	emit_signal("squad_deselected", self)
 
 func _input(event):
 	if selected:
@@ -411,6 +415,18 @@ func _on_ShotTimer_timeout():
 
 # PLANE STUFF
 
+func get_launch_time(plane_list):
+	if len(plane_list) == 0:
+		return 0
+	else:
+		var launch_time = plane_list[0].get_launch_time()
+		
+		for unit in plane_list:
+			if unit.get_launch_time() > launch_time:
+				launch_time = unit.get_launch_time()
+		
+		return launch_time
+
 func send_out_planes(placement, type, is_cap=false):
 	#print(type)
 	
@@ -439,6 +455,9 @@ func send_out_planes(placement, type, is_cap=false):
 					"strike":"torpBomber",
 					"bomber": "levelBomber"}
 	
+	var squad_launch_time = get_launch_time(plane_list)
+	get_node("LaunchTimer").wait_time = squad_launch_time
+	
 	if len(plane_list) > 0:
 		#print(len(plane_list))
 		plane_squad.init(plane_list, initial_pos, faction, "planesquadron")
@@ -447,11 +466,9 @@ func send_out_planes(placement, type, is_cap=false):
 		plane_squad.set_combat_air_patrol(is_cap)
 		plane_squad.carrier_launch(self)
 		
-		emit_signal("plane_launch", plane_squad)
-		
-		plane_squad.connect("planes_recovered", self, "plane_squad_recovered")
-		plane_squad.connect("plane_squad_lost", self, "plane_squad_death")
-		
+		launching_squad = plane_squad
+		get_node("LaunchTimer").start()
+	
 		for i in range(len(plane_dict[type])):
 			plane_dict[type].remove(0)
 		
@@ -471,3 +488,10 @@ func _on_Carrier_area_entered(area):
 		
 		get_node("IslandCollision").set_deferred("disabled", true)
 	
+func _on_LaunchTimer_timeout():
+	emit_signal("plane_launch", launching_squad)
+		
+	launching_squad.connect("planes_recovered", self, "plane_squad_recovered")
+	launching_squad.connect("plane_squad_lost", self, "plane_squad_death")
+		
+	launching_squad = null

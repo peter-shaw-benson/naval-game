@@ -34,12 +34,13 @@ func _ready():
 	get_node("HealthBar").set_max(get_total_health())
 	update_healthbar()
 	#get_node("ArmorBar").set_max(get_total_armor())
+	self.deselect()
 	
 func set_animation(strike, type):
 	strike_force = strike
 	sprite_type = type
 	
-	get_node("AnimatedSprite").animation = sprite_type + "_clicked"
+	get_node("AnimatedSprite").animation = sprite_type + "_basic"
 	
 	get_node("AnimatedSprite").frame = faction
 	get_node("AirbaseCollision").disabled = true
