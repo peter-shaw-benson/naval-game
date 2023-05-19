@@ -11,14 +11,14 @@
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
-"frames": [ ExtResource( 5 ), ExtResource( 6 ), ExtResource( 7 ) ],
-"loop": true,
-"name": "clicked",
-"speed": 5.0
-}, {
 "frames": [ ExtResource( 4 ), ExtResource( 3 ), ExtResource( 2 ) ],
 "loop": true,
 "name": "basic",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 5 ), ExtResource( 6 ), ExtResource( 7 ) ],
+"loop": true,
+"name": "clicked",
 "speed": 5.0
 } ]
 
@@ -44,6 +44,7 @@ bg_color = Color( 0.831373, 0.878431, 0.137255, 1 )
 [node name="Squadron" type="Area2D" groups=[
 "squad_group",
 ]]
+pause_mode = 1
 position = Vector2( 134, 76.75 )
 script = ExtResource( 1 )
 detector_scene = ExtResource( 8 )

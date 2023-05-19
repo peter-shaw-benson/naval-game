@@ -9,6 +9,7 @@
 extents = Vector2( 65.466, 23.816 )
 
 [node name="AirbaseArea" type="Area2D"]
+pause_mode = 1
 position = Vector2( 0.5, 0.125 )
 collision_layer = 2
 collision_mask = 2

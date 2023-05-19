@@ -165,8 +165,6 @@ func init(unit_array, initial_position, faction, type):
 	
 	self.applied_wind = Vector2(0, 0)
 	# Set max of health bar and Armor Bar
-	
-	#print("squad created")
 
 #creates new velocity vector with applied wind
 func calc_new_velocity():

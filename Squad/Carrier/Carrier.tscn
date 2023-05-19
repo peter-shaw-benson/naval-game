@@ -15,14 +15,14 @@ extents = Vector2( 14.1449, 29.6435 )
 
 [sub_resource type="SpriteFrames" id=2]
 animations = [ {
-"frames": [ ExtResource( 6 ), ExtResource( 8 ), ExtResource( 7 ) ],
-"loop": true,
-"name": "carrier_clicked",
-"speed": 5.0
-}, {
 "frames": [ ExtResource( 1 ), ExtResource( 4 ), ExtResource( 5 ) ],
 "loop": true,
 "name": "carrier_basic",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 6 ), ExtResource( 8 ), ExtResource( 7 ) ],
+"loop": true,
+"name": "carrier_clicked",
 "speed": 5.0
 } ]
 
@@ -36,6 +36,7 @@ bg_color = Color( 0.12549, 0.12549, 0.12549, 1 )
 bg_color = Color( 0.831373, 0.878431, 0.137255, 1 )
 
 [node name="Carrier" type="Area2D"]
+pause_mode = 1
 position = Vector2( 0.5, 0.125 )
 collision_layer = 2
 collision_mask = 3
