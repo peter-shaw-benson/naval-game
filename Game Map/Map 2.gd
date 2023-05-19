@@ -277,6 +277,7 @@ func update_squad_info(new_info):
 
 func launch_plane_squad(plane_squad):
 	add_child(plane_squad)
+	plane_squad.calc_new_wind_vector($Weather.get_wind_velocity_cartesian())
 	squad_list.append(plane_squad)
 
 func recover_plane_squad(plane_squad):
