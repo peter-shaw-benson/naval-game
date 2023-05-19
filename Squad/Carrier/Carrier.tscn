@@ -11,7 +11,7 @@
 [ext_resource path="res://Squad/PlaneSquadron/PlaneSquadron.tscn" type="PackedScene" id=9]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 9.62756, 29.6435 )
+extents = Vector2( 14.1449, 29.6435 )
 
 [sub_resource type="SpriteFrames" id=2]
 animations = [ {
@@ -36,19 +36,20 @@ bg_color = Color( 0.12549, 0.12549, 0.12549, 1 )
 bg_color = Color( 0.831373, 0.878431, 0.137255, 1 )
 
 [node name="Carrier" type="Area2D"]
+pause_mode = 1
 position = Vector2( 0.5, 0.125 )
 collision_layer = 2
 collision_mask = 3
 script = ExtResource( 2 )
 detector_scene = ExtResource( 3 )
 PlaneSquadScene = ExtResource( 9 )
-DetectorScene = ExtResource( 3 )
 
 [node name="IslandCollision" type="CollisionShape2D" parent="."]
 position = Vector2( -0.127563, -0.181458 )
 shape = SubResource( 1 )
 
 [node name="Sprite" type="AnimatedSprite" parent="."]
+position = Vector2( 0.176773, 0 )
 frames = SubResource( 2 )
 animation = "carrier_basic"
 

@@ -3,6 +3,7 @@ class_name Carrier
 
 var DiveBomber = preload("res://Entities/Planes/DiveBomber.gd")
 var TorpBomber = preload("res://Entities/Planes/TorpBomber.gd")
+var Fighter = preload("res://Entities/Planes/Fighter.gd")
 
 var CarrierEntity = preload("res://Entities/Ships/CarrierEntity.gd")
 
@@ -13,7 +14,7 @@ signal squadron_lost(this_squad, enemy_squadron)
 signal ship_lost(ship)
 signal hit(squad)
 
-var carrier_default_planes = [DiveBomber.new(), TorpBomber.new()]
+var carrier_default_planes = [DiveBomber.new(), TorpBomber.new(), Fighter.new()]
 
 var t_crossed = false
 var target_array = []
@@ -23,6 +24,7 @@ var stopped = false
 var patrolling = false
 var current_shot_count = 0 
 var current_enemy_squadron: CombatUnitsWrapper
+
 
 var plane_list
 
@@ -95,7 +97,7 @@ func _ready():
 	self.update_armorbar()
 	
 	# Make sure it doesn't crash until we're done placing
-	get_node("IslandCollision").disabled = false
+	get_node("IslandCollision").disabled = true
 
 func get_min_speed():
 	
@@ -156,31 +158,62 @@ func handle_right_click(placement):
 			
 			emit_signal("new_course_change", current_target, placement)
 			#print(target_array)
-		elif Input.is_action_pressed("patrol"):
+		elif last_button == "patrol":
 			patrolling = true
 			current_target = placement
 			target_array.append(self.global_position)
 			
-			#print(str(current_target) + str(target_array))
-			
 			emit_signal("new_course_change", current_target, placement)
 			
-		elif Input.is_action_pressed("scout") and len(plane_dict["scout"]) > 0:
+			last_button = ""
+			
+		elif last_button == "scout" and len(plane_dict["scout"]) > 0:
 			# Send planes
 			send_out_planes(placement, "scout")
 			
-		elif Input.is_action_pressed("strike") and len(plane_dict["strike"]) > 0:
+			last_button = ""
+			
+		elif last_button == "strike" and len(plane_dict["strike"]) > 0:
 			send_out_planes(placement, "strike")
+			
+			last_button = ""
 		
-		elif Input.is_action_pressed("bomb") and len(plane_dict["bomber"]) > 0:
+		elif last_button == "bomb" and len(plane_dict["bomber"]) > 0:
 			send_out_planes(placement, "bomber")
+			
+			last_button = ""
+			
+		elif last_button == "CAP" and len(plane_dict["fighter"]) > 0:
+			send_out_planes(placement, "fighter", true)
+			
+			last_button = ""
 		
 		else:
 			patrolling = false
 			target_array = []
 			#var angle = placement.angle_to_point(position) + (PI / 2)
 			current_target = placement
+			stopped = false
 
+func start_placing():
+	#print("started placing: " + self.get_name())
+	placing = true
+	
+	global_position = get_viewport().get_mouse_position()
+	
+	get_node("IslandCollision").disabled = true
+
+func stop_placing():
+	#print("stopped placing: " + self.get_name())
+	placing = false
+
+	emit_signal("stopped_placing")
+	
+	get_node("IslandCollision").disabled = false
+	#print(get_node("IslandCollision").disabled)
+	detector.enable_spotting()
+	
+	current_target = self.global_position
 
 func select():
 	if faction == GameState.get_playerFaction():
@@ -189,6 +222,8 @@ func select():
 		$Sprite.set_frame(faction)
 		
 		emit_signal("squad_selected", self)
+		
+		last_button = ""
 		
 func deselect():
 	selected = false
@@ -202,6 +237,20 @@ func _input(event):
 		if Input.is_action_pressed("stop"):
 			self.current_target = self.global_position
 			self.target_array = []
+		elif Input.is_action_pressed("patrol"):
+			last_button = "patrol"
+		elif Input.is_action_pressed("scout"):
+			last_button = "scout"
+		elif Input.is_action_pressed("strike"):
+			last_button = "strike"
+		elif Input.is_action_pressed("bomb"):
+			last_button = "bomb"
+		elif Input.is_action_pressed("fighter"):
+			last_button = "CAP"
+		elif Input.is_action_pressed("cancel"):
+			last_button = ""
+			
+			
 
 func _physics_process(delta):
 	
@@ -211,28 +260,37 @@ func _physics_process(delta):
 		current_target = self.global_position
 	
 	else:
-		
-		if global_position.distance_to(current_target) < (turn_speed) and len(target_array) > 0:
-			#print("updating current target")
+		#if distance to target is small and there are queued targets,
+		#remove the target from the queue and update the current target
+		if global_position.distance_to(current_target) < 10 and len(target_array) > 0:
 			emit_signal("reached_target")
 			if patrolling: 
 				target_array.append(current_target)
 			
 			current_target = target_array[0]
-			#print(current_target)
 			
 			target_array.remove(0)
-			
+		
+		#if we are close to the last target, set stopped to true
+		elif global_position.distance_to(current_target) < 10:
+			emit_signal("reached_target")
+			stopped = true
+
 		if int(global_position.distance_to(current_target)) > 1:
 			self.rotation = lerp_angle(self.rotation, (current_target - self.global_position).normalized().angle() + PI/2, self.turn_weight)
-		
 		#print(position.move_toward(current_target, delta*current_speed))
 		if not stopped:
 			self.calc_new_velocity()
-			global_position = global_position.move_toward(current_target + applied_wind, delta*(velocity_vector.length()))
+			global_position = global_position.move_toward(get_movement_vector(), delta*(velocity_vector.length()))
 		
 	position.x = clamp(position.x, 0, screen_size.x)
 	position.y = clamp(position.y, 0, screen_size.y)
+
+func _process(delta):
+	
+	get_node("HealthBar").value = lerp(get_node("HealthBar").value, get_total_health(), get_process_delta_time())
+	get_node("ArmorBar").value = lerp(get_node("ArmorBar").value, get_total_health(), get_process_delta_time())
+
 
 ## COMBAT STUFFS
 
@@ -353,7 +411,7 @@ func _on_ShotTimer_timeout():
 
 # PLANE STUFF
 
-func send_out_planes(placement, type):
+func send_out_planes(placement, type, is_cap=false):
 	#print(type)
 	
 	var plane_squad = PlaneSquadScene.instance()
@@ -386,6 +444,7 @@ func send_out_planes(placement, type):
 		plane_squad.init(plane_list, initial_pos, faction, "planesquadron")
 		plane_squad.set_animation(is_strike, type_map[type])
 		plane_squad.set_target(target)
+		plane_squad.set_combat_air_patrol(is_cap)
 		plane_squad.carrier_launch(self)
 		
 		emit_signal("plane_launch", plane_squad)

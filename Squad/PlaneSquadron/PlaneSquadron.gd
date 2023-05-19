@@ -9,10 +9,15 @@ var strike_force: bool
 var carrier_origin: Carrier
 var reached_target = false
 
-var max_range = 300
+# CAP variables
+var combat_air_patrol = false
+var patrolling = false
+var cap_resolution = 4
 
 var weapon_list = []
 var plane_list = []
+
+var cap_timing = 5
 
 func _ready():
 	self.scale = Vector2(0.6, 0.6)
@@ -23,6 +28,12 @@ func _ready():
 		plane_list.append(u)
 	
 	update_weapon_list()
+	
+	enable_spotting()
+	
+	get_node("HealthBar").set_max(get_total_health())
+	update_healthbar()
+	#get_node("ArmorBar").set_max(get_total_armor())
 	
 func set_animation(strike, type):
 	strike_force = strike
@@ -37,6 +48,15 @@ func set_target(target):
 	current_target = target
 
 	rotation = global_position.angle_to_point(target) - PI/2
+
+func set_combat_air_patrol(is_cap):
+	combat_air_patrol = is_cap
+	
+	if combat_air_patrol:
+		get_node("CAPTimer").wait_time = cap_timing
+		
+		get_node("CAPTimer").start()
+		print("started CAP")
 
 func get_sprite_type():
 	return self.sprite_type
@@ -71,9 +91,6 @@ func deselect():
 func update_armorbar():
 	pass
 	
-func update_healthbar():
-	pass
-
 func get_strike():
 	return strike_force
 
@@ -83,6 +100,9 @@ func get_faction():
 func get_weapon_list():
 			
 	return self.weapon_list
+
+func is_patrolling():
+	return patrolling
 
 func take_damage(weapon: Weapon, distance):
 	# determine weapon's anti-air
@@ -110,19 +130,50 @@ func take_damage(weapon: Weapon, distance):
 	emit_signal("update_squad_info", get_squad_info())
 
 func _process(delta):
-	if global_position.distance_to(current_target) < 10:
-		current_target = airbase_origin
-		rotation = global_position.angle_to_point(current_target) - PI/2
-		reached_target = true
+	
+	if global_position.distance_to(current_target) < 10\
+	or global_position.distance_to(airbase_origin) >= max_range\
+	and not patrolling:
+		if not combat_air_patrol:
+			current_target = airbase_origin
+			rotation = global_position.angle_to_point(current_target) - PI/2
+			reached_target = true
+			
+			get_node("AirbaseCollision").disabled = false
+			
+		else:
+			get_node("CAPTimer").start()
+			
+			patrolling = true
+	
+	if patrolling:
+		var patrol_center
 		
-		get_node("AirbaseCollision").disabled = false
+		if carrier_origin:
+			patrol_center = carrier_origin.global_position
+		else:
+			patrol_center = airbase_origin
+			# get angle to airbase origin, normalize
+		var angle_to_airbase = global_position.angle_to_point(patrol_center) + ((PI / 2) /  cap_resolution)
+		var angle_vector = Vector2(
+			cos(angle_to_airbase),
+			sin(angle_to_airbase)
+		).normalized()
+			# multiply by max range
+		current_target = angle_vector * max_range
+			
+		rotation = global_position.angle_to_point(patrol_center)
+		#print("CAP timer time left:" + str(get_node("CAPTimer").time_left))
+	
+	get_node("HealthBar").value = lerp(get_node("HealthBar").value, get_total_health(), get_process_delta_time())
+	#get_node("ArmorBar").value = lerp(get_node("ArmorBar").value, get_total_health(), get_process_delta_time())
 	
 	# go back to carrier
 	if carrier_origin and reached_target:
 		update_carrier_pos()
 	
 		rotation = global_position.angle_to_point(current_target)-+ PI/2
-	
+
 	calc_new_velocity()
 	global_position = global_position.move_toward(get_movement_vector(), delta*(velocity_vector.length()))
 
@@ -138,3 +189,19 @@ func carrier_launch(carrier):
 
 func update_carrier_pos():
 	current_target = carrier_origin.global_position
+
+func handle_right_click(placement):
+	pass
+
+func _on_CAPTimer_timeout():
+	print("cap timer ended")
+	
+	current_target = airbase_origin
+	
+	patrolling = false
+	combat_air_patrol = false
+	
+	rotation = global_position.angle_to_point(current_target) - PI/2
+	reached_target = true
+			
+	get_node("AirbaseCollision").disabled = false

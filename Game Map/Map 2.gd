@@ -19,6 +19,7 @@ var unit_data
 var airbase_data
 
 var game_time = 0
+var paused = false
 
 onready var LineRenderer = get_node("LineDrawer")
 onready var IslandTexture = get_node("IslandTexture")
@@ -58,6 +59,10 @@ func hide_enemies():
 		
 		if s.faction != playerFaction:
 			s.hide()
+	
+	for a in airbase_list:
+		if a.faction != playerFaction:
+			a.hide()
 	
 func place_squadron(squad_data):
 	var squad = squadron_scene.instance()
@@ -123,6 +128,7 @@ func place_carrier(carrier_data):
 		
 	#place_squadron(squad)
 	# Find mouse position, set squadron position based on it
+	#print("about to start placing carrier")
 	carrier.start_placing()
 
 func place_next_unit(place_list):
@@ -134,6 +140,7 @@ func place_next_unit(place_list):
 		var squad_index = place_list[0]
 		#print(squadron_data[squad_index])
 		if unit_data[squad_index]["type"] == "carrier":
+			#print("next on place list is a carrier")
 			place_carrier(unit_data[squad_index])
 		elif unit_data[squad_index]["type"] == "airbase":
 			place_airbase(unit_data[squad_index])
@@ -156,12 +163,34 @@ func _input(event):
 		
 		for a in airbase_list:
 			a.handle_right_click(event.position)
+	
+	elif Input.is_action_pressed("pause_menu"):
+		if not paused:
+			handle_pause()
+			
+	elif Input.is_action_pressed("pause_game"):
+		# Spacebar
+		if not paused:
+			handle_pause(false)
+		else:
+			unpause()
+	
+func handle_pause(pause_menu=true):
+	get_tree().paused = true
+	paused = true
+	
+	if pause_menu:
+		get_node("PauseMenu").show()
+
+func unpause():
+	get_tree().paused = false
+	paused = false
 
 # Handle collisions with Islands
 func _on_squad_crash(s):
 	print("squad crashed")
 	
-	get_node("CrashPopup").popup_centered()
+	get_node("PauseMenu").popup_centered()
 	squad_list.remove(squad_list.find(s, 0))
 	
 	s.queue_free()
@@ -175,6 +204,9 @@ func _on_CrashPopup_id_pressed(id):
 	elif id == 1:
 		# Quit Game
 		get_tree().quit()
+	elif id == 2:
+		get_node("PauseMenu").hide()
+		unpause()
 
 func _on_ship_lost(ship: Ship):
 	var loss_text = ship.get_name() + " lost to Enemy Action!"
@@ -185,6 +217,8 @@ func _on_ship_lost(ship: Ship):
 	get_node("Ship Popup Timer").start()
 
 func _on_squadron_lost(s, enemy_squad):
+	get_node("SquadSelected").hide()
+	
 	squad_list.remove(squad_list.find(s, 0))
 	
 	s.queue_free()

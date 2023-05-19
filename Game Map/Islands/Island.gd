@@ -29,3 +29,6 @@ func generate_new_island(map_center):
 	island_drawing.frame = frame_choice
 	
 	print("island:", self.position)
+
+func get_faction():
+	return 4

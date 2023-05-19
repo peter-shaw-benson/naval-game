@@ -93,6 +93,11 @@ func goto_main_map2(path):
 	get_tree().current_scene = current_scene
 	
 	current_scene.init(unit_list, num_islands)
+	
+func reset_game():
+	unit_list = []
+	default_budgets = {"0": 200, "1": 200, "2": 200}
+	playerFaction = 0
 
 func change_playerFaction(new_faction):
 	playerFaction = new_faction

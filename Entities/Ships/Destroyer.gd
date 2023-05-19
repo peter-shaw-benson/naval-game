@@ -17,6 +17,7 @@ var DestroyerNames = ["HMS Beverly",
 
 var ship_stats = {
 	"speed": 40,
+	"range": 1000,
 	"turn_weight": 0.1,
 	"hit_points": 10,
 	"armor": 5,
@@ -29,7 +30,7 @@ var ship_stats = {
 
 func _init():
 	
-	self.init(ship_stats["speed"], ship_stats["turn_weight"], \
+	self.init(ship_stats["speed"], ship_stats["range"], ship_stats["turn_weight"], \
 	ship_stats["hit_points"], ship_stats["armor"], \
 	ship_stats["hide"], ship_stats["visibility"], \
 	ship_stats["crew"])
