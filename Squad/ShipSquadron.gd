@@ -93,7 +93,12 @@ func _on_Squadron_area_entered(area):
 		emit_signal("hit", self)
 		
 		get_node("IslandCollision").set_deferred("disabled", true)
+	
+	if area.get_faction() == 5:
+		do_fog_effects()
 
+func do_fog_effects():
+	print("fog found")
 	
 func _physics_process(delta):
 	

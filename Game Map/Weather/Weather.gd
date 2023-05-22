@@ -10,6 +10,7 @@ var current_wind_speed = 0
 
 var current_dir_std = 0.1
 var current_wind_direction = 0
+var fog_list = []
 var rng = RandomNumberGenerator.new()
 # Declare member variables here. Examples:
 # var a = 2
@@ -43,6 +44,18 @@ func get_wind_velocity_cartesian():
 	return Vector2(current_wind_speed*cos(current_wind_direction), \
 	current_wind_speed*sin(current_wind_direction))
 # Called when the node enters the scene tree for the first time.
+
+func get_fog_gen_flag():
+	if rand_range(0, 1) < 0.2:
+		return true
+	return false
+	
+func update_fog():
+	for fog in fog_list:
+		fog.set_movement(get_wind_velocity_cartesian())
+
+func register_fog(fog_in):
+	fog_list.append(fog_in)
 
 func get_wind_dir_angle():
 	return current_wind_direction + 3*PI/2

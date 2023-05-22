@@ -4,6 +4,7 @@ export var squadron_scene: PackedScene
 export var island_scene: PackedScene
 export var airbase_scene: PackedScene
 export var carrier_scene: PackedScene
+export var fog_scene: PackedScene
 
 var squad: Squadron
 var island: Island
@@ -20,7 +21,7 @@ var airbase_data
 
 var game_time = 0
 var paused = false
-var ai_on = true
+var ai_on = false
 
 onready var LineRenderer = get_node("LineDrawer")
 onready var IslandTexture = get_node("IslandTexture")
@@ -127,6 +128,7 @@ func place_carrier(carrier_data):
 	carrier.connect("plane_launch", self, "launch_plane_squad")
 	carrier.connect("planes_recovered", self, "recover_plane_squad")
 	carrier.connect("stopped_placing", self, "_on_squadron_stopped_placement")
+
 		
 	#place_squadron(squad)
 	# Find mouse position, set squadron position based on it
@@ -252,6 +254,11 @@ func update_weather():
 	get_node("Weather").calc_new_wind_speed()
 	for unit in squad_list:
 		unit.calc_new_wind_vector($Weather.get_wind_velocity_cartesian())
+	if $Weather.get_fog_gen_flag():
+		var new_fog = fog_scene.instance()
+		$Weather.register_fog(new_fog)
+		add_child(new_fog)
+	$Weather.update_fog()
 	$WindBox.update_weather_display($Weather.get_wind_dir_angle(), $Weather.get_wind_speed_kt())
 
 func _on_GameClock_timeout():
