@@ -19,7 +19,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://Entities/Ships/Battleship.gd"
 }, {
-"base": "Airbase",
+"base": "ShipSquadron",
 "class": "Carrier",
 "language": "GDScript",
 "path": "res://Squad/Carrier/Carrier.gd"
@@ -69,6 +69,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://Entities/Ships/Ship.gd"
 }, {
+"base": "Area2D",
+"class": "ShipSquadron",
+"language": "GDScript",
+"path": "res://Squad/ShipSquadron.gd"
+}, {
 "base": "Node2D",
 "class": "SquadFull",
 "language": "GDScript",
@@ -107,6 +112,7 @@ _global_script_class_icons={
 "Island": "",
 "PlaneSquadron": "",
 "Ship": "",
+"ShipSquadron": "",
 "SquadFull": "",
 "Squadron": "",
 "TorpDestroyer": "",
