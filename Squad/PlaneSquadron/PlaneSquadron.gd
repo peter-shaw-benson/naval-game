@@ -186,10 +186,15 @@ func _process(delta):
 
 func _on_PlaneSquad_area_entered(area):
 	#print("plane hit base")
-	
 	if current_target.distance_to(area.global_position) < 5:
-		
 		emit_signal("planes_recovered", self)
+		
+	if area.get_faction() == 5:
+		do_fog_effects()
+
+func do_fog_effects():
+	self.hide()
+	
 
 func carrier_launch(carrier):
 	carrier_origin = carrier

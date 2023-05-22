@@ -31,31 +31,6 @@
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
-"frames": [ ExtResource( 6 ), ExtResource( 1 ), ExtResource( 5 ) ],
-"loop": true,
-"name": "scoutPlane_basic",
-"speed": 5.0
-}, {
-"frames": [ ExtResource( 20 ), ExtResource( 19 ), ExtResource( 16 ) ],
-"loop": true,
-"name": "levelBomber_clicked",
-"speed": 5.0
-}, {
-"frames": [ ExtResource( 4 ), ExtResource( 3 ), ExtResource( 2 ) ],
-"loop": true,
-"name": "scoutPlane_clicked",
-"speed": 5.0
-}, {
-"frames": [ ExtResource( 26 ), ExtResource( 24 ), ExtResource( 25 ) ],
-"loop": true,
-"name": "torpBomber_clicked",
-"speed": 5.0
-}, {
-"frames": [ ExtResource( 23 ), ExtResource( 21 ), ExtResource( 22 ) ],
-"loop": true,
-"name": "torpBomber_basic",
-"speed": 5.0
-}, {
 "frames": [ ExtResource( 8 ), ExtResource( 7 ), ExtResource( 12 ) ],
 "loop": true,
 "name": "fighter_basic",
@@ -69,6 +44,31 @@ animations = [ {
 "frames": [ ExtResource( 15 ), ExtResource( 17 ), ExtResource( 18 ) ],
 "loop": true,
 "name": "levelBomber_basic",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 20 ), ExtResource( 19 ), ExtResource( 16 ) ],
+"loop": true,
+"name": "levelBomber_clicked",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 6 ), ExtResource( 1 ), ExtResource( 5 ) ],
+"loop": true,
+"name": "scoutPlane_basic",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 4 ), ExtResource( 3 ), ExtResource( 2 ) ],
+"loop": true,
+"name": "scoutPlane_clicked",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 23 ), ExtResource( 21 ), ExtResource( 22 ) ],
+"loop": true,
+"name": "torpBomber_basic",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 26 ), ExtResource( 24 ), ExtResource( 25 ) ],
+"loop": true,
+"name": "torpBomber_clicked",
 "speed": 5.0
 } ]
 
@@ -116,5 +116,6 @@ __meta__ = {
 }
 
 [node name="CAPTimer" type="Timer" parent="."]
+
 [connection signal="area_entered" from="." to="." method="_on_PlaneSquad_area_entered"]
 [connection signal="timeout" from="CAPTimer" to="." method="_on_CAPTimer_timeout"]
