@@ -18,7 +18,7 @@ func _draw():
 		for squad in squad_list:
 			#draw_circle(squad.global_position, squad.get_visibility()*7, Color8(195, 155, 211, 50))
 			#draw_circle(squad.global_position, squad.get_hiding(), Color8(211, 84, 0, 40))
-			if squad:
+			if squad and squad.get_path_showing():
 				if squad.is_patrolling() == false:
 					draw_line(squad.global_position, squad.current_target, Color.green, 1.5)
 				

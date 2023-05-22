@@ -11,14 +11,14 @@
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
-"frames": [ ExtResource( 4 ), ExtResource( 3 ), ExtResource( 2 ) ],
-"loop": true,
-"name": "basic",
-"speed": 5.0
-}, {
 "frames": [ ExtResource( 5 ), ExtResource( 6 ), ExtResource( 7 ) ],
 "loop": true,
-"name": "clicked",
+"name": "squadron_clicked",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 4 ), ExtResource( 3 ), ExtResource( 2 ) ],
+"loop": true,
+"name": "squadron_basic",
 "speed": 5.0
 } ]
 
@@ -52,7 +52,7 @@ detector_scene = ExtResource( 8 )
 [node name="Sprite" type="AnimatedSprite" parent="."]
 position = Vector2( 0.0883942, 0 )
 frames = SubResource( 1 )
-animation = "clicked"
+animation = "squadron_clicked"
 script = SubResource( 2 )
 
 [node name="IslandCollision" type="CollisionShape2D" parent="."]

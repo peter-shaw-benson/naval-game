@@ -26,9 +26,16 @@
 [ext_resource path="res://art/strike squad sprites/sprite_3.png" type="Texture" id=24]
 [ext_resource path="res://art/strike squad sprites/sprite_5.png" type="Texture" id=25]
 [ext_resource path="res://art/strike squad sprites/sprite_1.png" type="Texture" id=26]
+[ext_resource path="res://art/themes/BackgroundBar.tres" type="StyleBox" id=27]
+[ext_resource path="res://art/themes/healthbar.tres" type="StyleBox" id=28]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
+"frames": [ ExtResource( 6 ), ExtResource( 1 ), ExtResource( 5 ) ],
+"loop": true,
+"name": "scoutPlane_basic",
+"speed": 5.0
+}, {
 "frames": [ ExtResource( 20 ), ExtResource( 19 ), ExtResource( 16 ) ],
 "loop": true,
 "name": "levelBomber_clicked",
@@ -63,11 +70,6 @@ animations = [ {
 "loop": true,
 "name": "levelBomber_basic",
 "speed": 5.0
-}, {
-"frames": [ ExtResource( 6 ), ExtResource( 1 ), ExtResource( 5 ) ],
-"loop": true,
-"name": "scoutPlane_basic 1",
-"speed": 5.0
 } ]
 
 [sub_resource type="CircleShape2D" id=2]
@@ -75,12 +77,6 @@ radius = 12.1501
 
 [sub_resource type="CircleShape2D" id=3]
 radius = 91.9078
-
-[sub_resource type="StyleBoxFlat" id=4]
-bg_color = Color( 0.105882, 0.764706, 0.164706, 1 )
-
-[sub_resource type="StyleBoxFlat" id=5]
-bg_color = Color( 0.12549, 0.12549, 0.12549, 1 )
 
 [node name="PlaneSquad" type="Area2D"]
 pause_mode = 1
@@ -92,7 +88,7 @@ detector_scene = ExtResource( 14 )
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 position = Vector2( 0.353546, 0 )
 frames = SubResource( 1 )
-animation = "torpBomber_basic"
+animation = "scoutPlane_basic"
 
 [node name="AirbaseCollision" type="CollisionShape2D" parent="."]
 position = Vector2( 0.125, 19.625 )
@@ -111,8 +107,8 @@ margin_left = -38.0
 margin_top = 32.0
 margin_right = 40.0
 margin_bottom = 44.0
-custom_styles/fg = SubResource( 4 )
-custom_styles/bg = SubResource( 5 )
+custom_styles/fg = ExtResource( 28 )
+custom_styles/bg = ExtResource( 27 )
 value = 40.0
 percent_visible = false
 __meta__ = {

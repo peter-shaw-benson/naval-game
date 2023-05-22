@@ -13,7 +13,9 @@ var plane_stats = {
 	"visibility": 15,
 	"crew": 2,
 	"class": "DiveBomber",
-	"weapons": [DiveBomb.new(), MG.new()]
+	"weapons": [DiveBomb.new(), MG.new()],
+	"agility": 0.08,
+	"launch_time": 1.5
 }
 
 func _init():
@@ -25,3 +27,5 @@ func _init():
 	
 	self.set_class(plane_stats["class"])
 	self.armament(plane_stats["weapons"])
+	self.set_agility(plane_stats["agility"])
+	self.set_launch_time(plane_stats["launch_time"])

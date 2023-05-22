@@ -20,6 +20,7 @@ var airbase_data
 
 var game_time = 0
 var paused = false
+var ai_on = true
 
 onready var LineRenderer = get_node("LineDrawer")
 onready var IslandTexture = get_node("IslandTexture")
@@ -59,6 +60,7 @@ func hide_enemies():
 		
 		if s.faction != playerFaction:
 			s.hide()
+			s.set_path_showing(false)
 	
 	for a in airbase_list:
 		if a.faction != playerFaction:
@@ -255,7 +257,8 @@ func update_weather():
 func _on_GameClock_timeout():
 	game_time += 1
 	update_weather()
-	$Calvinatron.set_new_targets(squad_list)
+	if ai_on:
+		$Calvinatron.set_new_targets(squad_list)
 	update_clock_display()
 
 func display_selected_squad(squad):
@@ -276,6 +279,7 @@ func update_squad_info(new_info):
 
 func launch_plane_squad(plane_squad):
 	add_child(plane_squad)
+	plane_squad.calc_new_wind_vector($Weather.get_wind_velocity_cartesian())
 	squad_list.append(plane_squad)
 
 func recover_plane_squad(plane_squad):

@@ -14,6 +14,7 @@ var airbase_health = 500
 var airbase_armor = 100
 
 var launching = false
+var launching_squad
 
 var plane_dict = {"scout": [], "strike": [], "bomber": [], "fighter": []}
 
@@ -28,6 +29,10 @@ func _process(delta):
 	if placing:
 		# Place squadron at mouse, until the mouse clicks
 		global_position = get_viewport().get_mouse_position()
+		
+	if launching:
+		get_node("LaunchBar").value = get_node("LaunchTimer").time_left
+	
 
 func init(plane_list, initial_pos, faction, type):
 	global_position = initial_pos
@@ -165,51 +170,67 @@ func set_enemy_squadron(enemy_squad):
 
 
 ### PLANE STUFF:
+func get_launch_time(plane_list):
+	if len(plane_list) == 0:
+		return 0
+	else:
+		var launch_time = plane_list[0].get_launch_time()
+		
+		for unit in plane_list:
+			if unit.get_launch_time() > launch_time:
+				launch_time = unit.get_launch_time()
+		
+		return launch_time
 
-func send_out_planes(placement, type, is_cap=false):
-	print(type)
+func send_out_planes(placement, strike_type, is_carrier_launch=false, is_cap=false):
+	#print(type)
 	
-	var plane_squad = PlaneSquadScene.instance()
+	if not launching:
 	
-	var plane_list = [] 
-	# make plane list a copy, not a reference
-	for i in range(len(plane_dict[type])):
-		plane_list.append(plane_dict[type][i])
-	
-	var initial_pos = global_position
-	var target = placement
-	var is_strike = false
-	
-	# Init plane scene
-	# initial posiiton is airbase position
-	# plane composition is the scout planes
-	# faction
-	if type != "scout":
-		is_strike = true
-	
-	print(len(plane_list))
-	
-	var type_map = {"scout":"scoutPlane",
-					"strike":"torpBomber",
-					"fighter": "fighter",
-					"bomber": "levelBomber"}
-	
-	if len(plane_list) > 0:
-		#print(len(plane_list))
-		plane_squad.init(plane_list, initial_pos, faction, "planesquadron")
-		plane_squad.set_animation(is_strike, type_map[type])
-		plane_squad.set_target(target)
-		plane_squad.set_combat_air_patrol(is_cap)
+		var plane_squad = PlaneSquadScene.instance()
 		
-		emit_signal("plane_launch", plane_squad)
+		var plane_list = [] 
+		# make plane list a copy, not a reference
+		for i in range(len(plane_dict[strike_type])):
+			plane_list.append(plane_dict[strike_type][i])
 		
-		plane_squad.connect("planes_recovered", self, "plane_squad_recovered")
-		plane_squad.connect("plane_squad_lost", self, "plane_squad_death")
+		var initial_pos = global_position
+		var target = placement
+		var is_strike = false
 		
-		for i in range(len(plane_dict[type])):
-			plane_dict[type].remove(0)
+		# Init plane scene
+		# initial posiiton is airbase position
+		# plane composition is the scout planes
+		# faction
+		if strike_type != "scout":
+			is_strike = true
 		
-		#print("sent planes to ", placement)
+		print(len(plane_list))
+		
+		var type_map = {"scout":"scoutPlane",
+						"strike":"torpBomber",
+						"fighter": "fighter",
+						"bomber": "levelBomber"}
+						
+		start_launch(plane_list)
+		
+		if len(plane_list) > 0:
+			#print(len(plane_list))
+			plane_squad.init(plane_list, initial_pos, faction, type_map[strike_type])
+			plane_squad.set_animation(is_strike, type_map[strike_type])
+			plane_squad.set_target(target)
+			plane_squad.set_combat_air_patrol(is_cap)
+			
+			if is_carrier_launch:
+				plane_squad.carrier_launch(self)
+			
+			launching_squad = plane_squad
+			get_node("LaunchTimer").start()
+			
+			for i in range(len(plane_dict[strike_type])):
+				plane_dict[strike_type].remove(0)
+			
+			#print("sent planes to ", placement)
 
 func plane_squad_recovered(plane_squad):
 	#print("recovering at base")
@@ -237,3 +258,27 @@ func plane_squad_recovered(plane_squad):
 
 func plane_squad_death(plane_squad):
 	plane_squad.queue_free()
+
+func start_launch(plane_list):
+	var squad_launch_time = get_launch_time(plane_list)
+	get_node("LaunchTimer").wait_time = squad_launch_time
+		
+	get_node("LaunchBar").show()
+	get_node("LaunchBar").max_value = squad_launch_time
+		
+	launching = true
+
+func end_launch():
+	launching = false
+	
+	emit_signal("plane_launch", launching_squad)
+		
+	launching_squad.connect("planes_recovered", self, "plane_squad_recovered")
+	launching_squad.connect("plane_squad_lost", self, "plane_squad_death")
+	
+	launching_squad = null
+	
+	get_node("LaunchBar").hide()
+
+func _on_LaunchTimer_timeout():
+	end_launch()

@@ -114,14 +114,15 @@ var velocity_vector: Vector2
 
 # what kind of combat unit is it?
 var type
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
 
 # GUI variables
 var last_button = ""
+var show_path = true
 
 func init(unit_array, initial_position, faction, type):
+	self.type = type
+	self.sprite_type = type
+	
 	units = unit_array
 	#print(ships[0].speed)
 	self.faction = faction
@@ -169,7 +170,7 @@ func init(unit_array, initial_position, faction, type):
 #creates new velocity vector with applied wind
 func calc_new_velocity():
 	var unit_velocity_cartesian = Vector2(current_speed * cos(global_rotation), current_speed * sin(global_rotation))
-	self.velocity_vector = unit_velocity_cartesian + 100 * applied_wind
+	self.velocity_vector = unit_velocity_cartesian + 10 * applied_wind
 
 #calculates the wind vector on wind change
 func calc_new_wind_vector(wind_cartesian):
@@ -191,11 +192,19 @@ func get_type():
 func is_patrolling():
 	return false
 
+func set_path_showing(new_showing):
+	show_path = new_showing
+
+func get_path_showing():
+	return self.show_path
+
 func select():
 	if faction == GameState.get_playerFaction():
 		selected = true
-		$Sprite.animation = sprite_type + "_clicked"
-		$Sprite.set_frame(faction)
+		get_node("Sprite").animation = sprite_type + "_clicked"
+		get_node("Sprite").set_frame(faction)
+		
+		print(get_node("Sprite").animation)
 		
 		emit_signal("squad_selected", self)
 		
@@ -203,8 +212,10 @@ func select():
 		
 func deselect():
 	selected = false
-	$Sprite.animation = sprite_type + "_basic"
-	$Sprite.set_frame(faction)
+	get_node("Sprite").animation = sprite_type + "_basic"
+	get_node("Sprite").set_frame(faction)
+	
+	print(get_node("Sprite").animation)
 	
 	emit_signal("squad_deselected", self)
 
@@ -291,7 +302,8 @@ func on_detection_entered(other_thing):
 	if is_plane_squad:
 		self.take_plane_damage(other_thing)
 	
-	if self.faction != GameState.get_playerFaction():
+	if other_thing.get_faction() == GameState.get_playerFaction()\
+	and self.faction != GameState.get_playerFaction():
 		show()
 	
 func on_detection_left():

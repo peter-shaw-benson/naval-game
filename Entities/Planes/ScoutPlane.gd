@@ -12,6 +12,7 @@ var plane_stats = {
 	"class": "ScoutPlane",
 	"weapons": [],
 	"agility": 0.05,
+	"launch_time": 3
 }
 
 func _init():
@@ -24,3 +25,4 @@ func _init():
 	self.set_class(plane_stats["class"])
 	self.armament(plane_stats["weapons"])
 	self.set_agility(plane_stats["agility"])
+	self.set_launch_time(plane_stats["launch_time"])

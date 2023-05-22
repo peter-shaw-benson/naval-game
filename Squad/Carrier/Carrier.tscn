@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://art/carrier sprites/sprite_0.png" type="Texture" id=1]
 [ext_resource path="res://Squad/Carrier/Carrier.gd" type="Script" id=2]
@@ -9,6 +9,9 @@
 [ext_resource path="res://art/carrier sprites/carrier_sprite-6.png" type="Texture" id=7]
 [ext_resource path="res://art/carrier sprites/sprite_4.png" type="Texture" id=8]
 [ext_resource path="res://Squad/PlaneSquadron/PlaneSquadron.tscn" type="PackedScene" id=9]
+[ext_resource path="res://art/themes/Armor.tres" type="StyleBox" id=10]
+[ext_resource path="res://art/themes/healthbar.tres" type="StyleBox" id=11]
+[ext_resource path="res://art/themes/LaunchBar.tres" type="StyleBox" id=12]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 14.1449, 29.6435 )
@@ -26,14 +29,8 @@ animations = [ {
 "speed": 5.0
 } ]
 
-[sub_resource type="StyleBoxFlat" id=3]
-bg_color = Color( 0.105882, 0.764706, 0.164706, 1 )
-
 [sub_resource type="StyleBoxFlat" id=4]
 bg_color = Color( 0.12549, 0.12549, 0.12549, 1 )
-
-[sub_resource type="StyleBoxFlat" id=5]
-bg_color = Color( 0.831373, 0.878431, 0.137255, 1 )
 
 [node name="Carrier" type="Area2D"]
 pause_mode = 1
@@ -62,8 +59,27 @@ margin_left = -31.2877
 margin_top = 33.1768
 margin_right = 30.7123
 margin_bottom = 40.1768
-custom_styles/fg = SubResource( 3 )
+custom_styles/fg = ExtResource( 11 )
 custom_styles/bg = SubResource( 4 )
+value = 2.0
+percent_visible = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LaunchBar" type="ProgressBar" parent="."]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = 22.2929
+margin_top = 23.8735
+margin_right = 70.2929
+margin_bottom = 31.8735
+rect_rotation = 270.0
+custom_styles/fg = ExtResource( 12 )
+custom_styles/bg = SubResource( 4 )
+max_value = 5.0
 value = 2.0
 percent_visible = false
 __meta__ = {
@@ -79,7 +95,7 @@ margin_left = -31.1109
 margin_top = 44.3137
 margin_right = 30.8891
 margin_bottom = 51.3137
-custom_styles/fg = SubResource( 5 )
+custom_styles/fg = ExtResource( 10 )
 custom_styles/bg = SubResource( 4 )
 value = 2.0
 percent_visible = false
@@ -88,6 +104,10 @@ __meta__ = {
 }
 
 [node name="ShotTimer" type="Timer" parent="."]
+
+[node name="LaunchTimer" type="Timer" parent="."]
+one_shot = true
 [connection signal="area_entered" from="." to="." method="_on_Carrier_area_entered"]
 [connection signal="input_event" from="." to="." method="_on_AirbaseArea_input_event"]
 [connection signal="timeout" from="ShotTimer" to="." method="_on_ShotTimer_timeout"]
+[connection signal="timeout" from="LaunchTimer" to="." method="_on_LaunchTimer_timeout"]

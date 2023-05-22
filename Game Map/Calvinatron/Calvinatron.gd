@@ -10,6 +10,7 @@ func set_new_targets(squad_list):
 			squad.selected = true
 			var screen_size = get_viewport().size
 			var random_coords = Vector2(rand_range(1, screen_size.x), rand_range(1, screen_size.y))
+			squad.stopped = false
 			squad.current_target = random_coords
 
 # Called when the node enters the scene tree for the first time.

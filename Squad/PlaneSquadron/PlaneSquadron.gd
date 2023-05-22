@@ -22,6 +22,9 @@ var cap_timing = 5
 func _ready():
 	self.scale = Vector2(0.6, 0.6)
 	
+	if self.sprite_type == "torpBomber":
+		self.scale = Vector2(0.5, 0.5)
+	
 	airbase_origin = global_position
 
 	for u in self.get_units():
@@ -34,12 +37,16 @@ func _ready():
 	get_node("HealthBar").set_max(get_total_health())
 	update_healthbar()
 	#get_node("ArmorBar").set_max(get_total_armor())
+	self.deselect()
 	
 func set_animation(strike, type):
 	strike_force = strike
 	sprite_type = type
 	
-	get_node("AnimatedSprite").animation = sprite_type + "_clicked"
+	print("plane sprite:")
+	print(sprite_type)
+	
+	get_node("AnimatedSprite").animation = sprite_type + "_basic"
 	
 	get_node("AnimatedSprite").frame = faction
 	get_node("AirbaseCollision").disabled = true

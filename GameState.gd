@@ -112,6 +112,9 @@ func set_game_settings(settings):
 func get_playerFaction():
 	return playerFaction
 
+func set_playerFaction(new_faction):
+	playerFaction = new_faction
+
 func get_combatPace():
 	return combatPace
 	
