@@ -21,7 +21,7 @@ var airbase_data
 
 var game_time = 0
 var paused = false
-var ai_on = false
+var ai_on = true
 
 onready var LineRenderer = get_node("LineDrawer")
 onready var IslandTexture = get_node("IslandTexture")
