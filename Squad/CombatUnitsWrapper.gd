@@ -302,7 +302,8 @@ func on_detection_entered(other_thing):
 	if is_plane_squad:
 		self.take_plane_damage(other_thing)
 	
-	if self.faction != GameState.get_playerFaction():
+	if other_thing.get_faction() == GameState.get_playerFaction()\
+	and self.faction != GameState.get_playerFaction():
 		show()
 	
 func on_detection_left():
