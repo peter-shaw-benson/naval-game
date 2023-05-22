@@ -4,6 +4,16 @@ extends "../Entity.gd"
 # Navigation Variables
 var ship_name: String
 
+var module_hit_chances = {
+	"engine": 0.02,
+	"battery": 0.01,
+	"rudder": 0.03,
+	"armor": 0.05
+}
+
+var damaged_rudder = false
+var damaged_engine = false
+
 func set_name(ship_name):
 	self.ship_name = ship_name
 
@@ -17,3 +27,71 @@ func _to_string():
 	# Add parent to string?
 
 	return s
+	
+	
+func damage(weapon: Weapon, t_crossed, distance):
+	var accuracy_roll = roller.randf()
+	
+	var range_factor_accuracy = distance * GameState.get_rangeFactor()
+	var range_factor_damage = GameState.get_rangeFactor() + 1
+	
+	var total_accuracy = (weapon.base_accuracy + range_factor_accuracy)
+	
+	var hit = accuracy_roll < total_accuracy
+	
+	if hit:
+		#print("hit scored!")
+		var damage_result = 0
+		# No matter what, a weapon will somewhat damage the armor of a ship
+		
+		var armor_diff = weapon.piercing - armor
+		
+		# Armor Piercing calculation
+		if armor_diff >= 0:
+			damage_result = weapon.damage
+		elif armor_diff < 0:
+			damage_result =  weapon.damage / GameState.get_armorReduction()
+		
+		# special conditions:
+		if accuracy_roll <= (module_hit_chances["battery"] * total_accuracy):
+			print("hit battery")
+			damage_result *= 2
+				
+			# remove a weapon
+			weapons_list.remove(randi() % weapons_list.size())
+				
+		
+		# decreases turn weight on rudder hit
+		elif accuracy_roll <= (module_hit_chances["rudder"] * total_accuracy)\
+		and not damaged_rudder:
+			print("hit rudder")
+			damage_result *= 1.2
+				
+			# decrease turn speed
+			self.turn_weight = self.turn_weight / 2
+				
+			damaged_rudder = true
+		# decreases speed on engine hit
+		elif accuracy_roll <= (module_hit_chances["engine"] * total_accuracy)\
+		and not damaged_engine:
+			print("hit engine")
+			damage_result *= 1.5
+				
+			# decrease turn speed
+			self.speed = self.speed * 0.9
+				
+			damaged_engine = true	
+				
+		elif accuracy_roll <= (module_hit_chances["armor"] * total_accuracy):
+			print("hit armor")
+			damage_result *= 1.2
+			
+			self.armor *= 0.8
+		
+		damage_result *= range_factor_damage 
+		
+		if t_crossed:
+			if damage_result > 0:
+				damage_result *= 2
+
+		hit_points -= damage_result

@@ -36,7 +36,6 @@ func _ready():
 	
 	get_node("HealthBar").set_max(get_total_health())
 	update_healthbar()
-	#get_node("ArmorBar").set_max(get_total_armor())
 	self.deselect()
 	
 func set_animation(strike, type):
@@ -95,8 +94,6 @@ func select():
 func deselect():
 	pass
 
-func update_armorbar():
-	pass
 	
 func get_strike():
 	return strike_force
@@ -173,7 +170,6 @@ func _process(delta):
 		#print("CAP timer time left:" + str(get_node("CAPTimer").time_left))
 	
 	get_node("HealthBar").value = lerp(get_node("HealthBar").value, get_total_health(), get_process_delta_time())
-	#get_node("ArmorBar").value = lerp(get_node("ArmorBar").value, get_total_health(), get_process_delta_time())
 	
 	# go back to carrier
 	if carrier_origin and reached_target:

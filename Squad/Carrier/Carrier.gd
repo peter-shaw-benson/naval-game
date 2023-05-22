@@ -93,7 +93,6 @@ func _ready():
 	get_node("ArmorBar").set_max(get_total_armor())
 	
 	self.update_healthbar()
-	self.update_armorbar()
 	
 	# Make sure it doesn't crash until we're done placing
 	get_node("IslandCollision").disabled = true
@@ -395,6 +394,13 @@ func take_damage(weapon: Weapon, distance_to_squad):
 			if len(units) <= 0:
 				emit_signal("squadron_lost", self, current_enemy_squadron)
 				print("ship sqaudron lost")
+		
+		base_speed = get_min_speed()
+		turn_weight = get_min_turn_weight()
+		
+		self.weapon_dict = construct_weapon_dict()
+		
+		update_healthbar()
 				
 	emit_signal("update_squad_info", get_squad_info())
 
@@ -402,7 +408,6 @@ func shoot_guns(weapon_shooting_list, enemy_squadron):
 	if enemy_squadron:
 		for w in weapon_shooting_list:
 			enemy_squadron.take_damage(w, global_position.distance_to(enemy_squadron.global_position))
-			enemy_squadron.update_armorbar()
 			enemy_squadron.update_healthbar()
 
 func _on_ShotTimer_timeout():

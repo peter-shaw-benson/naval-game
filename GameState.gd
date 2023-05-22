@@ -3,9 +3,27 @@ extends Node
 var current_scene = null
 
 var playerFaction: int
+
+var game_vars = {
+	"combatPace": 2,
+	# how fast the shot timer runs
+	"rangeFactor": 0.05,
+	# how much range influences accuracy / damage
+	"crewAccuracyFactor": 0.05,
+	# how much crew influences accuracy / damage
+	"damageScaling": 0.4,
+	# how much weapon damage gets scaled
+	"accuracyScaling": 0.5,
+	# global weapon accuracy scaling
+	"armorReduction": 3
+	# how much armor reduces incoming weapon damage
+}
+
 var combatPace: float
 var rangeFactor: float
 var crewAccuracyFactor: float
+var damageScaling: float
+var accuracyScaling: float
 
 var building = false
 var num_islands = 0
@@ -17,9 +35,11 @@ var strike_multiplier = 8
 
 func _ready():
 	# Global variables
-	combatPace = 2
-	rangeFactor = 0.05
-	crewAccuracyFactor = 0.05
+	combatPace = game_vars["combatPace"]
+	rangeFactor = game_vars["rangeFactor"]
+	crewAccuracyFactor = game_vars["crewAccuracyFactor"]
+	damageScaling = game_vars["damageScaling"]
+	accuracyScaling = game_vars["accuracyScaling"]
 	
 	var root = get_tree().root
 	current_scene = root.get_child(root.get_child_count() - 1)
@@ -116,13 +136,13 @@ func set_playerFaction(new_faction):
 	playerFaction = new_faction
 
 func get_combatPace():
-	return combatPace
+	return game_vars["combatPace"]
 	
 func get_rangeFactor():
-	return rangeFactor
+	return game_vars["rangeFactor"]
 
 func get_crewAccuracyFactor():
-	return crewAccuracyFactor
+	return game_vars["crew_AccuracyFactor"]
 
 func add_unit(unit):
 	unit_list.append(unit)
@@ -141,3 +161,13 @@ func set_num_islands(islands):
 
 func get_strike_multiplier():
 	return strike_multiplier
+
+func get_damageScaling():
+	return game_vars["damageScaling"]
+
+func get_accuracyScaling():
+	return game_vars["accuracyScaling"]
+
+func get_armorReduction():
+	return game_vars["armorReduction"]
+

@@ -334,9 +334,6 @@ func get_total_armor():
 
 func update_healthbar():
 	get_node("HealthBar").value = get_total_health()
-
-func update_armorbar():
-	get_node("ArmorBar").value = get_total_armor()
 	
 func shoot_guns(weapon_shooting_list, enemy_squadron):
 	

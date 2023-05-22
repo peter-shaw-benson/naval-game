@@ -18,11 +18,11 @@ func init(max_range, fire_rate, damage, piercing, armor_damage, anti_air, \
 base_accuracy, accuracy_gain):
 	self.max_range = max_range
 	self.fire_rate = fire_rate
-	self.damage = damage
+	self.damage = damage * GameState.get_damageScaling()
 	self.piercing = piercing
 	self.armor_damage = armor_damage
 	self.anti_air = anti_air
-	self.base_accuracy = base_accuracy
+	self.base_accuracy = base_accuracy * GameState.get_accuracyScaling()
 	self.accuracy_gain = accuracy_gain
 
 func _to_string():

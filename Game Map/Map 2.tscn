@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://Game Map/Map 2.gd" type="Script" id=1]
 [ext_resource path="res://Squad/Squadron.tscn" type="PackedScene" id=2]
@@ -13,10 +13,14 @@
 [ext_resource path="res://Game Map/WindSpeed.gd" type="Script" id=11]
 [ext_resource path="res://Game Map/WindBox.gd" type="Script" id=12]
 [ext_resource path="res://Squad/Carrier/Carrier.tscn" type="PackedScene" id=13]
+[ext_resource path="res://fonts/outline-pixel7/outline_pixel-7_solid.ttf" type="DynamicFontData" id=14]
 
 [sub_resource type="DynamicFont" id=1]
 size = 36
 font_data = ExtResource( 6 )
+
+[sub_resource type="DynamicFont" id=2]
+font_data = ExtResource( 14 )
 
 [node name="Main" type="Node"]
 pause_mode = 2
@@ -106,7 +110,8 @@ margin_right = 233.0
 margin_bottom = 36.4631
 size_flags_horizontal = 3
 size_flags_vertical = 3
-custom_fonts/normal_font = ExtResource( 7 )
+custom_fonts/normal_font = SubResource( 2 )
+text = "Health"
 __meta__ = {
 "_edit_use_anchors_": false
 }

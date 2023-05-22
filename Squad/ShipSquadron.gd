@@ -28,10 +28,10 @@ func _ready():
 	screen_size = get_viewport_rect().size
 	
 	get_node("HealthBar").set_max(get_total_health())
-	get_node("ArmorBar").set_max(get_total_armor())
+	#get_node("ArmorBar").set_max(get_total_armor())
 	
 	self.update_healthbar()
-	self.update_armorbar()
+	#self.update_armorbar()
 	
 	last_button = ""
 	
@@ -126,7 +126,6 @@ func _physics_process(delta):
 func _process(delta):
 	
 	get_node("HealthBar").value = lerp(get_node("HealthBar").value, get_total_health(), get_process_delta_time())
-	get_node("ArmorBar").value = lerp(get_node("ArmorBar").value, get_total_health(), get_process_delta_time())
 
 func construct_weapon_dict():
 	weapon_dict = {} 
@@ -205,6 +204,12 @@ func take_damage(weapon: Weapon, distance_to_squad):
 			if len(units) <= 0:
 				emit_signal("squadron_lost", self, current_enemy_squadron)
 				print("ship sqaudron lost")
+		
+		# update speed / weapon stuff
+		base_speed = get_min_speed()
+		turn_weight = get_min_turn_weight()
+		
+		self.weapon_dict = construct_weapon_dict()
 				
 	emit_signal("update_squad_info", get_squad_info())
 
@@ -212,8 +217,6 @@ func shoot_guns(weapon_shooting_list, enemy_squadron):
 	if enemy_squadron:
 		for w in weapon_shooting_list:
 			enemy_squadron.take_damage(w, global_position.distance_to(enemy_squadron.global_position))
-			#enemy_squadron.update_armorbar()
-			#enemy_squadron.update_healthbar()
 
 func _on_ShotTimer_timeout():
 	#check_t_crossed()
