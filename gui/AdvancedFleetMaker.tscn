@@ -179,7 +179,6 @@ margin_top = 58.0
 margin_right = 210.0
 margin_bottom = 82.0
 rect_min_size = Vector2( 20, 0 )
-min_value = 1.0
 value = 1.0
 
 [node name="Torp Check" type="CheckBox" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2"]

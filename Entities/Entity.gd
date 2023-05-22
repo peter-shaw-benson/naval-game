@@ -13,6 +13,7 @@ var hide_range: int
 var visibility_range: int
 var crew: float
 var hit_points: float
+var max_health: float
 var armor: float
 
 var weapons_list: Array
@@ -26,6 +27,7 @@ func init(speed, max_range, turn_weight, hit_points, armor, hide_range, visibili
 	self.turn_weight = turn_weight
 	
 	self.hit_points = hit_points
+	self.max_health = hit_points
 	self.armor = armor
 	self.hide_range = hide_range
 	self.visibility_range = visibility
@@ -70,6 +72,9 @@ func weapons_to_string():
 func get_health():
 	return self.hit_points
 
+func get_max_health():
+	return self.max_health
+
 func get_armor():
 	return self.armor
 
@@ -79,22 +84,36 @@ func get_weapons():
 func get_range():
 	return self.max_range
 	
-func calculate_hit(base_accuracy, distance, enemy_stopped, dict=false):
+func calculate_hit(weapon, distance, enemy_stopped, dict=false):
 	var accuracy_roll = roller.randf()
 	
-	var range_factor_accuracy = distance * (1 + GameState.get_rangeFactor())
+	var range_factor_accuracy
+	
+	
+	range_factor_accuracy = 1 / (distance / GameState.get_rangeFactor())
+	
+	if distance > weapon.max_range:
+		range_factor_accuracy *= GameState.get_outOfRange()
+	
+	# cap this at a reasonable level
+	if range_factor_accuracy >= 2:
+		range_factor_accuracy = 2
 	
 	var stopped_factor_accuracy = 1
 	
 	if enemy_stopped:
 		stopped_factor_accuracy += GameState.get_stoppedFactor()
 	
-	var final_accuracy = base_accuracy * range_factor_accuracy * stopped_factor_accuracy 
+	var final_accuracy = weapon.base_accuracy * range_factor_accuracy * stopped_factor_accuracy 
 	
 	var hit_dict = {
 		"hit": accuracy_roll < final_accuracy,
 		"roll": accuracy_roll,
-		"final": final_accuracy
+		"final": final_accuracy,
+		"base": weapon.base_accuracy,
+		"range": range_factor_accuracy,
+		"distance": distance,
+		"weapon_range": weapon.max_range
 	}
 	
 	#print(hit_dict)

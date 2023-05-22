@@ -15,6 +15,7 @@ var stopped = false
 var patrolling = false
 var current_shot_count = 0 
 var current_enemy_squadron: CombatUnitsWrapper
+var ship_dict
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -176,6 +177,18 @@ func get_weapon_list():
 	
 	return weapon_list
 
+func construct_ship_dict():
+	ship_dict = {
+		"screen": [],
+		"capital": []
+	}
+	
+	for ship in units:
+		if ship.get_class() == "Destroyer":
+			ship_dict["screen"].append(ship)
+		else:
+			ship_dict["capital"].append(ship)
+
 func set_enemy_squadron(potential_squad):
 	#print(potential_squad.get_faction())
 	#print(self.faction)
@@ -206,6 +219,42 @@ func enter_combat(enemy_squad):
 	current_enemy_squadron = enemy_squad
 	
 	get_node("ShotTimer").start()
+	
+	construct_ship_dict()
+
+func get_damaged_ship():
+	# weight towards damaged ships and capitals
+	var ship_roll = randf()
+	
+	var screen_weight = 0.25
+	var damaged_ship_weight = 0.6
+	
+	var ship_damage_choices
+	
+	if (ship_roll < screen_weight \
+	and ship_dict["screen"].size() > 0) \
+	or ship_dict["capital"].size() == 0:
+		ship_damage_choices = ship_dict["screen"]
+	else:
+		ship_damage_choices = ship_dict["capital"]
+	
+	var damaged_ships = []
+	var healthy_ships = []
+	
+	for s in ship_damage_choices:
+		if s.get_health() < s.get_max_health():
+			damaged_ships.append(s)
+		else:
+			healthy_ships.append(s)
+	
+	var ship_roll2 = randf()
+	
+	if (ship_roll2 < damaged_ship_weight \
+	and damaged_ships.size() > 0) \
+	or (healthy_ships.size() == 0):
+		return damaged_ships[randi() % damaged_ships.size()]
+	else:
+		return healthy_ships[randi() % healthy_ships.size()]
 
 func take_damage(weapon: Weapon, distance_to_squad, enemy_stopped):
 	#print("ships taking damages")
@@ -214,14 +263,14 @@ func take_damage(weapon: Weapon, distance_to_squad, enemy_stopped):
 		emit_signal("squadron_lost", self, current_enemy_squadron)
 	else:
 		# Damage Random Ship
-		var damage_index = randi() % units.size()
-		var damaged_ship = units[damage_index]
+		var damaged_ship = get_damaged_ship()
+		var damage_index = units.find(damaged_ship)
 		
 		# setting this to false until we fix t crossing
 		damaged_ship.damage(weapon, false, distance_to_squad, enemy_stopped)
 		
 		if damaged_ship.get_health() <= 0:
-			emit_signal("ship_lost", units[damage_index])
+			emit_signal("ship_lost", damaged_ship)
 			units.remove(damage_index)
 			
 			# update weapon list

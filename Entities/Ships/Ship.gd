@@ -35,7 +35,8 @@ func subsystem_damage(accuracy_roll, total_accuracy, damage_result):
 		damage_result *= 2
 				
 			# remove a weapon
-		weapons_list.remove(randi() % weapons_list.size())
+		if weapons_list.size() > 0:
+			weapons_list.remove(randi() % weapons_list.size())
 			
 		emit_signal("hit_subsystem", "battery")
 				
@@ -75,7 +76,7 @@ func subsystem_damage(accuracy_roll, total_accuracy, damage_result):
 func damage(weapon: Weapon, t_crossed, distance, enemy_stopped):
 	var range_factor_damage = GameState.get_rangeFactor() + 1
 	
-	var hit_dict = calculate_hit(weapon.base_accuracy, distance, enemy_stopped, true)
+	var hit_dict = calculate_hit(weapon, distance, enemy_stopped, true)
 	
 	if hit_dict["hit"]:
 		#print("hit scored!")

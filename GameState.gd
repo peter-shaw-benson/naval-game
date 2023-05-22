@@ -7,15 +7,17 @@ var playerFaction: int
 var game_vars = {
 	"combatPace": 1,
 	# how fast the shot timer runs
-	"rangeFactor": 0.0001,
+	"rangeFactor": 30,
 	# how much range influences accuracy / damage
+	"outOfRange": 0.2,
+	# how much accuracy is scaled when out of weapon range
 	"crewAccuracyFactor": 0.0005,
 	# how much crew influences accuracy / damage
 	"damageScaling": 0.4,
 	# how much weapon damage gets scaled
-	"accuracyScaling": 0.08,
+	"accuracyScaling": 0.3,
 	# global weapon accuracy scaling
-	"armorReduction": 3,
+	"armorReduction": 5,
 	# how much armor reduces incoming weapon damage
 	"stoppedFactor": 0.5
 	# How much being stopped increases accuracy
@@ -176,3 +178,5 @@ func get_armorReduction():
 func get_stoppedFactor():
 	return game_vars["stoppedFactor"]
 
+func get_outOfRange():
+	return game_vars["outOfRange"]

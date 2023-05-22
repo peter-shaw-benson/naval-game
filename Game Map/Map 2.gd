@@ -203,7 +203,7 @@ func _on_CrashPopup_id_pressed(id):
 	if id == 0:
 		unpause()
 		# Go to Main Menu
-		GameState.restore_budgets()
+		GameState.reset_game()
 		
 		GameState.goto_scene("res://gui/MainMenu.tscn")
 	elif id == 1:
