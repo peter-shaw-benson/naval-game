@@ -1,5 +1,11 @@
-extends Airbase
+extends ShipSquadron
 class_name Carrier
+
+
+export var PlaneSquadScene: PackedScene
+
+signal plane_launch(plane_squad)
+signal planes_recovered(plane_squad)
 
 var DiveBomber = preload("res://Entities/Planes/DiveBomber.gd")
 var TorpBomber = preload("res://Entities/Planes/TorpBomber.gd")
@@ -7,26 +13,16 @@ var Fighter = preload("res://Entities/Planes/Fighter.gd")
 
 var CarrierEntity = preload("res://Entities/Ships/CarrierEntity.gd")
 
-# Ship Signals
-signal new_course_change(current_target, placement)
-signal reached_target()
-signal squadron_lost(this_squad, enemy_squadron)
-signal ship_lost(ship)
-signal hit(squad)
+var plane_list
+
+var launching = false
+var launching_squad
+
+var plane_dict = {"scout": [], "strike": [], "bomber": [], "fighter": []}
+
 
 var carrier_default_planes = [DiveBomber.new(), TorpBomber.new(), Fighter.new()]
 
-var t_crossed = false
-var target_array = []
-
-var weapon_dict = {}
-var stopped = false
-var patrolling = false
-var current_shot_count = 0 
-var current_enemy_squadron: CombatUnitsWrapper
-
-
-var plane_list
 
 func init(unit_array, initial_position, faction, type):
 	plane_list = carrier_default_planes
@@ -79,76 +75,36 @@ func init(unit_array, initial_position, faction, type):
 	
 	#print("squad created")
 
+func organize_aircraft(plane_list):
+	for aircraft in plane_list:
+		if aircraft.get_class() == "ScoutPlane":
+			plane_dict["scout"].append(aircraft)
+		elif aircraft.get_class() == "LevelBomber":
+			plane_dict["bomber"].append(aircraft)
+		elif aircraft.get_class() == "Fighter":
+			plane_dict["fighter"].append(aircraft)
+		else:
+			plane_dict["strike"].append(aircraft)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	
 	get_node("ShotTimer").wait_time = GameState.get_combatPace()
+	get_node("StatusPopups/Condition Popup").wait_time = GameState.get_combatPace() * 0.8
+	
 	self.weapon_dict = construct_weapon_dict()
 	#print(weapon_dict)
 	
 	screen_size = get_viewport_rect().size
 	
 	get_node("HealthBar").set_max(get_total_health())
-	get_node("ArmorBar").set_max(get_total_armor())
 	
 	self.update_healthbar()
-	self.update_armorbar()
 	
 	# Make sure it doesn't crash until we're done placing
 	get_node("IslandCollision").disabled = true
 	# hide launch bar on game start
 	get_node("LaunchBar").hide()
-
-func get_min_speed():
-	
-	if len(units) == 0:
-		return 0
-	else:
-		var min_speed = units[0].get_speed()
-		
-		for unit in units:
-			if unit.get_speed() < min_speed:
-				min_speed = unit.get_speed()
-		
-		return min_speed
-
-func get_min_turn_weight():
-	
-	if len(units) == 0:
-		return 0
-	else:
-		var min_turn_weight = units[0].get_turn_weight()
-		
-		for unit in units:
-			if unit.get_turn_weight() < min_turn_weight:
-				min_turn_weight = unit.get_turn_weight()
-		
-		return min_turn_weight
-
-func get_visibility():
-	if len(units) == 0:
-		return 0
-	else:
-		var vis = units[0].get_visibility()
-		
-		for unit in units:
-			if unit.get_visibility() > vis:
-				vis = unit.get_visibility()
-		
-		return vis
-
-func get_hiding():
-	if len(units) == 0:
-		return 0
-	else:
-		var hide = units[0].get_hiding()
-		
-		for unit in units:
-			if unit.get_hiding() > hide:
-				hide = unit.get_hiding()
-		
-		return hide
 
 func handle_right_click(placement):
 	if selected:
@@ -197,45 +153,6 @@ func handle_right_click(placement):
 
 			stopped = false
 
-			
-func select():
-	if faction == GameState.get_playerFaction():
-		selected = true
-		get_node("Sprite").animation = sprite_type + "_clicked"
-		get_node("Sprite").set_frame(faction)
-		
-		emit_signal("squad_selected", self)
-		
-		last_button = ""
-		
-func deselect():
-	selected = false
-	get_node("Sprite").animation = sprite_type + "_basic"
-	get_node("Sprite").set_frame(faction)
-	
-	#print(get_node("Sprite").animation)
-	
-	emit_signal("squad_deselected", self)
-
-func start_placing():
-	#print("started placing: " + self.get_name())
-	placing = true
-	
-	global_position = get_viewport().get_mouse_position()
-	
-	get_node("IslandCollision").disabled = true
-
-func stop_placing():
-	#print("stopped placing: " + self.get_name())
-	placing = false
-
-	emit_signal("stopped_placing")
-	
-	get_node("IslandCollision").disabled = false
-	#print(get_node("IslandCollision").disabled)
-	detector.enable_spotting()
-	
-	current_target = self.global_position
 
 func _input(event):
 	if selected:
@@ -254,42 +171,7 @@ func _input(event):
 			last_button = "CAP"
 		elif Input.is_action_pressed("cancel"):
 			last_button = ""
-			
-			
 
-func _physics_process(delta):
-	
-	if placing:
-		# Place squadron at mouse, until the mouse clicks
-		global_position = get_viewport().get_mouse_position()
-		current_target = self.global_position
-	
-	else:
-		#if distance to target is small and there are queued targets,
-		#remove the target from the queue and update the current target
-		if global_position.distance_to(current_target) < 10 and len(target_array) > 0:
-			emit_signal("reached_target")
-			if patrolling: 
-				target_array.append(current_target)
-			
-			current_target = target_array[0]
-			
-			target_array.remove(0)
-		
-		#if we are close to the last target, set stopped to true
-		elif global_position.distance_to(current_target) < 10:
-			emit_signal("reached_target")
-			stopped = true
-
-		if int(global_position.distance_to(current_target)) > 1:
-			self.rotation = lerp_angle(self.rotation, (current_target - self.global_position).normalized().angle() + PI/2, self.turn_weight)
-		#print(position.move_toward(current_target, delta*current_speed))
-		if not stopped:
-			self.calc_new_velocity()
-			global_position = global_position.move_toward(get_movement_vector(), delta*(velocity_vector.length()))
-		
-	position.x = clamp(position.x, 0, screen_size.x)
-	position.y = clamp(position.y, 0, screen_size.y)
 
 func _process(delta):
 	
@@ -297,112 +179,14 @@ func _process(delta):
 		get_node("LaunchBar").value = get_node("LaunchTimer").time_left
 	
 	get_node("HealthBar").value = lerp(get_node("HealthBar").value, get_total_health(), get_process_delta_time())
-	get_node("ArmorBar").value = lerp(get_node("ArmorBar").value, get_total_health(), get_process_delta_time())
 
 
 ## COMBAT STUFFS
 
-func get_total_health():
-	var tot_health = 0
-	
-	for u in units:
-		tot_health += u.get_health()
-	
-	return tot_health
-
-func get_total_armor():
-	var tot_armor = 0
-	
-	for u in units:
-		tot_armor += u.get_armor()
-	
-	return tot_armor
-
-func construct_weapon_dict():
-	weapon_dict = {} 
-	
-	for u in units:
-		for w in u.get_weapons():
-			var fire_rate = str(w.get_fire_rate())
-			
-			if weapon_dict.has(fire_rate):
-				weapon_dict[fire_rate].append(w)
-			else:
-				weapon_dict[fire_rate] = []
-				weapon_dict[fire_rate].append(w)
-	
-	return weapon_dict
-
-func get_weapon_list():
-	var weapon_list = []
-	
-	for u in units:
-		for w in u.get_weapons():
-			weapon_list.append(w)
-	
-	return weapon_list
-
-func set_enemy_squadron(potential_squad):
-	#print(potential_squad.get_faction())
-	#print(self.faction)
-	if potential_squad.get_faction() != self.faction:
-		enter_combat(potential_squad)
-
-
-func exit_combat():
-	in_combat = false
-	t_crossed = false 
-	
-	current_shot_count = 0
-	
-	current_enemy_squadron = null
-	
-	get_node("ShotTimer").stop()
-	
-	#print(self.ships)
-
-func enter_combat(enemy_squad):
-	print("entered combat!")
-	in_combat = true
-	t_crossed = false
-	
-	current_shot_count = 0
-	
-	current_enemy_squadron = enemy_squad
-	
-	get_node("ShotTimer").start()
-
-func take_damage(weapon: Weapon, distance_to_squad):
-	#print("ships taking damages")
-	# for now, the first ship will bear the brunt of the damage. ouch!
-	if len(units) <= 0:
-		emit_signal("squadron_lost", self, current_enemy_squadron)
-	else:
-		# Damage Random Ship
-		var damage_index = randi() % units.size()
-		var damaged_ship = units[damage_index]
-		
-		# setting this to false until we fix t crossing
-		damaged_ship.damage(weapon, false, distance_to_squad)
-		
-		if damaged_ship.get_health() <= 0:
-			emit_signal("ship_lost", units[damage_index])
-			units.remove(damage_index)
-			
-			# update weapon list
-			self.weapon_dict = construct_weapon_dict()
-			
-			if len(units) <= 0:
-				emit_signal("squadron_lost", self, current_enemy_squadron)
-				print("ship sqaudron lost")
-				
-	emit_signal("update_squad_info", get_squad_info())
-
 func shoot_guns(weapon_shooting_list, enemy_squadron):
-	if enemy_squadron:
+	if enemy_squadron and not launching:
 		for w in weapon_shooting_list:
 			enemy_squadron.take_damage(w, global_position.distance_to(enemy_squadron.global_position))
-			enemy_squadron.update_armorbar()
 			enemy_squadron.update_healthbar()
 
 func _on_ShotTimer_timeout():
@@ -415,7 +199,6 @@ func _on_ShotTimer_timeout():
 			#print("carrier shooting guns")
 			#print("carrier weapons length:" + str(len(weapon_dict[f])))
 			shoot_guns(weapon_dict[f], current_enemy_squadron)
-
 
 # PLANE STUFF
 
@@ -447,3 +230,102 @@ func _on_Carrier_area_entered(area):
 	
 func _on_LaunchTimer_timeout():
 	end_launch()
+
+func send_out_planes(placement, strike_type, is_carrier_launch=false, is_cap=false):
+	#print(type)
+	
+	if not launching:
+	
+		var plane_squad = PlaneSquadScene.instance()
+		
+		var plane_list = [] 
+		# make plane list a copy, not a reference
+		for i in range(len(plane_dict[strike_type])):
+			plane_list.append(plane_dict[strike_type][i])
+		
+		var initial_pos = global_position
+		var target = placement
+		var is_strike = false
+		
+		# Init plane scene
+		# initial posiiton is airbase position
+		# plane composition is the scout planes
+		# faction
+		if strike_type != "scout":
+			is_strike = true
+		
+		print(len(plane_list))
+		
+		var type_map = {"scout":"scoutPlane",
+						"strike":"torpBomber",
+						"fighter": "fighter",
+						"bomber": "levelBomber"}
+						
+		start_launch(plane_list)
+		
+		if len(plane_list) > 0:
+			#print(len(plane_list))
+			plane_squad.init(plane_list, initial_pos, faction, type_map[strike_type])
+			plane_squad.set_animation(is_strike, type_map[strike_type])
+			plane_squad.set_target(target)
+			plane_squad.set_combat_air_patrol(is_cap)
+			
+			if is_carrier_launch:
+				plane_squad.carrier_launch(self)
+			
+			launching_squad = plane_squad
+			get_node("LaunchTimer").start()
+			
+			for i in range(len(plane_dict[strike_type])):
+				plane_dict[strike_type].remove(0)
+			
+			#print("sent planes to ", placement)
+
+
+func plane_squad_recovered(plane_squad):
+	#print("recovering at base")
+	#print(plane_squad)
+	#print(plane_squad.get_class())
+	#print(plane_squad.get_name())
+	var recovered_planes = plane_squad.get_units()
+	#print(recovered_planes)
+	
+	for p in recovered_planes:
+		if plane_squad.get_sprite_type() == "fighter":
+			plane_dict["fighter"].append(p)
+		elif plane_squad.get_sprite_type() == "levelBomber":
+			plane_dict["bomber"].append(p)
+		elif plane_squad.get_sprite_type() == "torpBomber":
+			plane_dict["strike"].append(p)
+		else:
+			plane_dict["scout"].append(p)
+	
+	plane_squad.queue_free()
+		
+	emit_signal("planes_recovered", plane_squad)
+
+	#print(plane_dict)
+
+func plane_squad_death(plane_squad):
+	plane_squad.queue_free()
+
+func start_launch(plane_list):
+	var squad_launch_time = get_launch_time(plane_list)
+	get_node("LaunchTimer").wait_time = squad_launch_time
+		
+	get_node("LaunchBar").show()
+	get_node("LaunchBar").max_value = squad_launch_time
+		
+	launching = true
+
+func end_launch():
+	launching = false
+	
+	emit_signal("plane_launch", launching_squad)
+		
+	launching_squad.connect("planes_recovered", self, "plane_squad_recovered")
+	launching_squad.connect("plane_squad_lost", self, "plane_squad_death")
+	
+	launching_squad = null
+	
+	get_node("LaunchBar").hide()

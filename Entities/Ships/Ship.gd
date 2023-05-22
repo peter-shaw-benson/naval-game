@@ -4,6 +4,16 @@ extends "../Entity.gd"
 # Navigation Variables
 var ship_name: String
 
+var module_hit_chances = {
+	"engine": 0.02,
+	"battery": 0.01,
+	"rudder": 0.03,
+	"armor": 0.05
+}
+
+var damaged_rudder = false
+var damaged_engine = false
+
 func set_name(ship_name):
 	self.ship_name = ship_name
 
@@ -17,24 +27,79 @@ func _to_string():
 	# Add parent to string?
 
 	return s
-
+	
+func subsystem_damage(accuracy_roll, total_accuracy, damage_result):
+	 #special conditions:
+	if accuracy_roll <= (module_hit_chances["battery"] * total_accuracy):
+			#print("hit battery")
+		damage_result *= 2
+				
+			# remove a weapon
+		weapons_list.remove(randi() % weapons_list.size())
+			
+		emit_signal("hit_subsystem", "battery")
+				
+		# decreases turn weight on rudder hit
+	elif accuracy_roll <= (module_hit_chances["rudder"] * total_accuracy)\
+	and not damaged_rudder:
+			#print("hit rudder")
+		damage_result *= 1.2
+				
+			# decrease turn speed
+		self.turn_weight = self.turn_weight / 2
+				
+		damaged_rudder = true
+		emit_signal("hit_subsystem", "rudder")
+			
+		# decreases speed on engine hit
+	elif accuracy_roll <= (module_hit_chances["engine"] * total_accuracy)\
+	and not damaged_engine:
+			#print("hit engine")
+		damage_result *= 1.5
+				
+			# decrease turn speed
+		self.speed = self.speed * 0.9
+				
+		damaged_engine = true	
+		emit_signal("hit_subsystem", "engine")
+				
+	elif accuracy_roll <= (module_hit_chances["armor"] * total_accuracy):
+			#print("hit armor")
+		damage_result *= 1.2
+			
+		self.armor *= 0.8
+		emit_signal("hit_subsystem", "armor")
+		
+	return damage_result
+	
+>>>>>>> peter-devbranch
 func damage(weapon: Weapon, t_crossed, distance):
 	var accuracy_roll = roller.randf()
 	
 	var range_factor_accuracy = distance * GameState.get_rangeFactor()
 	var range_factor_damage = GameState.get_rangeFactor() + 1
 	
+<<<<<<< HEAD
 	var hit = accuracy_roll < (weapon.base_accuracy + range_factor_accuracy)
+=======
+	var total_accuracy = (weapon.base_accuracy + range_factor_accuracy)
+	
+	var hit = accuracy_roll < total_accuracy
+>>>>>>> peter-devbranch
 	
 	if hit:
 		#print("hit scored!")
 		var damage_result = 0
 		# No matter what, a weapon will somewhat damage the armor of a ship
+<<<<<<< HEAD
 		armor -= weapon.armor_damage
+=======
+>>>>>>> peter-devbranch
 		
 		var armor_diff = weapon.piercing - armor
 		
 		# Armor Piercing calculation
+<<<<<<< HEAD
 		if armor_diff >= weapon.damage:
 			damage_result = weapon.damage
 		elif armor_diff < weapon.damage:
@@ -52,6 +117,16 @@ func damage(weapon: Weapon, t_crossed, distance):
 				damage_result = weapon.damage / 4
 		
 		damage_result *= range_factor_damage
+=======
+		if armor_diff >= 0:
+			damage_result = weapon.damage
+		elif armor_diff < 0:
+			damage_result =  weapon.damage / GameState.get_armorReduction()
+		
+		damage_result = subsystem_damage(accuracy_roll, total_accuracy, damage_result)
+		
+		damage_result *= range_factor_damage 
+>>>>>>> peter-devbranch
 		
 		if t_crossed:
 			if damage_result > 0:

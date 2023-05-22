@@ -244,16 +244,18 @@ func _unhandled_input(event):
 	
 	# Deselct when clicked outside the squadron
 	if event is InputEventMouseButton \
-	and event.button_index == 1 \
+	and event.button_index == BUTTON_LEFT \
 	and event.pressed:
+		print("clicked!")
 		if self.selected:
 			self.deselect()
 		
 		if self.placing:
+			print("Stopped placing?")
 			self.stop_placing()
 
 func start_placing():
-	#print("started placing: " + self.get_name())
+	print("started placing: " + self.get_name())
 	placing = true
 	
 	global_position = get_viewport().get_mouse_position()
@@ -335,9 +337,6 @@ func get_total_armor():
 
 func update_healthbar():
 	get_node("HealthBar").value = get_total_health()
-
-func update_armorbar():
-	get_node("ArmorBar").value = get_total_armor()
 	
 func shoot_guns(weapon_shooting_list, enemy_squadron):
 	
@@ -364,6 +363,6 @@ func get_squad_info():
 	if len(task_force_name) > 0:
 		squad_text += task_force_name + "\n"
 	
-	squad_text += "Health: " + str(get_total_health()) + " Armor: " + str(get_total_armor()) + " Speed: " + str(base_speed)
+	squad_text += "Health: " + str(int(get_total_health())) + " Armor: " + str(int(get_total_armor())) + " Speed: " + str(base_speed)
 
 	return squad_text
