@@ -1,5 +1,5 @@
 extends "res://Squad/CombatUnitsWrapper.gd"
-
+class_name ShipSquadron
 
 signal new_course_change(current_target, placement)
 signal reached_target()
@@ -21,7 +21,7 @@ func _ready():
 	
 	# Combat Variables:
 	get_node("ShotTimer").wait_time = GameState.get_combatPace()
-	get_node("Condition Popup").wait_time = GameState.get_combatPace() * 0.8
+	get_node("StatusPopups/Condition Popup").wait_time = GameState.get_combatPace() * 0.8
 	
 	self.weapon_dict = construct_weapon_dict()
 	
@@ -82,6 +82,7 @@ func _input(event):
 		elif Input.is_action_pressed("cancel"):
 			last_button = ""
 
+# Handle Island collisions
 func _on_Squadron_area_entered(area):
 	if area.get_faction() == 4:
 		# Entered Hiding Area 
@@ -137,14 +138,14 @@ func _process(delta):
 		global_position.y - 20
 	)
 	
-	get_node("PopupHealth").rect_position = popup_location
+	get_node("StatusPopups/PopupHealth").rect_position = popup_location
 	
 	var popup_location2 = Vector2(
 		global_position.x + 20,
 		global_position.y 
 	)
 	
-	get_node("PopupConditions").rect_position = popup_location
+	get_node("StatusPopups/PopupConditions").rect_position = popup_location
 
 func construct_weapon_dict():
 	weapon_dict = {} 
@@ -186,7 +187,7 @@ func exit_combat():
 	current_enemy_squadron = null
 	
 	get_node("ShotTimer").stop()
-	get_node("PopupHealth").hide()
+	get_node("StatusPopups/PopupHealth").hide()
 	
 	#print(self.ships)
 
@@ -260,11 +261,11 @@ func show_attack_damage(old_health, new_health):
 		global_position.y - 20
 	)
 	
-	get_node("PopupHealth").show()
-	get_node("PopupHealth").rect_position = popup_location
-	get_node("PopupHealth/HealthText").text = damage_str
+	get_node("StatusPopups/PopupHealth").show()
+	get_node("StatusPopups/PopupHealth").rect_position = popup_location
+	get_node("StatusPopups/PopupHealth/HealthText").text = damage_str
 	
-	get_node("Condition Popup").start()
+	get_node("StatusPopups/Condition Popup").start()
 	
 func on_subsystem_damage(type):
 	print("subsystem damaged:" + type)
@@ -276,9 +277,9 @@ func on_subsystem_damage(type):
 	
 	var condition_str = type.to_upper()
 	
-	get_node("PopupConditions").show()
-	get_node("PopupConditions").rect_position = popup_location
-	get_node("PopupConditions/ConditionText").text = condition_str
+	get_node("StatusPopups/PopupConditions").show()
+	get_node("StatusPopups/PopupConditions").rect_position = popup_location
+	get_node("StatusPopups/PopupConditions/ConditionText").text = condition_str
 	
 	get_node("Condition Popup").start()
 

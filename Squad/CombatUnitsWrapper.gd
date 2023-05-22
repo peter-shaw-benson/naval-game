@@ -244,16 +244,18 @@ func _unhandled_input(event):
 	
 	# Deselct when clicked outside the squadron
 	if event is InputEventMouseButton \
-	and event.button_index == 1 \
+	and event.button_index == BUTTON_LEFT \
 	and event.pressed:
+		print("clicked!")
 		if self.selected:
 			self.deselect()
 		
 		if self.placing:
+			print("Stopped placing?")
 			self.stop_placing()
 
 func start_placing():
-	#print("started placing: " + self.get_name())
+	print("started placing: " + self.get_name())
 	placing = true
 	
 	global_position = get_viewport().get_mouse_position()
