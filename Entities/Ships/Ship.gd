@@ -72,17 +72,12 @@ func subsystem_damage(accuracy_roll, total_accuracy, damage_result):
 		
 	return damage_result
 	
-func damage(weapon: Weapon, t_crossed, distance):
-	var accuracy_roll = roller.randf()
-	
-	var range_factor_accuracy = distance * GameState.get_rangeFactor()
+func damage(weapon: Weapon, t_crossed, distance, enemy_stopped):
 	var range_factor_damage = GameState.get_rangeFactor() + 1
-
-	var total_accuracy = (weapon.base_accuracy + range_factor_accuracy)
 	
-	var hit = accuracy_roll < total_accuracy
+	var hit_dict = calculate_hit(weapon.base_accuracy, distance, enemy_stopped, true)
 	
-	if hit:
+	if hit_dict["hit"]:
 		#print("hit scored!")
 		var damage_result = 0
 		# No matter what, a weapon will somewhat damage the armor of a ship
@@ -96,10 +91,9 @@ func damage(weapon: Weapon, t_crossed, distance):
 		elif armor_diff < 0:
 			damage_result =  weapon.damage / GameState.get_armorReduction()
 		
-		damage_result = subsystem_damage(accuracy_roll, total_accuracy, damage_result)
+		damage_result = subsystem_damage(hit_dict["roll"], hit_dict["final"], damage_result)
 		
 		damage_result *= range_factor_damage 
-
 		
 		if t_crossed:
 			if damage_result > 0:

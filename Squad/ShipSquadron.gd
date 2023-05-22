@@ -207,7 +207,7 @@ func enter_combat(enemy_squad):
 	
 	get_node("ShotTimer").start()
 
-func take_damage(weapon: Weapon, distance_to_squad):
+func take_damage(weapon: Weapon, distance_to_squad, enemy_stopped):
 	#print("ships taking damages")
 	# for now, the first ship will bear the brunt of the damage. ouch!
 	if len(units) <= 0:
@@ -218,7 +218,7 @@ func take_damage(weapon: Weapon, distance_to_squad):
 		var damaged_ship = units[damage_index]
 		
 		# setting this to false until we fix t crossing
-		damaged_ship.damage(weapon, false, distance_to_squad)
+		damaged_ship.damage(weapon, false, distance_to_squad, enemy_stopped)
 		
 		if damaged_ship.get_health() <= 0:
 			emit_signal("ship_lost", units[damage_index])
@@ -245,7 +245,7 @@ func take_damage(weapon: Weapon, distance_to_squad):
 func shoot_guns(weapon_shooting_list, enemy_squadron):
 	if enemy_squadron:
 		for w in weapon_shooting_list:
-			enemy_squadron.take_damage(w, global_position.distance_to(enemy_squadron.global_position))
+			enemy_squadron.take_damage(w, global_position.distance_to(enemy_squadron.global_position), stopped)
 
 func _on_ShotTimer_timeout():
 	#check_t_crossed()

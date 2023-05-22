@@ -246,12 +246,10 @@ func _unhandled_input(event):
 	if event is InputEventMouseButton \
 	and event.button_index == BUTTON_LEFT \
 	and event.pressed:
-		print("clicked!")
 		if self.selected:
 			self.deselect()
 		
 		if self.placing:
-			print("Stopped placing?")
 			self.stop_placing()
 
 func start_placing():

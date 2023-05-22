@@ -16,26 +16,18 @@ func set_launch_time(new_time):
 func get_launch_time():
 	return self.launch_time
 
-func damage(weapon: Weapon, t_crossed, distance):
+
+func damage(weapon: Weapon, t_crossed, distance, enemy_stopped):
 	# Should be only based on anti air of the weapon
-	
-	var accuracy_roll = roller.randf()
-	
-	var range_factor_accuracy = distance * GameState.get_rangeFactor()
 	var range_factor_damage = GameState.get_rangeFactor() + 1
 	
-	var hit = accuracy_roll < \
-	((weapon.base_accuracy + range_factor_accuracy) * self.agility)
-	var partial_hit = accuracy_roll < \
-	((weapon.base_accuracy + range_factor_accuracy))
+	var hit = calculate_hit(weapon.base_accuracy * self.agility, distance, enemy_stopped)
+	var partial_hit = calculate_hit(weapon.base_accuracy, distance, enemy_stopped)
 	
 	var damage_result = weapon.anti_air * range_factor_damage
 	
 	if hit:
 		hit_points -= damage_result
-		
-		if accuracy_roll <= (0.05 * weapon.base_accuracy):
-			damage_result *= 2
 	
 	if partial_hit:
 		hit_points -= (damage_result / 2)

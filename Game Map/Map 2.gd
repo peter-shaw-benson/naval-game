@@ -21,7 +21,7 @@ var airbase_data
 
 var game_time = 0
 var paused = false
-var ai_on = true
+var ai_on = false
 
 onready var LineRenderer = get_node("LineDrawer")
 onready var IslandTexture = get_node("IslandTexture")
@@ -201,6 +201,7 @@ func _on_squad_crash(s):
 
 func _on_CrashPopup_id_pressed(id):
 	if id == 0:
+		unpause()
 		# Go to Main Menu
 		GameState.restore_budgets()
 		
