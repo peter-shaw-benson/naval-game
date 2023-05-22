@@ -360,6 +360,6 @@ func get_squad_info():
 	if len(task_force_name) > 0:
 		squad_text += task_force_name + "\n"
 	
-	squad_text += "Health: " + str(get_total_health()) + " Armor: " + str(get_total_armor()) + " Speed: " + str(base_speed)
+	squad_text += "Health: " + str(int(get_total_health())) + " Armor: " + str(int(get_total_armor())) + " Speed: " + str(base_speed)
 
 	return squad_text

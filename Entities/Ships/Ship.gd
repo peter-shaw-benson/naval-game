@@ -54,39 +54,45 @@ func damage(weapon: Weapon, t_crossed, distance):
 		
 		# special conditions:
 		if accuracy_roll <= (module_hit_chances["battery"] * total_accuracy):
-			print("hit battery")
+			#print("hit battery")
 			damage_result *= 2
 				
 			# remove a weapon
 			weapons_list.remove(randi() % weapons_list.size())
+			
+			emit_signal("hit_subsystem", "battery")
 				
 		
 		# decreases turn weight on rudder hit
 		elif accuracy_roll <= (module_hit_chances["rudder"] * total_accuracy)\
 		and not damaged_rudder:
-			print("hit rudder")
+			#print("hit rudder")
 			damage_result *= 1.2
 				
 			# decrease turn speed
 			self.turn_weight = self.turn_weight / 2
 				
 			damaged_rudder = true
+			emit_signal("hit_subsystem", "rudder")
+			
 		# decreases speed on engine hit
 		elif accuracy_roll <= (module_hit_chances["engine"] * total_accuracy)\
 		and not damaged_engine:
-			print("hit engine")
+			#print("hit engine")
 			damage_result *= 1.5
 				
 			# decrease turn speed
 			self.speed = self.speed * 0.9
 				
 			damaged_engine = true	
+			emit_signal("hit_subsystem", "engine")
 				
 		elif accuracy_roll <= (module_hit_chances["armor"] * total_accuracy):
-			print("hit armor")
+			#print("hit armor")
 			damage_result *= 1.2
 			
 			self.armor *= 0.8
+			emit_signal("hit_subsystem", "armor")
 		
 		damage_result *= range_factor_damage 
 		

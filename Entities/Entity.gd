@@ -1,5 +1,7 @@
 extends Node
 
+signal hit_subsystem(type)
+
 # Navigation Variables
 var speed: int
 var max_range: int

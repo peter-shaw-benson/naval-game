@@ -21,6 +21,8 @@ func _ready():
 	
 	# Combat Variables:
 	get_node("ShotTimer").wait_time = GameState.get_combatPace()
+	get_node("Condition Popup").wait_time = GameState.get_combatPace() * 0.8
+	
 	self.weapon_dict = construct_weapon_dict()
 	
 	self.scale = Vector2(0.6, 0.6)
@@ -39,6 +41,9 @@ func _ready():
 	get_node("IslandCollision").disabled = true
 	
 	self.deselect()
+	
+	for ship in units:
+		connect("hit_subsystem", self, "on_subsystem_damage")
 
 func handle_right_click(placement):
 	if selected:
@@ -126,6 +131,20 @@ func _physics_process(delta):
 func _process(delta):
 	
 	get_node("HealthBar").value = lerp(get_node("HealthBar").value, get_total_health(), get_process_delta_time())
+	
+	var popup_location = Vector2(
+		global_position.x + 20,
+		global_position.y - 20
+	)
+	
+	get_node("PopupHealth").rect_position = popup_location
+	
+	var popup_location2 = Vector2(
+		global_position.x + 20,
+		global_position.y 
+	)
+	
+	get_node("PopupConditions").rect_position = popup_location
 
 func construct_weapon_dict():
 	weapon_dict = {} 
@@ -167,6 +186,7 @@ func exit_combat():
 	current_enemy_squadron = null
 	
 	get_node("ShotTimer").stop()
+	get_node("PopupHealth").hide()
 	
 	#print(self.ships)
 
@@ -210,6 +230,9 @@ func take_damage(weapon: Weapon, distance_to_squad):
 		turn_weight = get_min_turn_weight()
 		
 		self.weapon_dict = construct_weapon_dict()
+		
+		if self.faction == GameState.get_playerFaction():
+			self.show_attack_damage(get_node("HealthBar").value, get_total_health())
 				
 	emit_signal("update_squad_info", get_squad_info())
 
@@ -225,3 +248,42 @@ func _on_ShotTimer_timeout():
 	for f in weapon_dict:
 		if current_shot_count % int(f) == 0:
 			shoot_guns(weapon_dict[f], current_enemy_squadron)
+
+func show_attack_damage(old_health, new_health):
+	#print("showing attack damage: " + str(old_health) + "\t" + str(new_health))
+	var damage = int(old_health - new_health)
+	var damage_str = "-" + str(damage)
+	
+	#print("showing health popup")
+	var popup_location = Vector2(
+		global_position.x + 20,
+		global_position.y - 20
+	)
+	
+	get_node("PopupHealth").show()
+	get_node("PopupHealth").rect_position = popup_location
+	get_node("PopupHealth/HealthText").text = damage_str
+	
+	get_node("Condition Popup").start()
+	
+func on_subsystem_damage(type):
+	print("subsystem damaged:" + type)
+	
+	var popup_location = Vector2(
+		global_position.x + 20,
+		global_position.y 
+	)
+	
+	var condition_str = type.to_upper()
+	
+	get_node("PopupConditions").show()
+	get_node("PopupConditions").rect_position = popup_location
+	get_node("PopupConditions/ConditionText").text = condition_str
+	
+	get_node("Condition Popup").start()
+
+
+func _on_Condition_Popup_timeout():
+	#print("hiding health popup")
+	get_node("PopupHealth").hide()
+	get_node("PopupConditions").hide()
