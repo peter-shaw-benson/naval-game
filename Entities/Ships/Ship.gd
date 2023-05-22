@@ -27,7 +27,6 @@ func _to_string():
 	# Add parent to string?
 
 	return s
-<<<<<<< HEAD
 	
 func subsystem_damage(accuracy_roll, total_accuracy, damage_result):
 	 #special conditions:
@@ -73,7 +72,6 @@ func subsystem_damage(accuracy_roll, total_accuracy, damage_result):
 		
 	return damage_result
 	
->>>>>>> peter-devbranch
 func damage(weapon: Weapon, t_crossed, distance):
 	var accuracy_roll = roller.randf()
 	
