@@ -226,14 +226,24 @@ func get_damaged_ship():
 	# weight towards damaged ships and capitals
 	var ship_roll = randf()
 	
-	var screen_weight = 0.25
+	var capital_weight = 2
 	var damaged_ship_weight = 0.6
 	
 	var ship_damage_choices
 	
+	var num_capitals = ship_dict["capital"].size()
+	var num_screens = ship_dict["screen"].size()
+	
+	# screen weight is the ratio of capitals to screens, times the capital weight. 
+	# screens will almost always be more.
+	var screen_weight = 1 - ((num_capitals / num_screens) * capital_weight)
+	
+	if (num_capitals >= num_screens):
+		screen_weight = num_screens / num_capitals
+	
 	if (ship_roll < screen_weight \
-	and ship_dict["screen"].size() > 0) \
-	or ship_dict["capital"].size() == 0:
+	and num_screens > 0) \
+	or num_capitals == 0:
 		ship_damage_choices = ship_dict["screen"]
 	else:
 		ship_damage_choices = ship_dict["capital"]

@@ -29,6 +29,7 @@ func init(unit_array, initial_position, faction, type):
 	units = [CarrierEntity.new()]
 	
 	sprite_type = type
+	type = type
 	
 	organize_aircraft(plane_list)
 	

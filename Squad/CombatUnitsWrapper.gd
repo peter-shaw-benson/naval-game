@@ -204,7 +204,7 @@ func select():
 		get_node("Sprite").animation = sprite_type + "_clicked"
 		get_node("Sprite").set_frame(faction)
 		
-		print(get_node("Sprite").animation)
+		#print(get_node("Sprite").animation)
 		
 		emit_signal("squad_selected", self)
 		
@@ -215,7 +215,7 @@ func deselect():
 	get_node("Sprite").animation = sprite_type + "_basic"
 	get_node("Sprite").set_frame(faction)
 	
-	print(get_node("Sprite").animation)
+	#print(get_node("Sprite").animation)
 	
 	emit_signal("squad_deselected", self)
 
@@ -283,21 +283,16 @@ func set_enemy_squadron(potential_squad):
 	pass
 
 func on_detection_entered(other_thing):
-	#print("found other thing:")
-	#print(other_thing.get_name())
-	#print(self.get_name())
-	#print("Squadron" in other_thing.get_name())
 	
-	# this is a REALLY BAD way to do it – 
-	# the plane squad name is PlaneSquad, not PlaneSquadron
-	var other_name = other_thing.get_name()
-	var is_ship_squad = ("ron" in other_name) or ("Carrier" in other_name)
-	var is_plane_squad = "Plane" in other_name
+	var other_type = other_thing.get_type()
 	
-	# Not gonna work for plane squadrons
-	#print(other_thing.get_type())
+	var ship_types = ["squadron", "carrier", "landfort"]
+	var plane_types = ["scoutPlane", "fighter", "torpBomber", "levelBomber"]
+
+	var is_ship_squad = other_type in ship_types
+	var is_plane_squad = other_type in plane_types
+	
 	if is_ship_squad:
-		#print("ships detected, entering combat")
 		self.set_enemy_squadron(other_thing)
 	if is_plane_squad:
 		self.take_plane_damage(other_thing)

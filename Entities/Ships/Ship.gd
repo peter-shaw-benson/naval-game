@@ -90,7 +90,7 @@ func damage(weapon: Weapon, t_crossed, distance, enemy_stopped):
 		if armor_diff >= 0:
 			damage_result = weapon.damage
 		elif armor_diff < 0:
-			damage_result =  weapon.damage / GameState.get_armorReduction()
+			damage_result = weapon.damage / GameState.get_armorReduction()
 		
 		damage_result = subsystem_damage(hit_dict["roll"], hit_dict["final"], damage_result)
 		
