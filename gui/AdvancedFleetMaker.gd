@@ -45,15 +45,11 @@ func get_squadron():
 	#print(ship_list[0].speed)
 	var initial_pos = Vector2(position_x, position_y)
 	
-	var sprite_dict = {"selected": "squadron_clicked",
-						"deselected": "squadron_basic"}
-	
 	return {"ships": ship_list,
 			"position": initial_pos,
 			"faction": faction,
 			"name": fleet_name,
-			"type": "squadron",
-			"sprite_dict": sprite_dict}
+			"type": "squadron"}
 
 func make_destroyer_array(length):
 	var destroyer_array = []
@@ -171,6 +167,7 @@ func _on_PlaceButton_pressed():
 		
 		GameState.use_budget(budget, faction)
 		
+		#print(GameState.unit_list)
 		GameState.change_to_main_map2("res://Game Map/Map 2.tscn")
 	else:
 		get_node("OverBudget").popup()

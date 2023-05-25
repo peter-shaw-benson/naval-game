@@ -8,7 +8,8 @@ var module_hit_chances = {
 	"engine": 0.02,
 	"battery": 0.01,
 	"rudder": 0.03,
-	"armor": 0.05
+	"armor": 0.05, 
+	"hangar": 0.06
 }
 
 var damaged_rudder = false

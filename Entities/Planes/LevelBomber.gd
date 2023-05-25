@@ -14,7 +14,7 @@ var plane_stats = {
 	"crew": 3,
 	"class": "LevelBomber",
 	"weapons": [LevelBomb.new(), MG.new(), MG.new()],
-	"agility": 0.2,
+	"agility": 0.4,
 	"launch_time": 5
 }
 

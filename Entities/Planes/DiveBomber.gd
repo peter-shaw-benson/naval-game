@@ -14,7 +14,7 @@ var plane_stats = {
 	"crew": 2,
 	"class": "DiveBomber",
 	"weapons": [DiveBomb.new(), MG.new()],
-	"agility": 0.08,
+	"agility": 0.3,
 	"launch_time": 1.5
 }
 

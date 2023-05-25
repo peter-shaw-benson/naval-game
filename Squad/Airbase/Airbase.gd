@@ -182,7 +182,7 @@ func get_launch_time(plane_list):
 		
 		return launch_time
 
-func send_out_planes(placement, strike_type, is_carrier_launch=false, is_cap=false):
+func send_out_planes(placement, strike_type, is_cap=false):
 	#print(type)
 	
 	if not launching:
@@ -220,9 +220,6 @@ func send_out_planes(placement, strike_type, is_carrier_launch=false, is_cap=fal
 			plane_squad.set_animation(is_strike, type_map[strike_type])
 			plane_squad.set_target(target)
 			plane_squad.set_combat_air_patrol(is_cap)
-			
-			if is_carrier_launch:
-				plane_squad.carrier_launch(self)
 			
 			launching_squad = plane_squad
 			get_node("LaunchTimer").start()

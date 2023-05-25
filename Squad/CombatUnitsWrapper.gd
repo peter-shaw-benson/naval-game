@@ -204,7 +204,7 @@ func select():
 		get_node("Sprite").animation = sprite_type + "_clicked"
 		get_node("Sprite").set_frame(faction)
 		
-		#print(get_node("Sprite").animation)
+		print(get_node("Sprite").animation)
 		
 		emit_signal("squad_selected", self)
 		
@@ -330,14 +330,13 @@ func get_total_armor():
 func update_healthbar():
 	get_node("HealthBar").value = get_total_health()
 	
-func shoot_guns(weapon_shooting_list, enemy_squadron):
+func shoot_guns(weapon_shooting_list, enemy_squadron, stopped=false):
 	
 	if enemy_squadron and weapon_shooting_list:
-		#print(len(weapon_shooting_list))
+
 		for w in weapon_shooting_list:
-			enemy_squadron.take_damage(w, global_position.distance_to(enemy_squadron.global_position))
-			#enemy_squadron.update_armorbar()
-			#enemy_squadron.update_healthbar()
+			enemy_squadron.take_damage(w, global_position.distance_to(enemy_squadron.global_position), stopped)
+
 
 func take_plane_damage(plane_squad):
 	if plane_squad.get_faction() != self.get_faction():
@@ -355,6 +354,6 @@ func get_squad_info():
 	if len(task_force_name) > 0:
 		squad_text += task_force_name + "\n"
 	
-	squad_text += "Health: " + str(int(get_total_health())) + " Armor: " + str(int(get_total_armor())) + " Speed: " + str(base_speed)
+	squad_text += "Speed: " + str(base_speed)
 
 	return squad_text

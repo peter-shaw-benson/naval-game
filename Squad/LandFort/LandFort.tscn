@@ -1,12 +1,13 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://Squad/LandFort/LandFort.gd" type="Script" id=1]
 [ext_resource path="res://art/landfort_sprites/sprite_2.png" type="Texture" id=2]
 [ext_resource path="res://art/landfort_sprites/sprite_1.png" type="Texture" id=3]
 [ext_resource path="res://art/landfort_sprites/sprite_0.png" type="Texture" id=4]
+[ext_resource path="res://Miscellaneous/Detection Area.tscn" type="PackedScene" id=5]
 [ext_resource path="res://gui/StatusPopups.tscn" type="PackedScene" id=9]
 
-[sub_resource type="SpriteFrames" id=5]
+[sub_resource type="SpriteFrames" id=1]
 animations = [ {
 "frames": [ ExtResource( 4 ), ExtResource( 3 ), ExtResource( 2 ) ],
 "loop": true,
@@ -29,10 +30,11 @@ bg_color = Color( 0.12549, 0.12549, 0.12549, 1 )
 pause_mode = 1
 position = Vector2( 134, 76.75 )
 script = ExtResource( 1 )
+detector_scene = ExtResource( 5 )
 
 [node name="Sprite" type="AnimatedSprite" parent="."]
 position = Vector2( 0.0883942, 0 )
-frames = SubResource( 5 )
+frames = SubResource( 1 )
 animation = "landfort_basic"
 
 [node name="IslandCollision" type="CollisionShape2D" parent="."]

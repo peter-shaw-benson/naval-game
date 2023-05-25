@@ -177,6 +177,9 @@ func get_weapon_list():
 	
 	return weapon_list
 
+func get_squadron_max_health():
+	return get_node("HealthBar").max_value
+
 func construct_ship_dict():
 	ship_dict = {
 		"screen": [],
@@ -195,6 +198,13 @@ func set_enemy_squadron(potential_squad):
 	if potential_squad.get_faction() != self.faction:
 		enter_combat(potential_squad)
 
+func take_plane_damage(plane_squad):
+	if plane_squad.get_faction() != self.get_faction():
+		
+		construct_ship_dict()
+		
+		self.shoot_guns(self.get_weapon_list(), plane_squad)
+		plane_squad.shoot_guns(plane_squad.get_weapon_list(), self)
 
 func exit_combat():
 	in_combat = false
@@ -230,9 +240,19 @@ func get_damaged_ship():
 	var damaged_ship_weight = 0.6
 	
 	var ship_damage_choices
+	var num_capitals
+	var num_screens
 	
-	var num_capitals = ship_dict["capital"].size()
-	var num_screens = ship_dict["screen"].size()
+	
+	if "capital" in ship_dict:
+		num_capitals = ship_dict["capital"].size()
+	else:
+		num_capitals = 0
+	
+	if "screen" in ship_dict:
+		num_screens = ship_dict["screen"].size()
+	else:
+		num_screens = 0
 	
 	# screen weight is the ratio of capitals to screens, times the capital weight. 
 	# screens will almost always be more.
@@ -299,9 +319,10 @@ func take_damage(weapon: Weapon, distance_to_squad, enemy_stopped):
 		if self.faction == GameState.get_playerFaction():
 			self.show_attack_damage(get_node("HealthBar").value, get_total_health())
 				
-	emit_signal("update_squad_info", get_squad_info())
+	emit_signal("update_squad_info", get_squad_info(), get_total_health())
 
-func shoot_guns(weapon_shooting_list, enemy_squadron):
+func shoot_guns(weapon_shooting_list, enemy_squadron, _stopped=false):
+	
 	if enemy_squadron:
 		for w in weapon_shooting_list:
 			enemy_squadron.take_damage(w, global_position.distance_to(enemy_squadron.global_position), stopped)

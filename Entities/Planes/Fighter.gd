@@ -13,7 +13,7 @@ var plane_stats = {
 	"crew": 1,
 	"class": "Fighter",
 	"weapons": [MG.new()],
-	"agility": 0.02,
+	"agility": 0.2,
 	"launch_time": 1
 }
 

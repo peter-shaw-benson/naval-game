@@ -1,4 +1,4 @@
-class_name LandFort
+class_name LandFortEntity
 extends Ship
 
 var LightGun = preload("res://Weapons/LightGun.gd")

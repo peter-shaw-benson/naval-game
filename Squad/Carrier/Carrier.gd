@@ -14,6 +14,7 @@ var Fighter = preload("res://Entities/Planes/Fighter.gd")
 var CarrierEntity = preload("res://Entities/Ships/CarrierEntity.gd")
 
 var plane_list
+var max_planes
 
 var launching = false
 var launching_squad
@@ -41,6 +42,7 @@ func init(unit_array, initial_position, faction, type):
 	# just don't change it 
 	self.deselect()
 	
+	max_planes = get_max_planes()
 	base_speed = get_min_speed()
 	turn_weight = get_min_turn_weight()
 	visibility = get_visibility()
@@ -75,6 +77,14 @@ func init(unit_array, initial_position, faction, type):
 	# Set max of health bar and Armor Bar
 	
 	#print("squad created")
+	
+func get_max_planes():
+	var temp_max = 0
+	
+	for u in units:
+		temp_max += u.get_max_planes()
+	
+	return temp_max
 
 func organize_aircraft(plane_list):
 	for aircraft in plane_list:
@@ -184,22 +194,60 @@ func _process(delta):
 
 ## COMBAT STUFFS
 
-func shoot_guns(weapon_shooting_list, enemy_squadron):
-	if enemy_squadron and not launching:
-		for w in weapon_shooting_list:
-			enemy_squadron.take_damage(w, global_position.distance_to(enemy_squadron.global_position))
-			enemy_squadron.update_healthbar()
-
-func _on_ShotTimer_timeout():
-	#check_t_crossed()
-	current_shot_count += 1
-	#print(weapon_dict)
-	
-	for f in weapon_dict:
-		if current_shot_count % int(f) == 0:
-			#print("carrier shooting guns")
-			#print("carrier weapons length:" + str(len(weapon_dict[f])))
-			shoot_guns(weapon_dict[f], current_enemy_squadron)
+func take_damage(weapon: Weapon, distance_to_squad, enemy_stopped):
+	#print("ships taking damages")
+	# for now, the first ship will bear the brunt of the damage. ouch!
+	if len(units) <= 0:
+		emit_signal("squadron_lost", self, current_enemy_squadron)
+	else:
+		# Damage Random Ship
+		var damaged_ship = get_damaged_ship()
+		var damage_index = units.find(damaged_ship)
+		
+		# setting this to false until we fix t crossing
+		damaged_ship.damage(weapon, false, distance_to_squad, enemy_stopped)
+		
+		if damaged_ship.get_health() <= 0:
+			emit_signal("ship_lost", damaged_ship)
+			units.remove(damage_index)
+			
+			# update weapon list
+			self.weapon_dict = construct_weapon_dict()
+			
+			if len(units) <= 0:
+				emit_signal("squadron_lost", self, current_enemy_squadron)
+				print("ship sqaudron lost")
+		
+		# update speed / weapon stuff
+		base_speed = get_min_speed()
+		turn_weight = get_min_turn_weight()
+		
+		self.weapon_dict = construct_weapon_dict()
+		
+		# Handle Plane Removal
+		var current_max_planes = get_max_planes()
+		var plane_difference = max_planes - current_max_planes
+		
+		if current_max_planes == 0:
+			plane_list = []
+			organize_aircraft(plane_list)
+			
+		elif plane_difference > 0:
+			# Lose planes that are stored away. Won't affect planes sent out. 
+			for i in range(plane_difference):
+				lose_random_plane()
+				
+		elif len(plane_list) == 0:
+			max_planes = 0
+			plane_list = []
+			organize_aircraft(plane_list)
+				
+		max_planes = current_max_planes
+				
+		if self.faction == GameState.get_playerFaction():
+			self.show_attack_damage(get_node("HealthBar").value, get_total_health())
+				
+	emit_signal("update_squad_info", get_squad_info())
 
 # PLANE STUFF
 
@@ -292,14 +340,17 @@ func plane_squad_recovered(plane_squad):
 	#print(recovered_planes)
 	
 	for p in recovered_planes:
-		if plane_squad.get_sprite_type() == "fighter":
-			plane_dict["fighter"].append(p)
-		elif plane_squad.get_sprite_type() == "levelBomber":
-			plane_dict["bomber"].append(p)
-		elif plane_squad.get_sprite_type() == "torpBomber":
-			plane_dict["strike"].append(p)
+		if plane_dict_size() < get_max_planes():
+			if plane_squad.get_sprite_type() == "fighter":
+				plane_dict["fighter"].append(p)
+			elif plane_squad.get_sprite_type() == "levelBomber":
+				plane_dict["bomber"].append(p)
+			elif plane_squad.get_sprite_type() == "torpBomber":
+				plane_dict["strike"].append(p)
+			else:
+				plane_dict["scout"].append(p)
 		else:
-			plane_dict["scout"].append(p)
+			break
 	
 	plane_squad.queue_free()
 		
@@ -307,8 +358,22 @@ func plane_squad_recovered(plane_squad):
 
 	#print(plane_dict)
 
+func plane_dict_size():
+	return plane_dict["fighter"].size() + \
+	plane_dict["scout"].size() + \
+	plane_dict["bomber"].size() + \
+	plane_dict["strike"].size()
+
 func plane_squad_death(plane_squad):
 	plane_squad.queue_free()
+
+func lose_random_plane():
+	# only doing fighters and strike planes for now, flipping a coin
+	
+	plane_list.remove(randi() % plane_list.size())
+	
+	organize_aircraft(plane_list)
+	
 
 func start_launch(plane_list):
 	var squad_launch_time = get_launch_time(plane_list)

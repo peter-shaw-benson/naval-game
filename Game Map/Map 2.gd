@@ -4,6 +4,7 @@ export var squadron_scene: PackedScene
 export var island_scene: PackedScene
 export var airbase_scene: PackedScene
 export var carrier_scene: PackedScene
+export var landfort_scene: PackedScene
 export var fog_scene: PackedScene
 
 var squad: Squadron
@@ -67,8 +68,14 @@ func hide_enemies():
 		if a.faction != playerFaction:
 			a.hide()
 	
-func place_squadron(squad_data):
-	var squad = squadron_scene.instance()
+func place_squadron(squad_data, landfort=false):
+	var squad
+	
+	if landfort:
+		print("placing land fort")
+		squad = landfort_scene.instance()
+	else:
+		squad = squadron_scene.instance()
 		
 	squad.init(squad_data.ships, get_viewport().get_mouse_position(), 
 	squad_data.faction, squad_data.type)
@@ -142,7 +149,7 @@ func place_next_unit(place_list):
 	if len(place_list) > 0:
 		#print("placing next squad, current place list:", place_list)
 		var squad_index = place_list[0]
-		#print(squadron_data[squad_index])
+		#print(unit_data[squad_index])
 		if unit_data[squad_index]["type"] == "carrier":
 			#print("next on place list is a carrier")
 			place_carrier(unit_data[squad_index])
@@ -150,14 +157,27 @@ func place_next_unit(place_list):
 			place_airbase(unit_data[squad_index])
 		elif unit_data[squad_index]["type"] == "squadron":
 			place_squadron(unit_data[squad_index])
+		elif unit_data[squad_index]["type"] == "landfort":
+			#print("found land fort!")
+			place_squadron(unit_data[squad_index], true)
 		place_list.remove(0)
 
 func _on_squadron_stopped_placement():
 	if len(place_list) > 0:
 		place_next_unit(place_list)
 	else:
+		# move control nodes to the top
+		raise_controls()
+		
 		hide_enemies()
 		
+func raise_controls():
+	get_node("PauseMenu").raise()
+	get_node("ClockDisplay").raise()
+	get_node("Ship Funeral").raise()
+	get_node("SquadSelected").raise()
+	get_node("WindBox").raise()
+
 func _input(event):
 			
 			#print("Left button was clicked at ", event.position)
@@ -214,12 +234,12 @@ func _on_CrashPopup_id_pressed(id):
 		unpause()
 
 func _on_ship_lost(ship: Ship):
-	var loss_text = ship.get_name() + " lost to Enemy Action!"
+	#var loss_text = ship.get_name() + " lost to Enemy Action!"
 	
 	get_node("Ship Funeral/Ship Text").text = loss_text
 	
-	get_node("Ship Funeral").popup()
-	get_node("Ship Popup Timer").start()
+	#get_node("Ship Funeral").popup()
+	#get_node("Ship Popup Timer").start()
 
 func _on_squadron_lost(s, enemy_squad):
 	get_node("SquadSelected").hide()
@@ -232,7 +252,9 @@ func _on_squadron_lost(s, enemy_squad):
 		enemy_squad.exit_combat()
 
 func _on_Ship_Popup_Timer_timeout():
-	get_node("Ship Funeral").hide()
+	pass
+	#get_node("Ship Funeral").hide()
+	#get_node("Ship Popup Timer").stop()
 
 func get_squadron_at(location):
 	for s in squad_list:
@@ -253,35 +275,51 @@ func update_clock_display():
 func update_weather():
 	get_node("Weather").calc_new_wind_direction()
 	get_node("Weather").calc_new_wind_speed()
+	
 	for unit in squad_list:
-		unit.calc_new_wind_vector($Weather.get_wind_velocity_cartesian())
+		if unit:
+			unit.calc_new_wind_vector($Weather.get_wind_velocity_cartesian())
+			
 	if $Weather.get_fog_gen_flag():
 		var new_fog = fog_scene.instance()
 		$Weather.register_fog(new_fog)
 		add_child(new_fog)
+		
+		# when fog added, push GUI to front
+		raise_controls()
+		
 	$Weather.update_fog()
 	$WindBox.update_weather_display($Weather.get_wind_dir_angle(), $Weather.get_wind_speed_kt())
 
 func _on_GameClock_timeout():
 	game_time += 1
 	update_weather()
+	
 	if ai_on:
 		$Calvinatron.set_new_targets(squad_list)
+		
 	update_clock_display()
 
 func display_selected_squad(squad):
 	get_node("SquadSelected").show()
 	
 	var squad_text = squad.get_squad_info()
+	var squad_health = squad.get_total_health()
+	var squad_max_health = squad.get_squadron_max_health()
 	
-	get_node("SquadSelected/SquadInfo").text = squad_text
+	get_node("SquadSelected/VBoxContainer/ProgressBar").max_value = squad_max_health
+	get_node("SquadSelected/VBoxContainer/ProgressBar").value = squad_health
+	
+	get_node("SquadSelected/VBoxContainer/SquadInfo").text = squad_text
 
 func squad_deselected(squad):
 	get_node("SquadSelected").hide()
 
-func update_squad_info(new_info):
+func update_squad_info(new_info, new_health):
 	if get_node("SquadSelected").visible == true:
-		get_node("SquadSelected/SquadInfo").text = new_info
+		get_node("SquadSelected/VBoxContainer/ProgressBar").value = new_health
+		
+		get_node("SquadSelected/VBoxContainer/SquadInfo").text = new_info
 
 # PLANE STUFF
 

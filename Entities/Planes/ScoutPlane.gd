@@ -11,7 +11,7 @@ var plane_stats = {
 	"crew": 2,
 	"class": "ScoutPlane",
 	"weapons": [],
-	"agility": 0.05,
+	"agility": 0.3,
 	"launch_time": 3
 }
 

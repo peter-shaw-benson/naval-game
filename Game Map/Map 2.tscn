@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=21 format=2]
 
 [ext_resource path="res://Game Map/Map 2.gd" type="Script" id=1]
 [ext_resource path="res://Squad/Squadron.tscn" type="PackedScene" id=2]
@@ -16,8 +16,9 @@
 [ext_resource path="res://fonts/basic_font2.tres" type="DynamicFont" id=14]
 [ext_resource path="res://Game Map/Weather/Fog.tscn" type="PackedScene" id=15]
 [ext_resource path="res://Game Map/Calvinatron/Calvinatron.gd" type="Script" id=16]
-
-
+[ext_resource path="res://Squad/LandFort/LandFort.tscn" type="PackedScene" id=17]
+[ext_resource path="res://art/themes/BackgroundBar.tres" type="StyleBox" id=18]
+[ext_resource path="res://art/themes/healthbar.tres" type="StyleBox" id=19]
 
 [sub_resource type="DynamicFont" id=1]
 size = 36
@@ -30,6 +31,7 @@ squadron_scene = ExtResource( 2 )
 island_scene = ExtResource( 4 )
 airbase_scene = ExtResource( 8 )
 carrier_scene = ExtResource( 13 )
+landfort_scene = ExtResource( 17 )
 fog_scene = ExtResource( 15 )
 
 [node name="ColorRect" type="ColorRect" parent="."]
@@ -93,26 +95,46 @@ __meta__ = {
 [node name="SquadSelected" type="PopupPanel" parent="."]
 visible = true
 anchor_left = 0.998619
-anchor_top = 0.998822
+anchor_top = 0.997831
 anchor_right = 0.998619
-anchor_bottom = 0.998822
-margin_left = -473.586
-margin_top = -78.293
-margin_right = 0.414246
-margin_bottom = 0.707031
+anchor_bottom = 0.997831
+margin_left = -275.586
+margin_top = -50.6986
+margin_right = 0.414124
+margin_bottom = 0.301392
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="SquadInfo" type="RichTextLabel" parent="SquadSelected"]
-anchor_left = 0.498508
-anchor_top = 0.487809
-anchor_right = 0.498508
-anchor_bottom = 0.487809
-margin_left = -233.0
-margin_top = -34.5369
-margin_right = 233.0
-margin_bottom = 36.4631
+[node name="VBoxContainer" type="VBoxContainer" parent="SquadSelected"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 4.0
+margin_right = -4.0
+margin_bottom = -4.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ProgressBar" type="ProgressBar" parent="SquadSelected/VBoxContainer"]
+margin_right = 268.0
+margin_bottom = 19.0
+size_flags_vertical = 3
+custom_styles/fg = ExtResource( 19 )
+custom_styles/bg = ExtResource( 18 )
+value = 60.0
+percent_visible = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SquadInfo" type="RichTextLabel" parent="SquadSelected/VBoxContainer"]
+margin_top = 23.0
+margin_right = 268.0
+margin_bottom = 43.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_fonts/normal_font = ExtResource( 14 )

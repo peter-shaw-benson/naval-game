@@ -108,7 +108,7 @@ func get_weapon_list():
 func is_patrolling():
 	return patrolling
 
-func take_damage(weapon: Weapon, distance):
+func take_damage(weapon: Weapon, distance, stopped):
 	# determine weapon's anti-air
 	# aircraft are damaged when they spot an enemy fleet
 	if len(units) <= 0:
@@ -119,7 +119,7 @@ func take_damage(weapon: Weapon, distance):
 		var damaged_plane = units[damage_index]
 		
 		# setting this to false until we fix t crossing
-		damaged_plane.damage(weapon, false, distance)
+		damaged_plane.damage(weapon, false, distance, stopped)
 		
 		if damaged_plane.get_health() <= 0:
 			units.remove(damage_index)
