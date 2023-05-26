@@ -236,7 +236,7 @@ func _on_CrashPopup_id_pressed(id):
 func _on_ship_lost(ship: Ship):
 	#var loss_text = ship.get_name() + " lost to Enemy Action!"
 	
-	get_node("Ship Funeral/Ship Text").text = loss_text
+	get_node("Ship Funeral/Ship Text").text = "loss_text"
 	
 	#get_node("Ship Funeral").popup()
 	#get_node("Ship Popup Timer").start()

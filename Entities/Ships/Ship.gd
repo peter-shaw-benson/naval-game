@@ -12,13 +12,25 @@ var module_hit_chances = {
 	"hangar": 0.06
 }
 
+var subsystems_damaged = []
+
 var damaged_rudder = false
 var damaged_engine = false
+var burning = false
 
 func set_name(ship_name):
 	self.ship_name = ship_name
 
 func get_name(): return self.ship_name
+
+func on_fire():
+	return burning
+
+func get_most_recent_damage():
+	if subsystems_damaged.size() > 0:
+		return subsystems_damaged.last()
+	else:
+		return "healthy"
 
 func _to_string():
 	var s = ""
@@ -38,6 +50,8 @@ func subsystem_damage(accuracy_roll, total_accuracy, damage_result):
 			# remove a weapon
 		if weapons_list.size() > 0:
 			weapons_list.remove(randi() % weapons_list.size())
+		
+		subsystems_damaged.append("battery")
 			
 		emit_signal("hit_subsystem", "battery")
 				
@@ -49,6 +63,8 @@ func subsystem_damage(accuracy_roll, total_accuracy, damage_result):
 				
 			# decrease turn speed
 		self.turn_weight = self.turn_weight / 2
+		
+		subsystems_damaged.append("rudder")
 				
 		damaged_rudder = true
 		emit_signal("hit_subsystem", "rudder")
@@ -60,7 +76,9 @@ func subsystem_damage(accuracy_roll, total_accuracy, damage_result):
 		damage_result *= 1.5
 				
 			# decrease turn speed
-		self.speed = self.speed * 0.9
+		self.speed = self.speed * 0.8
+		
+		subsystems_damaged.append("engine")
 				
 		damaged_engine = true	
 		emit_signal("hit_subsystem", "engine")
@@ -70,6 +88,9 @@ func subsystem_damage(accuracy_roll, total_accuracy, damage_result):
 		damage_result *= 1.2
 			
 		self.armor *= 0.8
+		
+		subsystems_damaged.append("armor")
+		
 		emit_signal("hit_subsystem", "armor")
 		
 	return damage_result

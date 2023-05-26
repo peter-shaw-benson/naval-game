@@ -1,6 +1,8 @@
 extends "res://Squad/CombatUnitsWrapper.gd"
 class_name ShipSquadron
 
+var Fire = preload("res://Weapons/Fire.gd")
+
 signal new_course_change(current_target, placement)
 signal reached_target()
 signal squadron_lost(this_squad, enemy_squadron)
@@ -16,6 +18,11 @@ var patrolling = false
 var current_shot_count = 0 
 var current_enemy_squadron: CombatUnitsWrapper
 var ship_dict
+
+# fire stuff
+var burning_ships = []
+var ongoing_fire = Fire.new()
+var burning_animation = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -34,12 +41,12 @@ func _ready():
 	#get_node("ArmorBar").set_max(get_total_armor())
 	
 	self.update_healthbar()
-	#self.update_armorbar()
 	
 	last_button = ""
 	
 	# Make sure it doesn't crash until we're done placing
 	get_node("IslandCollision").disabled = true
+	
 	
 	self.deselect()
 	
@@ -138,7 +145,7 @@ func _physics_process(delta):
 func _process(delta):
 	
 	get_node("HealthBar").value = lerp(get_node("HealthBar").value, get_total_health(), get_process_delta_time())
-	
+
 	var popup_location = Vector2(
 		global_position.x + 20,
 		global_position.y - 20
@@ -299,16 +306,15 @@ func take_damage(weapon: Weapon, distance_to_squad, enemy_stopped):
 		# setting this to false until we fix t crossing
 		damaged_ship.damage(weapon, false, distance_to_squad, enemy_stopped)
 		
-		if damaged_ship.get_health() <= 0:
-			emit_signal("ship_lost", damaged_ship)
-			units.remove(damage_index)
+		if damaged_ship.on_fire():
+			burning_ships.append(damaged_ship)
 			
-			# update weapon list
-			self.weapon_dict = construct_weapon_dict()
-			
-			if len(units) <= 0:
-				emit_signal("squadron_lost", self, current_enemy_squadron)
-				print("ship sqaudron lost")
+			# display in squad status?
+		
+		if damaged_ship.get_most_recent_damage() != "healthy":
+			on_subsystem_damage(damaged_ship.get_most_recent_damage())
+		
+		check_ship_removal(damaged_ship, damage_index)
 		
 		# update speed / weapon stuff
 		base_speed = get_min_speed()
@@ -320,6 +326,25 @@ func take_damage(weapon: Weapon, distance_to_squad, enemy_stopped):
 			self.show_attack_damage(get_node("HealthBar").value, get_total_health())
 				
 	emit_signal("update_squad_info", get_squad_info(), get_total_health())
+
+func check_ship_removal(damaged_ship, damage_index):
+	if damaged_ship.get_health() <= 0:
+		emit_signal("ship_lost", damaged_ship)
+		units.remove(damage_index)
+			
+		if damaged_ship in burning_ships:
+			burning_ships.remove(burning_ships.find(damaged_ship))
+			
+			if burning_ships.size() == 0:
+
+				burning_animation = false
+			
+			# update weapon list
+		self.weapon_dict = construct_weapon_dict()
+			
+		if len(units) <= 0:
+			emit_signal("squadron_lost", self, current_enemy_squadron)
+			print("ship sqaudron lost")
 
 func shoot_guns(weapon_shooting_list, enemy_squadron, _stopped=false):
 	
@@ -334,6 +359,12 @@ func _on_ShotTimer_timeout():
 	for f in weapon_dict:
 		if current_shot_count % int(f) == 0:
 			shoot_guns(weapon_dict[f], current_enemy_squadron)
+			
+	if burning_ships.size() > 0:
+		for ship in burning_ships:
+			ship.damage(ongoing_fire, false, 0, true)
+			
+			check_ship_removal(ship, units.find(ship))
 
 func show_attack_damage(old_health, new_health):
 	#print("showing attack damage: " + str(old_health) + "\t" + str(new_health))
