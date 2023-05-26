@@ -1,13 +1,13 @@
 extends "res://Weapons/Weapon.gd"
 
 var weapon_stats = {
-	"max_range": 120,
-	"fire_rate": 3,
-	"damage": 10,
-	"piercing": 12,
+	"max_range": 150,
+	"fire_rate": 4,
+	"damage": 5,
+	"piercing": 11,
 	"armor_damage": 1,
 	"anti_air": 0,
-	"base_accuracy": 0.75,
+	"base_accuracy": 0.5,
 	"accuracy_gain": 0.03
 }
 

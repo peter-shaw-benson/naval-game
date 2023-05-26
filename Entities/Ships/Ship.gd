@@ -9,7 +9,8 @@ var module_hit_chances = {
 	"battery": 0.01,
 	"rudder": 0.03,
 	"armor": 0.05, 
-	"hangar": 0.06
+	"hangar": 0.06,
+	"fire": 0.2
 }
 
 var subsystems_damaged = []
@@ -28,7 +29,7 @@ func on_fire():
 
 func get_most_recent_damage():
 	if subsystems_damaged.size() > 0:
-		return subsystems_damaged.last()
+		return subsystems_damaged[-1]
 	else:
 		return "healthy"
 
@@ -76,7 +77,7 @@ func subsystem_damage(accuracy_roll, total_accuracy, damage_result):
 		damage_result *= 1.5
 				
 			# decrease turn speed
-		self.speed = self.speed * 0.8
+		self.speed = self.speed * 0.7
 		
 		subsystems_damaged.append("engine")
 				
@@ -92,7 +93,13 @@ func subsystem_damage(accuracy_roll, total_accuracy, damage_result):
 		subsystems_damaged.append("armor")
 		
 		emit_signal("hit_subsystem", "armor")
-		
+	
+	# check for fire 
+	var fire_roll = randf()
+	if fire_roll < module_hit_chances["fire"] and not burning:
+		burning = true
+		#print("ship burning!")
+	
 	return damage_result
 	
 func damage(weapon: Weapon, t_crossed, distance, enemy_stopped):
@@ -123,3 +130,19 @@ func damage(weapon: Weapon, t_crossed, distance, enemy_stopped):
 				damage_result *= 2
 
 		hit_points -= damage_result
+
+func repair():
+	if hit_points < max_health:
+		hit_points += 1
+	
+	if armor < max_armor:
+		armor += 0.5
+	
+	if turn_weight < max_turn_weight:
+		turn_weight += 0.5 * (max_turn_weight - turn_weight)
+	
+	if speed < max_speed:
+		speed += 0.75 * (max_speed - speed)
+	
+	if burning: 
+		burning = false

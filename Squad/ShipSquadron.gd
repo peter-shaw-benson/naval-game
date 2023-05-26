@@ -24,12 +24,15 @@ var burning_ships = []
 var ongoing_fire = Fire.new()
 var burning_animation = false
 
+# repairing
+var repairing = false
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	
 	# Combat Variables:
 	get_node("ShotTimer").wait_time = GameState.get_combatPace()
-	get_node("StatusPopups/Condition Popup").wait_time = GameState.get_combatPace() * 0.8
+	get_node("Condition Popup").wait_time = GameState.get_combatPace() * 0.8
 	
 	self.weapon_dict = construct_weapon_dict()
 	
@@ -84,11 +87,35 @@ func _input(event):
 			self.current_target = self.global_position
 			self.target_array = []
 		
+		elif Input.is_action_pressed("repair"):
+			# stop boat
+			if not repairing and not current_enemy_squadron:
+				start_repairs()
+			else:
+				end_repairs()
+		
 		elif Input.is_action_pressed("patrol"):
 			last_button = "patrol"
 		
 		elif Input.is_action_pressed("cancel"):
 			last_button = ""
+
+func start_repairs():
+	print("repairing")
+	
+	self.current_target = self.global_position
+	self.target_array = []
+	self.stopped = true
+			
+	self.repairing = true
+	get_node("RepairClock").start()
+	
+func end_repairs():
+	print("stopped repairing")
+	
+	self.stopped = false
+	self.repairing = false
+	get_node("RepairClock").stop()
 
 # Handle Island collisions
 func _on_Squadron_area_entered(area):
@@ -151,14 +178,7 @@ func _process(delta):
 		global_position.y - 20
 	)
 	
-	get_node("StatusPopups/PopupHealth").rect_position = popup_location
-	
-	var popup_location2 = Vector2(
-		global_position.x + 20,
-		global_position.y 
-	)
-	
-	get_node("StatusPopups/PopupConditions").rect_position = popup_location
+	get_node("StatusPopups").rect_position = popup_location
 
 func construct_weapon_dict():
 	weapon_dict = {} 
@@ -184,8 +204,16 @@ func get_weapon_list():
 	
 	return weapon_list
 
-func get_squadron_max_health():
-	return get_node("HealthBar").max_value
+func get_squadron_max_health(ship_based=false):
+	if ship_based:
+		var max_h = 0
+		
+		for ship in units:
+			max_h += ship.get_max_health()
+		
+		return max_h
+	else:
+		return get_node("HealthBar").max_value
 
 func construct_ship_dict():
 	ship_dict = {
@@ -222,7 +250,7 @@ func exit_combat():
 	current_enemy_squadron = null
 	
 	get_node("ShotTimer").stop()
-	get_node("StatusPopups/PopupHealth").hide()
+	get_node("StatusPopups").hide()
 	
 	#print(self.ships)
 
@@ -263,7 +291,12 @@ func get_damaged_ship():
 	
 	# screen weight is the ratio of capitals to screens, times the capital weight. 
 	# screens will almost always be more.
-	var screen_weight = 1 - ((num_capitals / num_screens) * capital_weight)
+	var screen_weight
+	
+	if num_screens == 0:
+		screen_weight = 0
+	else:
+		screen_weight = 1 - ((num_capitals / num_screens) * capital_weight)
 	
 	if (num_capitals >= num_screens):
 		screen_weight = num_screens / num_capitals
@@ -311,7 +344,8 @@ func take_damage(weapon: Weapon, distance_to_squad, enemy_stopped):
 			
 			# display in squad status?
 		
-		if damaged_ship.get_most_recent_damage() != "healthy":
+		if damaged_ship.get_most_recent_damage() != "healthy"\
+		and self.faction == GameState.get_playerFaction():
 			on_subsystem_damage(damaged_ship.get_most_recent_damage())
 		
 		check_ship_removal(damaged_ship, damage_index)
@@ -325,7 +359,7 @@ func take_damage(weapon: Weapon, distance_to_squad, enemy_stopped):
 		if self.faction == GameState.get_playerFaction():
 			self.show_attack_damage(get_node("HealthBar").value, get_total_health())
 				
-	emit_signal("update_squad_info", get_squad_info(), get_total_health())
+		emit_signal("update_squad_info", get_total_health(), get_status(damaged_ship))
 
 func check_ship_removal(damaged_ship, damage_index):
 	if damaged_ship.get_health() <= 0:
@@ -348,7 +382,7 @@ func check_ship_removal(damaged_ship, damage_index):
 
 func shoot_guns(weapon_shooting_list, enemy_squadron, _stopped=false):
 	
-	if enemy_squadron:
+	if enemy_squadron and not repairing:
 		for w in weapon_shooting_list:
 			enemy_squadron.take_damage(w, global_position.distance_to(enemy_squadron.global_position), stopped)
 
@@ -361,8 +395,10 @@ func _on_ShotTimer_timeout():
 			shoot_guns(weapon_dict[f], current_enemy_squadron)
 			
 	if burning_ships.size() > 0:
+		#print(burning_ships)
+		#print("squadron burning!")
 		for ship in burning_ships:
-			ship.damage(ongoing_fire, false, 0, true)
+			ship.damage(ongoing_fire, false, -1, true)
 			
 			check_ship_removal(ship, units.find(ship))
 
@@ -377,30 +413,58 @@ func show_attack_damage(old_health, new_health):
 		global_position.y - 20
 	)
 	
-	get_node("StatusPopups/PopupHealth").show()
-	get_node("StatusPopups/PopupHealth").rect_position = popup_location
-	get_node("StatusPopups/PopupHealth/HealthText").text = damage_str
+	get_node("StatusPopups").show()
+	get_node("StatusPopups").rect_position = popup_location
 	
-	get_node("StatusPopups/Condition Popup").start()
+	get_node("StatusPopups").set_health(damage_str)
+	
+	get_node("Condition Popup").start()
 	
 func on_subsystem_damage(type):
-	print("subsystem damaged:" + type)
+	# TODO: fully connect this
+	
+	#print("subsystem damaged:" + type)
 	
 	var popup_location = Vector2(
 		global_position.x + 20,
-		global_position.y 
+		global_position.y - 20
 	)
 	
 	var condition_str = type.to_upper()
 	
-	get_node("StatusPopups/PopupConditions").show()
-	get_node("StatusPopups/PopupConditions").rect_position = popup_location
-	get_node("StatusPopups/PopupConditions/ConditionText").text = condition_str
+	get_node("StatusPopups").show()
+	get_node("StatusPopups").rect_position = popup_location
+	
+	get_node("StatusPopups").set_condition(condition_str)
 	
 	get_node("Condition Popup").start()
 
-
 func _on_Condition_Popup_timeout():
 	#print("hiding health popup")
-	get_node("PopupHealth").hide()
-	get_node("PopupConditions").hide()
+	get_node("StatusPopups").hide()
+
+func _on_RepairClock_timeout():
+	#print(str(get_total_health()) + "\t" + str(get_squadron_max_health(true)))
+	
+	if (get_squadron_max_health(true) - get_total_health()) < 1:
+		end_repairs()
+	
+	for ship in units:
+		ship.repair()
+		
+		if ship in burning_ships:
+			burning_ships.remove(burning_ships.find(ship))
+			
+		self.update_healthbar()
+		
+	emit_signal("update_squad_info", get_total_health(), get_status(null))
+
+func get_status(damaged_ship):
+	if repairing:
+		return "repairing"
+	elif damaged_ship:
+		return damaged_ship.get_most_recent_damage()
+	elif burning_ships.size() > 0:
+		return "burning"
+	else:
+		return ""

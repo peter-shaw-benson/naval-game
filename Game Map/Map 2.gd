@@ -303,23 +303,22 @@ func _on_GameClock_timeout():
 func display_selected_squad(squad):
 	get_node("SquadSelected").show()
 	
-	var squad_text = squad.get_squad_info()
+	var squad_status = squad.get_status(null)
 	var squad_health = squad.get_total_health()
 	var squad_max_health = squad.get_squadron_max_health()
 	
-	get_node("SquadSelected/VBoxContainer/ProgressBar").max_value = squad_max_health
-	get_node("SquadSelected/VBoxContainer/ProgressBar").value = squad_health
-	
-	get_node("SquadSelected/VBoxContainer/SquadInfo").text = squad_text
+	get_node("SquadSelected").set_max_health(squad_max_health)
+	get_node("SquadSelected").update_health(squad_health)
+	get_node("SquadSelected").subsystem_status(squad_status)
 
 func squad_deselected(squad):
 	get_node("SquadSelected").hide()
 
-func update_squad_info(new_info, new_health):
+func update_squad_info(new_health, ship_status):
 	if get_node("SquadSelected").visible == true:
-		get_node("SquadSelected/VBoxContainer/ProgressBar").value = new_health
+		get_node("SquadSelected").update_health(new_health)
 		
-		get_node("SquadSelected/VBoxContainer/SquadInfo").text = new_info
+		get_node("SquadSelected").subsystem_status(ship_status)
 
 # PLANE STUFF
 

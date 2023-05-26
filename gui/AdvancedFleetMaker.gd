@@ -7,9 +7,9 @@ const Cruiser = preload("res://Entities/Ships/Cruiser.gd")
 const Battleship = preload("res://Entities/Ships/Battleship.gd")
 
 # Budget costs:
-var destroyer_price = 10
-var cruiser_price = 20
-var battleship_price = 100
+var destroyer_price = 5
+var cruiser_price = 30
+var battleship_price = 50
 var torpedo_multiplier = 1.2
 
 var num_destroyers = 1

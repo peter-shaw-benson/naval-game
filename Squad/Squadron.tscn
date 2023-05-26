@@ -9,7 +9,7 @@
 [ext_resource path="res://art/Squadron Sprites 2/sprite_5.png" type="Texture" id=7]
 [ext_resource path="res://Miscellaneous/Detection Area.tscn" type="PackedScene" id=8]
 [ext_resource path="res://gui/StatusPopups.tscn" type="PackedScene" id=9]
-[ext_resource path="res://art/themes/fire.tres" type="StyleBox" id=10]
+[ext_resource path="res://art/themes/healthbar.tres" type="StyleBox" id=10]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -84,8 +84,15 @@ __meta__ = {
 [node name="ShotTimer" type="Timer" parent="."]
 wait_time = 0.5
 
+[node name="RepairClock" type="Timer" parent="."]
+
 [node name="StatusPopups" parent="." instance=ExtResource( 9 )]
-margin_left = 0.176773
-margin_right = 40.1768
+margin_right = 112.0
+margin_bottom = 40.0
+
+[node name="Condition Popup" type="Timer" parent="."]
+one_shot = true
 [connection signal="area_entered" from="." to="." method="_on_Squadron_area_entered"]
 [connection signal="timeout" from="ShotTimer" to="." method="_on_ShotTimer_timeout"]
+[connection signal="timeout" from="RepairClock" to="." method="_on_RepairClock_timeout"]
+[connection signal="timeout" from="Condition Popup" to="." method="_on_Condition_Popup_timeout"]

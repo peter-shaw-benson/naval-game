@@ -4,31 +4,47 @@ signal hit_subsystem(type)
 
 # Navigation Variables
 var speed: int
+var max_speed: int
+
 var max_range: int
+
 var turn_weight: float
+var max_turn_weight: float
+
 var entity_class: String
 var wind_resistance: float
 # Combat Variables
 var hide_range: int
 var visibility_range: int
 var crew: float
+
 var hit_points: float
 var max_health: float
+
 var armor: float
+var max_armor: float
 
 var weapons_list: Array
 var aircraft_list = []
+
+# Need maxes for combat / damage / healing purposes
 
 var roller = RandomNumberGenerator.new()
 
 func init(speed, max_range, turn_weight, hit_points, armor, hide_range, visibility, crew):
 	self.speed = speed
+	self.max_speed = speed
+	
 	self.max_range = max_range
 	self.turn_weight = turn_weight
+	self.max_turn_weight = turn_weight
 	
 	self.hit_points = hit_points
 	self.max_health = hit_points
+	
 	self.armor = armor
+	self.max_armor = armor
+	
 	self.hide_range = hide_range
 	self.visibility_range = visibility
 	self.crew = crew
@@ -89,8 +105,10 @@ func calculate_hit(weapon, distance, enemy_stopped, dict=false):
 	
 	var range_factor_accuracy
 	
-	
-	range_factor_accuracy = 1 / (distance / GameState.get_rangeFactor())
+	if distance > 1:
+		range_factor_accuracy = 1 / (distance / GameState.get_rangeFactor())
+	else:
+		range_factor_accuracy = 2
 	
 	if distance > weapon.max_range:
 		range_factor_accuracy *= GameState.get_outOfRange()
@@ -139,3 +157,6 @@ func _to_string():
 	s += "\nWEAPONS\n"
 	
 	s += self.weapons_to_string()
+
+func repair():
+	pass

@@ -1,60 +1,47 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://fonts/basic_font2.tres" type="DynamicFont" id=1]
+[ext_resource path="res://gui/StatusPopups.gd" type="Script" id=2]
 
-[node name="StatusPopups" type="Control"]
-margin_right = 40.0
-margin_bottom = 40.0
+[node name="StatusPopups" type="Popup"]
+margin_right = 138.0
+margin_bottom = 41.0
 mouse_filter = 2
+script = ExtResource( 2 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="PopupHealth" type="Popup" parent="."]
-visible = true
-margin_left = 27.0
-margin_top = -30.0
-margin_right = 127.0
-margin_bottom = -5.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="HealthText" type="RichTextLabel" parent="PopupHealth"]
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 4.59619
-margin_top = -0.176773
-margin_right = 4.59619
-margin_bottom = -0.176773
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HealthText" type="RichTextLabel" parent="VBoxContainer"]
+margin_right = 138.0
+margin_bottom = 18.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 custom_fonts/normal_font = ExtResource( 1 )
 custom_colors/default_color = Color( 0.737255, 0.145098, 0.145098, 1 )
+text = "-10"
 scroll_active = false
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="PopupConditions" type="Popup" parent="."]
-visible = true
-margin_left = 31.0
-margin_top = -1.0
-margin_right = 168.0
-margin_bottom = 28.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="ConditionText" type="RichTextLabel" parent="PopupConditions"]
-anchor_top = 0.0121915
-anchor_right = 1.0
-anchor_bottom = 1.01219
+[node name="ConditionText" type="RichTextLabel" parent="VBoxContainer"]
+margin_top = 22.0
+margin_right = 138.0
+margin_bottom = 41.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 custom_fonts/normal_font = ExtResource( 1 )
 custom_colors/default_color = Color( 0.603922, 0.145098, 0.666667, 1 )
+text = "Battery"
 scroll_active = false
 __meta__ = {
 "_edit_use_anchors_": false
 }
-
-[node name="Condition Popup" type="Timer" parent="."]
-wait_time = 2.0
-one_shot = true

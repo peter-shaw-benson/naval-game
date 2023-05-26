@@ -1,7 +1,7 @@
 extends "res://Weapons/Weapon.gd"
 
 var weapon_stats = {
-	"max_range": 40,
+	"max_range": 60,
 	"fire_rate": 1,
 	"damage": 0.5,
 	"piercing": 2,
