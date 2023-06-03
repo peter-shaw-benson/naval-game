@@ -27,6 +27,23 @@ var burning_animation = false
 # repairing
 var repairing = false
 
+# fuel statistics
+var fuel_modifiers = {
+	"stopped": 0,
+	"half": 0.2,
+	"full": 0.5,
+	"flank": 1
+}
+
+var speed_mode_dict = {
+	"stopped": 0,
+	"half": 0.5,
+	"full": 1,
+	"flank": 1.5
+}
+
+var current_speed_mode
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	
@@ -56,6 +73,12 @@ func _ready():
 	for ship in units:
 		connect("hit_subsystem", self, "on_subsystem_damage")
 
+	# fuel settings
+	get_node("FuelBar").max_value = get_max_fuel()
+	update_fuel_bar()
+	
+	stop_moving()
+	
 func handle_right_click(placement):
 	if selected and GameState.get_playerFaction() == get_faction():
 		#print("right clicked for course")
@@ -65,6 +88,7 @@ func handle_right_click(placement):
 			
 			emit_signal("new_course_change", current_target, placement)
 			#print(target_array)
+			
 		elif last_button == "patrol":
 			patrolling = true
 			current_target = placement
@@ -77,13 +101,37 @@ func handle_right_click(placement):
 		else:
 			patrolling = false
 			target_array = []
-			#var angle = placement.angle_to_point(position) + (PI / 2)
-			stopped = false
+
+			# unstops the ship, and also sets the current speed mode
+			if stopped:
+				start_moving()
+				end_repairs()
+				
+				# flank or half from stop
+				if last_button == "flank":
+					set_current_speed_mode("flank")
+					calc_current_speed()
+				
+				elif last_button == "half":
+					set_current_speed_mode("half")
+					calc_current_speed()
+				
+			# handles setting a current target while already flanking 
+			elif get_current_speed_mode() == "flank":
+				set_current_speed_mode("flank")
+				calc_current_speed()
+				
+			elif get_current_speed_mode() == "half":
+				set_current_speed_mode("half")
+				calc_current_speed()
+			
 			current_target = placement
 
 func _input(event):
 	if selected:
 		if Input.is_action_pressed("stop"):
+			set_current_speed_mode("stopped")
+			calc_current_speed()
 			self.current_target = self.global_position
 			self.target_array = []
 		
@@ -96,6 +144,27 @@ func _input(event):
 		
 		elif Input.is_action_pressed("patrol"):
 			last_button = "patrol"
+			
+		elif Input.is_action_pressed("flank speed"):
+			last_button = "flank"
+			
+			# set speed to be higher here
+			set_current_speed_mode("flank")
+			calc_current_speed()
+		
+		elif Input.is_action_pressed("half speed"):
+			last_button = "half"
+			
+			# set speed to be half here
+			set_current_speed_mode("half")
+			calc_current_speed()
+		
+		elif Input.is_action_pressed("full ahead"):
+			last_button = "full"
+			
+			# set speed to be full here
+			set_current_speed_mode("full")
+			calc_current_speed()
 		
 		elif Input.is_action_pressed("cancel"):
 			last_button = ""
@@ -105,7 +174,8 @@ func start_repairs():
 	
 	self.current_target = self.global_position
 	self.target_array = []
-	self.stopped = true
+	
+	stop_moving()
 			
 	self.repairing = true
 	get_node("RepairClock").start()
@@ -113,9 +183,29 @@ func start_repairs():
 func end_repairs():
 	print("stopped repairing")
 	
-	self.stopped = false
 	self.repairing = false
+	start_moving()
+	
 	get_node("RepairClock").stop()
+
+func start_moving():
+	print("started moving")
+	
+	stopped = false
+	set_current_speed_mode("full")
+	calc_current_speed()
+	
+	# start fuel timer
+	get_node("FuelConsumptionTimer").start()
+
+func stop_moving():
+	stopped = true
+	set_current_speed_mode("stopped")
+	
+	# stop fuel timer
+	get_node("FuelConsumptionTimer").stop()
+	
+	update_squad_info()
 
 # Handle Island collisions
 func _on_Squadron_area_entered(area):
@@ -157,7 +247,8 @@ func _physics_process(delta):
 		#if we are close to the last target, set stopped to true
 		elif global_position.distance_to(current_target) < 10:
 			emit_signal("reached_target")
-			stopped = true
+			
+			stop_moving()
 
 		if int(global_position.distance_to(current_target)) > 1:
 			self.rotation = lerp_angle(self.rotation, (current_target - self.global_position).normalized().angle() + PI/2, self.turn_weight)
@@ -172,7 +263,8 @@ func _physics_process(delta):
 func _process(delta):
 	
 	get_node("HealthBar").value = lerp(get_node("HealthBar").value, get_total_health(), get_process_delta_time())
-
+	#update_fuel_bar()
+	
 	var popup_location = Vector2(
 		global_position.x + 20,
 		global_position.y - 20
@@ -326,7 +418,7 @@ func get_damaged_ship():
 	else:
 		return healthy_ships[randi() % healthy_ships.size()]
 
-func take_damage(weapon: Weapon, distance_to_squad, enemy_stopped):
+func take_damage(weapon: Weapon, distance_to_squad, enemy_speed_mode):
 	#print("ships taking damages")
 	# for now, the first ship will bear the brunt of the damage. ouch!
 	if len(units) <= 0:
@@ -337,7 +429,7 @@ func take_damage(weapon: Weapon, distance_to_squad, enemy_stopped):
 		var damage_index = units.find(damaged_ship)
 		
 		# setting this to false until we fix t crossing
-		damaged_ship.damage(weapon, false, distance_to_squad, enemy_stopped)
+		damaged_ship.damage(weapon, false, distance_to_squad, enemy_speed_mode)
 		
 		if damaged_ship.on_fire():
 			burning_ships.append(damaged_ship)
@@ -358,13 +450,15 @@ func take_damage(weapon: Weapon, distance_to_squad, enemy_stopped):
 		
 		if self.faction == GameState.get_playerFaction():
 			self.show_attack_damage(get_node("HealthBar").value, get_total_health())
-				
-		emit_signal("update_squad_info", get_total_health(), get_status(damaged_ship))
+		
+		update_squad_info(damaged_ship)
 
 func check_ship_removal(damaged_ship, damage_index):
 	if damaged_ship.get_health() <= 0:
 		emit_signal("ship_lost", damaged_ship)
 		units.remove(damage_index)
+		
+		update_fuel_bar()
 			
 		if damaged_ship in burning_ships:
 			burning_ships.remove(burning_ships.find(damaged_ship))
@@ -384,7 +478,9 @@ func shoot_guns(weapon_shooting_list, enemy_squadron, _stopped=false):
 	
 	if enemy_squadron and not repairing:
 		for w in weapon_shooting_list:
-			enemy_squadron.take_damage(w, global_position.distance_to(enemy_squadron.global_position), stopped)
+			enemy_squadron.take_damage(w, 
+			global_position.distance_to(enemy_squadron.global_position), 
+			get_current_speed_mode())
 
 func _on_ShotTimer_timeout():
 	#check_t_crossed()
@@ -398,7 +494,7 @@ func _on_ShotTimer_timeout():
 		#print(burning_ships)
 		#print("squadron burning!")
 		for ship in burning_ships:
-			ship.damage(ongoing_fire, false, -1, true)
+			ship.damage(ongoing_fire, false, -1, "stopped")
 			
 			check_ship_removal(ship, units.find(ship))
 
@@ -446,7 +542,10 @@ func _on_Condition_Popup_timeout():
 func _on_RepairClock_timeout():
 	#print(str(get_total_health()) + "\t" + str(get_squadron_max_health(true)))
 	
-	if (get_squadron_max_health(true) - get_total_health()) < 1:
+	if (get_squadron_max_health(true) - get_total_health()) < 1 \
+	and (get_max_fuel() - get_current_fuel()) <= 0.01:
+		
+		update_squad_info()
 		end_repairs()
 	
 	for ship in units:
@@ -456,8 +555,9 @@ func _on_RepairClock_timeout():
 			burning_ships.remove(burning_ships.find(ship))
 			
 		self.update_healthbar()
-		
-	emit_signal("update_squad_info", get_total_health(), get_status(null))
+		self.update_fuel_bar()
+	
+	update_squad_info()
 
 func get_status(damaged_ship):
 	if repairing:
@@ -467,4 +567,72 @@ func get_status(damaged_ship):
 	elif burning_ships.size() > 0:
 		return "burning"
 	else:
-		return ""
+		return "healthy"
+
+### FUEL PROCESSING
+
+func calc_current_speed():
+	
+	if out_of_fuel():
+		# this will automatically refuel the ship. 
+		# the player will have to manually stop repairs to continue.
+		start_repairs()
+	else:
+		current_speed = speed_mode_dict[current_speed_mode] * self.get_min_speed()
+
+func use_fuel(speed_mode):
+	
+	var fuel_consumption_modifier = fuel_modifiers[speed_mode]
+	
+	for s in units:
+		s.process_fuel(fuel_consumption_modifier)
+	
+	update_fuel_bar()
+		
+func set_current_speed_mode(speed_mode):
+	current_speed_mode = speed_mode
+
+func get_current_speed_mode():
+	return current_speed_mode
+
+func get_current_fuel():
+	var current_fuel = 0
+	
+	for s in units:
+		current_fuel += s.get_fuel()
+	
+	return current_fuel
+
+func get_max_fuel():
+	var max_fuel = 0
+	
+	for s in units:
+		max_fuel += s.get_max_fuel()
+	
+	return max_fuel
+
+func out_of_fuel():
+	if get_current_fuel() <= get_max_fuel() * 0.01:
+		return true
+	else: 
+		return false
+
+func update_fuel_bar():
+	
+	get_node("FuelBar").value = get_current_fuel()
+
+func _on_FuelConsumptionTimer_timeout():
+	
+	# fuel consumption is in seconds 
+	use_fuel(current_speed_mode)
+	calc_current_speed()
+	
+	update_squad_info()
+	
+func update_squad_info(damaged_ship=null):
+	#print("updating squad info")
+	
+	if selected:
+		emit_signal("update_squad_info", get_total_health(), 
+					get_current_fuel(), get_status(damaged_ship), get_current_speed_mode())
+

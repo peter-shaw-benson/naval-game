@@ -198,7 +198,11 @@ func _input(event):
 			handle_pause(false)
 		else:
 			unpause()
-	
+
+
+func update():
+	pass
+		
 func handle_pause(pause_menu=true):
 	get_tree().paused = true
 	paused = true
@@ -310,15 +314,20 @@ func display_selected_squad(squad):
 	get_node("SquadSelected").set_max_health(squad_max_health)
 	get_node("SquadSelected").update_health(squad_health)
 	get_node("SquadSelected").subsystem_status(squad_status)
+	
+	get_node("SquadSelected").set_max_fuel(squad.get_max_fuel())
+	get_node("SquadSelected").update_fuel(squad.get_current_fuel())
 
 func squad_deselected(squad):
 	get_node("SquadSelected").hide()
 
-func update_squad_info(new_health, ship_status):
+func update_squad_info(new_health, new_fuel, ship_status, speed_mode):
 	if get_node("SquadSelected").visible == true:
 		get_node("SquadSelected").update_health(new_health)
+		get_node("SquadSelected").update_fuel(new_fuel)
 		
 		get_node("SquadSelected").subsystem_status(ship_status)
+		get_node("SquadSelected").speed_status(speed_mode)
 
 # PLANE STUFF
 

@@ -25,7 +25,9 @@ var ship_stats = {
 	"visibility": 15,
 	"crew": 5,
 	"class": "Destroyer",
-	"weapons": [LightGun.new(), LightGun.new()]
+	"weapons": [LightGun.new(), LightGun.new()],
+	"fuel_storage": 5,
+	"fuel_consumption": 0.1
 }
 
 func _init():
@@ -37,6 +39,7 @@ func _init():
 	
 	self.set_class(ship_stats["class"])
 	self.armament(ship_stats["weapons"])
+	self.set_fuel(ship_stats["fuel_storage"], ship_stats["fuel_consumption"])
 	
 	# choose name from list
 	var name = DestroyerNames[randi() % DestroyerNames.size()]

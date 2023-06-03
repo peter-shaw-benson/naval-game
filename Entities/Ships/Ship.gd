@@ -19,8 +19,25 @@ var damaged_rudder = false
 var damaged_engine = false
 var burning = false
 
+var fuel_storage: float
+var fuel_storage_max: float
+var fuel_consumption: float
+
 func set_name(ship_name):
 	self.ship_name = ship_name
+	
+	
+# Initialize fuel variables
+func set_fuel(fuel_storage, consumption):
+	self.fuel_storage = fuel_storage
+	self.fuel_storage_max = fuel_storage
+	self.fuel_consumption = consumption
+
+func get_fuel():
+	return fuel_storage
+
+func get_max_fuel():
+	return fuel_storage_max
 
 func get_name(): return self.ship_name
 
@@ -102,10 +119,10 @@ func subsystem_damage(accuracy_roll, total_accuracy, damage_result):
 	
 	return damage_result
 	
-func damage(weapon: Weapon, t_crossed, distance, enemy_stopped):
+func damage(weapon: Weapon, t_crossed, distance, enemy_speed_mode):
 	var range_factor_damage = GameState.get_rangeFactor() + 1
 	
-	var hit_dict = calculate_hit(weapon, distance, enemy_stopped, true)
+	var hit_dict = calculate_hit(weapon, distance, enemy_speed_mode, true)
 	
 	if hit_dict["hit"]:
 		#print("hit scored!")
@@ -146,3 +163,16 @@ func repair():
 	
 	if burning: 
 		burning = false
+	
+	if fuel_storage < fuel_storage_max:
+
+		process_fuel(-10)
+
+# Use fuel during movement. 
+# set the modifier to a negative value to add fuel.
+func process_fuel(consumption_modifier):
+	
+	fuel_storage -= consumption_modifier * fuel_consumption
+	
+	if fuel_storage > fuel_storage_max:
+		fuel_storage = fuel_storage_max

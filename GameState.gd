@@ -23,6 +23,14 @@ var game_vars = {
 	# How much being stopped increases accuracy
 }
 
+# bonuses to speed factor accuracy
+var speed_mode_accuracies = {
+	"stopped": 0.5,
+	"half": 0.25,
+	"full": 0,
+	"flank": -0.5
+}
+
 var combatPace: float
 var rangeFactor: float
 var crewAccuracyFactor: float
@@ -180,3 +188,6 @@ func get_stoppedFactor():
 
 func get_outOfRange():
 	return game_vars["outOfRange"]
+
+func get_speedFactor(speed_mode):
+	return speed_mode_accuracies[speed_mode]

@@ -31,7 +31,8 @@ var aircraft_list = []
 
 var roller = RandomNumberGenerator.new()
 
-func init(speed, max_range, turn_weight, hit_points, armor, hide_range, visibility, crew):
+func init(speed, max_range, turn_weight, hit_points, armor, 
+hide_range, visibility, crew):
 	self.speed = speed
 	self.max_speed = speed
 	
@@ -100,7 +101,7 @@ func get_weapons():
 func get_range():
 	return self.max_range
 	
-func calculate_hit(weapon, distance, enemy_stopped, dict=false):
+func calculate_hit(weapon, distance, enemy_speed_mode, dict=false):
 	var accuracy_roll = roller.randf()
 	
 	var range_factor_accuracy
@@ -117,12 +118,11 @@ func calculate_hit(weapon, distance, enemy_stopped, dict=false):
 	if range_factor_accuracy >= 2:
 		range_factor_accuracy = 2
 	
-	var stopped_factor_accuracy = 1
+	var speed_factor_accuracy = 1
 	
-	if enemy_stopped:
-		stopped_factor_accuracy += GameState.get_stoppedFactor()
+	speed_factor_accuracy += GameState.get_speedFactor(enemy_speed_mode)
 	
-	var final_accuracy = weapon.base_accuracy * range_factor_accuracy * stopped_factor_accuracy 
+	var final_accuracy = weapon.base_accuracy * range_factor_accuracy * speed_factor_accuracy 
 	
 	var hit_dict = {
 		"hit": accuracy_roll < final_accuracy,
