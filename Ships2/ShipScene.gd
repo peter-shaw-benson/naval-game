@@ -290,3 +290,8 @@ func calc_current_speed():
 
 	current_speed = speed_mode_dict[current_speed_mode][0] * self.getSpeed()
 
+
+
+
+## COMBAT
+

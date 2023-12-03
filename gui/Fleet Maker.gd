@@ -7,7 +7,7 @@ const ShipScene = preload("res://Ships2/ShipScene.gd")
 
 const ScoutPlane = preload("res://Entities/Planes/ScoutPlane.gd")
 
-var num_destroyers = 0
+var num_destroyers = 1
 var position_x = 0
 var position_y = 0
 var num_islands = 0
@@ -38,6 +38,7 @@ func make_destroyer_array(length, initial_pos):
 		destroyer_array.append({"ship": next_destroyer,
 			"position": initial_pos,
 			"type": "ship",
+			"unit_type": "gunboat",
 			"faction": faction})
 	
 	return destroyer_array

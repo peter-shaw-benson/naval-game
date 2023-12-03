@@ -1,20 +1,20 @@
 [gd_scene load_steps=7 format=2]
 
-[ext_resource path="res://art/basic_ship.png" type="Texture" id=1]
+[ext_resource path="res://art/Individual Ship Sprite/Gunboat/gunboat_basic.png" type="Texture" id=1]
 [ext_resource path="res://Ships2/ShipScene.gd" type="Script" id=2]
 [ext_resource path="res://Miscellaneous/Detection Area.tscn" type="PackedScene" id=3]
-[ext_resource path="res://art/selected_ship.png" type="Texture" id=4]
+[ext_resource path="res://art/Individual Ship Sprite/Gunboat/gunboat_selected.png" type="Texture" id=4]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
-"frames": [ ExtResource( 4 ) ],
-"loop": true,
-"name": "arrow_clicked",
-"speed": 5.0
-}, {
 "frames": [ ExtResource( 1 ) ],
 "loop": true,
-"name": "arrow_basic",
+"name": "gunboat_basic",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 4 ) ],
+"loop": true,
+"name": "gunboat_clicked",
 "speed": 5.0
 } ]
 
@@ -27,14 +27,17 @@ script = ExtResource( 2 )
 detector_scene = ExtResource( 3 )
 
 [node name="Sprite" type="AnimatedSprite" parent="."]
+scale = Vector2( 2, 2 )
 frames = SubResource( 1 )
-animation = "arrow_clicked"
+animation = "gunboat_basic"
 
 [node name="Hitbox" type="CollisionShape2D" parent="."]
+visible = false
 position = Vector2( 0.353561, 0 )
 shape = SubResource( 2 )
 
 [node name="IslandCollision" type="CollisionShape2D" parent="."]
+visible = false
 position = Vector2( 0.353561, 0 )
 shape = SubResource( 2 )
 

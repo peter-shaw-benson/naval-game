@@ -142,13 +142,13 @@ func get_path_showing():
 	return self.show_path
 	
 	
-	
+
 # SELECT / DESELCT
-# hardcoding "arrow" for now
+
 func select():
 	if faction == GameState.get_playerFaction():
 		selected = true
-		get_node("Sprite").animation = "arrow" + "_clicked"
+		get_node("Sprite").animation = type + "_clicked"
 		get_node("Sprite").set_frame(faction)
 		
 		#print(get_node("Sprite").animation)
@@ -160,7 +160,7 @@ func select():
 func deselect():
 	selected = false
 	
-	get_node("Sprite").animation = "arrow" + "_basic"
+	get_node("Sprite").animation = type + "_basic"
 	get_node("Sprite").set_frame(faction)
 	
 	#print(get_node("Sprite").animation)

@@ -117,7 +117,7 @@ func place_ship(ship_data):
 	var ship = ship_scene.instance()
 		
 	ship.init(ship_data.ship, get_viewport().get_mouse_position(), 
-	ship_data.faction, ship_data.type)
+	ship_data.faction, ship_data.unit_type)
 		
 	ship_list.append(ship)
 		
@@ -176,8 +176,8 @@ func place_carrier(carrier_data):
 	carrier.start_placing()
 
 func place_next_unit(place_list):
-	#print(place_list)
-	#print(unit_data)
+	print(place_list)
+	print(unit_data)
 	
 	# here, the place_list is a list of the squadron data
 	# 
