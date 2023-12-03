@@ -141,7 +141,7 @@ func set_path_showing(new_showing):
 func get_path_showing():
 	return self.show_path
 	
-	
+
 
 # SELECT / DESELCT
 

@@ -1,6 +1,8 @@
 extends CombatUnit
 class_name ShipScene
 
+export var Turret: PackedScene
+
 signal new_course_change(current_target, placement)
 signal reached_target()
 signal ship_lost()
@@ -46,9 +48,16 @@ func _ready():
 	self.deselect()
 	
 	stop_moving()
-	print("stopped with the ready method, starting game.")
+	#print("stopped with the ready method, starting game.")
+	
+	# create turret here:
+	var turret = Turret.instance()
+	
+	add_child(turret)
 	
 func handle_right_click(placement):
+	print("handling right click")
+	
 	if selected and GameState.get_playerFaction() == get_faction():
 		# this works properly for patrols:
 		# print("last button:", last_button)
