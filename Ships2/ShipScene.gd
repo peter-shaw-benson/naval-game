@@ -50,6 +50,8 @@ func _ready():
 	
 func handle_right_click(placement):
 	if selected and GameState.get_playerFaction() == get_faction():
+		# this works properly for patrols:
+		# print("last button:", last_button)
 		#print("right clicked for course")
 		# Turn logic is here for now?
 		if Input.is_action_pressed("queue"):
@@ -63,9 +65,17 @@ func handle_right_click(placement):
 			current_target = placement
 			target_array.append(self.global_position)
 			
+			print(target_array)
+			print(current_target)
+			print(self.global_position)
+			
 			emit_signal("new_course_change", current_target, placement)
 			
 			last_button = ""
+			
+			# need to start moving when you begin a patrol...
+			if stopped:
+				start_moving()
 			
 		else:
 			patrolling = false
@@ -74,7 +84,7 @@ func handle_right_click(placement):
 			# unstops the ship, and also sets the current speed mode
 			if stopped:
 				start_moving()
-				end_repairs()
+				#end_repairs()
 				
 				# flank or half from stop
 				if last_button == "flank" || last_button == "half":
@@ -153,29 +163,29 @@ func _input(event):
 #	emit_signal("ship_deselected", self)
 
 # these are here for later, if we build ports n shit
-func start_repairs():
-	print("repairing")
-	
-	self.current_target = self.global_position
-	self.target_array = []
-	
-	stop_moving()
-			
-	self.repairing = true
-	get_node("RepairClock").start()
-	
-func end_repairs():
-	print("stopped repairing")
-	
-	self.repairing = false
-	start_moving()
-	
-	get_node("RepairClock").stop()
+#func start_repairs():
+#	print("repairing")
+#
+#	self.current_target = self.global_position
+#	self.target_array = []
+#
+#	stop_moving()
+#
+#	self.repairing = true
+#	get_node("RepairClock").start()
+#
+#func end_repairs():
+#	print("stopped repairing")
+#
+#	self.repairing = false
+#	start_moving()
+#
+#	get_node("RepairClock").stop()
 	
 # movement functions:
 # took out fuel indicators – idk how to do fuel with the new ships.
 func start_moving():
-	print("started moving")
+	#print("started moving")
 	
 	stopped = false
 	set_current_speed_mode("full")

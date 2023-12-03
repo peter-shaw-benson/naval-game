@@ -141,6 +141,9 @@ func set_path_showing(new_showing):
 func get_path_showing():
 	return self.show_path
 	
+	
+	
+# SELECT / DESELCT
 # hardcoding "arrow" for now
 func select():
 	if faction == GameState.get_playerFaction():
@@ -148,7 +151,7 @@ func select():
 		get_node("Sprite").animation = "arrow" + "_clicked"
 		get_node("Sprite").set_frame(faction)
 		
-		print(get_node("Sprite").animation)
+		#print(get_node("Sprite").animation)
 		
 		#emit_signal("ship_selected", self)
 		
@@ -160,7 +163,7 @@ func deselect():
 	get_node("Sprite").animation = "arrow" + "_basic"
 	get_node("Sprite").set_frame(faction)
 	
-	print(get_node("Sprite").animation)
+	#print(get_node("Sprite").animation)
 	
 	#emit_signal("ship_deselected", self)
 	
@@ -189,6 +192,7 @@ func _input_event(viewport, event, shape_idx):
 		
 		# removing for now
 		# print("(combat unit) mouse clicked")
+		# this still registers 4 mouse press events per actual mouse click 
 		
 		self.on_click()
 
@@ -198,7 +202,7 @@ func _unhandled_input(event):
 	if event is InputEventMouseButton \
 	and event.button_index == BUTTON_LEFT \
 	and event.pressed:
-		print("unhandled input")
+		#print("unhandled input")
 		if self.selected:
 			self.deselect()
 		

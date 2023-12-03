@@ -221,6 +221,9 @@ func _input(event):
 		
 		for a in airbase_list:
 			a.handle_right_click(event.position)
+			
+		for sh in ship_list:
+			sh.handle_right_click(event.position)
 	
 	elif Input.is_action_pressed("pause_menu"):
 		if not paused:
