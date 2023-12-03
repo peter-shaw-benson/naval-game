@@ -77,6 +77,8 @@ func hide_enemies():
 		if s.faction != playerFaction:
 			s.hide()
 			s.set_path_showing(false)
+			
+	LineRenderer.init(ship_list)
 	
 	for a in airbase_list:
 		if a.faction != playerFaction:
