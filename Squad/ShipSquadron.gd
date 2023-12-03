@@ -207,7 +207,8 @@ func stop_moving():
 	
 	update_squad_info()
 
-# Handle Island collisions
+# Handle Island collisions – this will be different once 
+# I implement tile-based islands.
 func _on_Squadron_area_entered(area):
 	if area.get_faction() == 4:
 		# Entered Hiding Area 

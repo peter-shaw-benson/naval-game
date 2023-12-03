@@ -35,6 +35,11 @@ _global_script_classes=[ {
 "path": "res://Entities/Planes/Plane.gd"
 }, {
 "base": "Area2D",
+"class": "CombatUnit",
+"language": "GDScript",
+"path": "res://Ships2/CombatUnit.gd"
+}, {
+"base": "Area2D",
 "class": "CombatUnitsWrapper",
 "language": "GDScript",
 "path": "res://Squad/CombatUnitsWrapper.gd"
@@ -53,6 +58,11 @@ _global_script_classes=[ {
 "class": "DetectionArea",
 "language": "GDScript",
 "path": "res://Miscellaneous/Detection Area.gd"
+}, {
+"base": "Node",
+"class": "Entity",
+"language": "GDScript",
+"path": "res://Entities/Entity.gd"
 }, {
 "base": "Area2D",
 "class": "Island",
@@ -115,10 +125,12 @@ _global_script_class_icons={
 "Carrier": "",
 "CarrierEntity": "",
 "CombatPlane": "",
+"CombatUnit": "",
 "CombatUnitsWrapper": "",
 "Cruiser": "",
 "Destroyer": "",
 "DetectionArea": "",
+"Entity": "",
 "Island": "",
 "LandFort": "",
 "LandFortEntity": "",

@@ -1,4 +1,5 @@
 extends Node
+class_name Entity
 
 signal hit_subsystem(type)
 

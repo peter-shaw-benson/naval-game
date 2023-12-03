@@ -15,14 +15,14 @@
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
-"frames": [ ExtResource( 5 ), ExtResource( 6 ), ExtResource( 7 ) ],
-"loop": true,
-"name": "squadron_clicked",
-"speed": 5.0
-}, {
 "frames": [ ExtResource( 4 ), ExtResource( 3 ), ExtResource( 2 ) ],
 "loop": true,
 "name": "squadron_basic",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 5 ), ExtResource( 6 ), ExtResource( 7 ) ],
+"loop": true,
+"name": "squadron_clicked",
 "speed": 5.0
 } ]
 
@@ -89,7 +89,6 @@ rect_rotation = -90.0
 custom_styles/fg = ExtResource( 12 )
 custom_styles/bg = ExtResource( 11 )
 max_value = 20.0
-step = 0.01
 value = 20.0
 percent_visible = false
 __meta__ = {

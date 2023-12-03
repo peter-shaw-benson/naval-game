@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://art/carrier sprites/sprite_0.png" type="Texture" id=1]
 [ext_resource path="res://Squad/Carrier/Carrier.gd" type="Script" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://art/carrier sprites/carrier_sprite-6.png" type="Texture" id=7]
 [ext_resource path="res://art/carrier sprites/sprite_4.png" type="Texture" id=8]
 [ext_resource path="res://Squad/PlaneSquadron/PlaneSquadron.tscn" type="PackedScene" id=9]
+[ext_resource path="res://art/themes/fuel_bar.tres" type="StyleBox" id=10]
 [ext_resource path="res://art/themes/healthbar.tres" type="StyleBox" id=11]
 [ext_resource path="res://art/themes/LaunchBar.tres" type="StyleBox" id=12]
 [ext_resource path="res://gui/StatusPopups.tscn" type="PackedScene" id=13]
@@ -18,14 +19,14 @@ extents = Vector2( 14.1449, 29.6435 )
 
 [sub_resource type="SpriteFrames" id=2]
 animations = [ {
-"frames": [ ExtResource( 6 ), ExtResource( 8 ), ExtResource( 7 ) ],
-"loop": true,
-"name": "carrier_clicked",
-"speed": 5.0
-}, {
 "frames": [ ExtResource( 1 ), ExtResource( 4 ), ExtResource( 5 ) ],
 "loop": true,
 "name": "carrier_basic",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 6 ), ExtResource( 8 ), ExtResource( 7 ) ],
+"loop": true,
+"name": "carrier_clicked",
 "speed": 5.0
 } ]
 
@@ -86,13 +87,42 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="FuelBar" type="ProgressBar" parent="."]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = 33.6066
+margin_top = 24.0503
+margin_right = 81.6066
+margin_bottom = 32.0503
+rect_rotation = 270.0
+custom_styles/fg = ExtResource( 10 )
+custom_styles/bg = SubResource( 3 )
+max_value = 5.0
+value = 2.0
+percent_visible = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="ShotTimer" type="Timer" parent="."]
 
 [node name="LaunchTimer" type="Timer" parent="."]
 one_shot = true
 
+[node name="RepairClock" type="Timer" parent="."]
+one_shot = true
+
 [node name="StatusPopups" parent="." instance=ExtResource( 13 )]
+
+[node name="Condition Popup" type="Timer" parent="."]
+
+[node name="FuelConsumptionTimer" type="Timer" parent="."]
 [connection signal="area_entered" from="." to="." method="_on_Carrier_area_entered"]
 [connection signal="input_event" from="." to="." method="_on_AirbaseArea_input_event"]
 [connection signal="timeout" from="ShotTimer" to="." method="_on_ShotTimer_timeout"]
 [connection signal="timeout" from="LaunchTimer" to="." method="_on_LaunchTimer_timeout"]
+[connection signal="timeout" from="RepairClock" to="." method="_on_RepairClock_timeout"]
+[connection signal="timeout" from="Condition Popup" to="." method="_on_Condition_Popup_timeout"]
+[connection signal="timeout" from="FuelConsumptionTimer" to="." method="_on_FuelConsumptionTimer_timeout"]

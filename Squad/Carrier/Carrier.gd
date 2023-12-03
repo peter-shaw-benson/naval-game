@@ -101,7 +101,7 @@ func organize_aircraft(plane_list):
 func _ready():
 	
 	get_node("ShotTimer").wait_time = GameState.get_combatPace()
-	get_node("StatusPopups/Condition Popup").wait_time = GameState.get_combatPace() * 0.8
+	get_node("Condition Popup").wait_time = GameState.get_combatPace() * 0.8
 	
 	self.weapon_dict = construct_weapon_dict()
 	#print(weapon_dict)
