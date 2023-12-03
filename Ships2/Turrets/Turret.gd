@@ -2,6 +2,12 @@ extends Area2D
 
 export var Bullet : PackedScene
 
+# bullet data here
+var weaponData: Weapon
+
+func init(weapon):
+	self.weaponData = weapon
+
 func _ready():
 	pass
 
@@ -12,8 +18,10 @@ func _process(delta):
 		 shoot()
 	
 func shoot():
-	var b = Bullet.instance()
+	var bullet = Bullet.instance()
 	
-	get_tree().root.add_child(b)
+	bullet.init(weaponData.get_speed(), weaponData.get_range())
 	
-	b.transform = $Barrel.global_transform
+	get_tree().root.add_child(bullet)
+	
+	bullet.transform = $Barrel.global_transform

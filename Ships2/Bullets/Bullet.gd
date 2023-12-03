@@ -1,6 +1,11 @@
 extends Area2D
 
-var speed = 100
+var speed: int
+var max_range: int
+
+func init(speed, max_range):
+	self.speed = speed
+	self.max_range = max_range
 
 func _physics_process(delta):
 	position += transform.x * speed * delta

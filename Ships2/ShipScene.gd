@@ -50,10 +50,13 @@ func _ready():
 	stop_moving()
 	#print("stopped with the ready method, starting game.")
 	
-	# create turret here:
-	var turret = Turret.instance()
-	
-	add_child(turret)
+	# create turrets here:
+	for w in self.get_weapon_list():
+		var turret = Turret.instance()
+		
+		turret.init(w)
+		
+		add_child(turret)
 	
 func handle_right_click(placement):
 	print("handling right click")
@@ -303,4 +306,5 @@ func calc_current_speed():
 
 
 ## COMBAT
-
+func get_weapon_list():
+	return unitData.get_weapons()

@@ -14,6 +14,8 @@ var base_accuracy: float
 # implement accuracy gain later
 var accuracy_gain: float
 
+var speed = 200
+
 func init(max_range, fire_rate, damage, piercing, armor_damage, anti_air, \
 base_accuracy, accuracy_gain):
 	self.max_range = max_range
@@ -37,3 +39,9 @@ func _to_string():
 
 func get_fire_rate():
 	return self.fire_rate
+	
+func get_range():
+	return self.max_range
+
+func get_speed():
+	return self.speed
