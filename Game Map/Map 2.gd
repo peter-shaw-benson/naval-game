@@ -5,16 +5,22 @@ export var island_scene: PackedScene
 export var airbase_scene: PackedScene
 export var carrier_scene: PackedScene
 export var landfort_scene: PackedScene
+
+export var ship_scene: PackedScene
+
 export var fog_scene: PackedScene
 
 var squad: Squadron
 var island: Island
 var airbase: Airbase
+var ship: ShipScene
 
 var playerFaction
 
 var squad_list = []
 var airbase_list = []
+
+var ship_list = []
 
 var place_list
 var unit_data
@@ -47,6 +53,7 @@ func init(input_unit_list, num_islands):
 	
 	playerFaction = GameState.get_playerFaction()
 	
+	# surprisingly, this might actually work?
 	unit_data = input_unit_list
 	place_list = range(len(unit_data))
 	place_next_unit(place_list)
@@ -58,6 +65,13 @@ func hide_enemies():
 	LineRenderer.init(squad_list)
 	# Hide enemy squadrons, start visibility
 	for s in squad_list:
+		s.enable_spotting()
+		
+		if s.faction != playerFaction:
+			s.hide()
+			s.set_path_showing(false)
+			
+	for s in ship_list:
 		s.enable_spotting()
 		
 		if s.faction != playerFaction:
@@ -96,6 +110,23 @@ func place_squadron(squad_data, landfort=false):
 	#place_squadron(squad)
 	# Find mouse position, set squadron position based on it
 	squad.start_placing()
+
+func place_ship(ship_data):
+	var ship = ship_scene.instance()
+		
+	ship.init(ship_data.ship, get_viewport().get_mouse_position(), 
+	ship_data.faction, ship_data.type)
+		
+	ship_list.append(ship)
+		
+	add_child(ship)
+	
+	ship.connect("hit", self, "_on_squad_crash")
+	ship.connect("ship_lost", self, "_on_ship_lost")
+	ship.connect("stopped_placing", self, "_on_squadron_stopped_placement")
+	
+	# Find mouse position, set ship position based on it
+	ship.start_placing()
 
 func place_airbase(airbase_data):
 	var airbase = airbase_scene.instance()
@@ -157,6 +188,9 @@ func place_next_unit(place_list):
 			place_airbase(unit_data[squad_index])
 		elif unit_data[squad_index]["type"] == "squadron":
 			place_squadron(unit_data[squad_index])
+		# new path:
+		elif unit_data[squad_index]["type"] == "ship":
+			place_ship(unit_data[squad_index])
 		elif unit_data[squad_index]["type"] == "landfort":
 			#print("found land fort!")
 			place_squadron(unit_data[squad_index], true)
@@ -240,7 +274,9 @@ func _on_CrashPopup_id_pressed(id):
 func _on_ship_lost(ship: Ship):
 	#var loss_text = ship.get_name() + " lost to Enemy Action!"
 	
-	get_node("Ship Funeral/Ship Text").text = "loss_text"
+	# taking this out for now
+	pass
+	#get_node("Ship Funeral/Ship Text").text = "loss_text"
 	
 	#get_node("Ship Funeral").popup()
 	#get_node("Ship Popup Timer").start()
@@ -266,6 +302,7 @@ func get_squadron_at(location):
 			return s
 
 func update_clock_display():
+	# uhhhh why do we have this
 	if game_time >= 1440:
 		game_time = 0
 		
@@ -283,7 +320,12 @@ func update_weather():
 	for unit in squad_list:
 		if unit:
 			unit.calc_new_wind_vector($Weather.get_wind_velocity_cartesian())
-			
+		
+	for unit in ship_list:
+		if unit:
+			unit.calc_new_wind_vector($Weather.get_wind_velocity_cartesian())
+		
+		
 	if $Weather.get_fog_gen_flag():
 		var new_fog = fog_scene.instance()
 		$Weather.register_fog(new_fog)
@@ -304,19 +346,20 @@ func _on_GameClock_timeout():
 		
 	update_clock_display()
 
-func display_selected_squad(squad):
-	get_node("SquadSelected").show()
-	
-	var squad_status = squad.get_status(null)
-	var squad_health = squad.get_total_health()
-	var squad_max_health = squad.get_squadron_max_health()
-	
-	get_node("SquadSelected").set_max_health(squad_max_health)
-	get_node("SquadSelected").update_health(squad_health)
-	get_node("SquadSelected").subsystem_status(squad_status)
-	
-	get_node("SquadSelected").set_max_fuel(squad.get_max_fuel())
-	get_node("SquadSelected").update_fuel(squad.get_current_fuel())
+# do this later ?
+#func display_selected_squad(squad):
+#	get_node("SquadSelected").show()
+#
+#	var squad_status = squad.get_status(null)
+#	var squad_health = squad.get_total_health()
+#	var squad_max_health = squad.get_squadron_max_health()
+#
+#	get_node("SquadSelected").set_max_health(squad_max_health)
+#	get_node("SquadSelected").update_health(squad_health)
+#	get_node("SquadSelected").subsystem_status(squad_status)
+#
+#	get_node("SquadSelected").set_max_fuel(squad.get_max_fuel())
+#	get_node("SquadSelected").update_fuel(squad.get_current_fuel())
 
 func squad_deselected(squad):
 	get_node("SquadSelected").hide()

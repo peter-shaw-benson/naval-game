@@ -68,7 +68,9 @@ var sprite_type
 var last_button = ""
 var show_path = true
 
-func init(unit_array, initial_position, faction, type):
+func init(entity, initial_position, faction, type):
+	self.unitData = entity
+	
 	self.type = type
 	self.sprite_type = type
 	
@@ -98,11 +100,10 @@ func init(unit_array, initial_position, faction, type):
 	detector.connect("entered_spotting_area", self, "on_detection_entered")
 	detector.connect("left_spotting_area", self, "on_detection_left")
 	
-	self.initial_pos = initial_position
 	self.current_speed = getSpeed()
 	self.velocity_vector = Vector2(0, 0)
 	
-	self.position = self.initial_pos
+	self.position = initial_position
 
 	self.rotation = self.initial_rot
 	turn_speed = int(self.base_speed / 2)
@@ -154,6 +155,7 @@ func select():
 		
 func deselect():
 	selected = false
+	
 	get_node("Sprite").animation = sprite_type + "_basic"
 	get_node("Sprite").set_frame(faction)
 	
@@ -180,7 +182,11 @@ func _input_event(viewport, event, shape_idx):
 	if event is InputEventMouseButton \
 	and event.button_index == 1 \
 	and event.pressed:
-		self.on_click()
+		pass
+		# removing for now
+		#print("(combat unit) mouse clicked")
+		
+		#self.on_click()
 
 func _unhandled_input(event):
 	
@@ -188,8 +194,11 @@ func _unhandled_input(event):
 	if event is InputEventMouseButton \
 	and event.button_index == BUTTON_LEFT \
 	and event.pressed:
+		print("unhandled input")
 		if self.selected:
-			self.deselect()
+			#self.deselect()
+			# think this is bugged
+			pass
 		
 		if self.placing:
 			self.stop_placing()
@@ -204,6 +213,8 @@ func start_placing():
 	
 func stop_placing():
 	#print("stopped placing: " + self.get_name())
+	self.deselect()
+	
 	placing = false
 
 	emit_signal("stopped_placing")
@@ -213,6 +224,7 @@ func stop_placing():
 	detector.enable_spotting()
 	
 	current_target = self.global_position
+	print("stopped placing ship")
 
 func enable_spotting():
 	detector.enable_spotting()

@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=2]
+[gd_scene load_steps=21 format=2]
 
 [ext_resource path="res://Game Map/Map 2.gd" type="Script" id=1]
 [ext_resource path="res://Squad/Squadron.tscn" type="PackedScene" id=2]
@@ -18,6 +18,7 @@
 [ext_resource path="res://Game Map/Calvinatron/Calvinatron.gd" type="Script" id=16]
 [ext_resource path="res://Squad/LandFort/LandFort.tscn" type="PackedScene" id=17]
 [ext_resource path="res://gui/SquadSelected.tscn" type="PackedScene" id=18]
+[ext_resource path="res://Ships2/ShipScene.tscn" type="PackedScene" id=19]
 
 [sub_resource type="DynamicFont" id=1]
 size = 36
@@ -31,6 +32,7 @@ island_scene = ExtResource( 4 )
 airbase_scene = ExtResource( 8 )
 carrier_scene = ExtResource( 13 )
 landfort_scene = ExtResource( 17 )
+ship_scene = ExtResource( 19 )
 fog_scene = ExtResource( 15 )
 
 [node name="ColorRect" type="ColorRect" parent="."]

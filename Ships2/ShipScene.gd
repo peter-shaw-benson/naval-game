@@ -1,8 +1,10 @@
 extends CombatUnit
+class_name ShipScene
 
 signal new_course_change(current_target, placement)
 signal reached_target()
 signal ship_lost()
+signal hit(ship)
 
 var stopped = false
 var patrolling = false
@@ -44,6 +46,7 @@ func _ready():
 	self.deselect()
 	
 	stop_moving()
+	print("stopped with the ready method, starting game.")
 	
 func handle_right_click(placement):
 	if selected and GameState.get_playerFaction() == get_faction():
@@ -119,6 +122,34 @@ func _input(event):
 		
 		elif Input.is_action_pressed("cancel"):
 			last_button = ""
+
+# change this (hardcode) for now.
+# change arrow to the ship type later
+func select():
+	print("selecting")
+	
+	if faction == GameState.get_playerFaction():
+		selected = true
+		get_node("Sprite").animation = "arrow" + "_clicked"
+		get_node("Sprite").set_frame(faction)
+		
+		print(get_node("Sprite").animation)
+		
+		emit_signal("ship_selected", self)
+		
+		last_button = ""
+		
+func deselect():
+	print("deselecting")
+	
+	selected = false
+	
+	get_node("Sprite").animation = "arrow" + "_basic"
+	get_node("Sprite").set_frame(faction)
+	
+	print(get_node("Sprite").animation)
+	
+	emit_signal("ship_deselected", self)
 
 # these are here for later, if we build ports n shit
 func start_repairs():
@@ -247,3 +278,18 @@ func calc_current_speed():
 	#	start_repairs()
 
 	current_speed = speed_mode_dict[current_speed_mode][0] * self.getSpeed()
+
+
+func _on_Ship_input_event(viewport, event, shape_idx):
+	if event is InputEventMouseButton \
+	and event.button_index == 1 \
+	and event.pressed:
+		#print(event)
+		print("actually clicked ON ship, event status:", event.pressed)
+		
+		self.on_click()
+		
+	if event is InputEventMouseButton \
+	and event.button_index == 1 \
+	and !event.pressed:
+		print("mouse released")

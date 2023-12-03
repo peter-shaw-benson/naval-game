@@ -3,6 +3,8 @@ extends Control
 const Squadron = preload("res://Squad/Squadron.gd")
 const Destroyer = preload("res://Entities/Ships/Destroyer.gd")
 
+const ShipScene = preload("res://Ships2/ShipScene.gd")
+
 const ScoutPlane = preload("res://Entities/Planes/ScoutPlane.gd")
 
 var num_destroyers = 0
@@ -16,7 +18,7 @@ var enemy_faction = -1
 func _ready():
 	pass
 
-func get_squadron():
+func get_fleet():
 	# Create a new squadron here, reading from the number boxes
 	
 	#var squad = Squadron.new()
@@ -24,8 +26,10 @@ func get_squadron():
 	#print(ship_list[0].speed)
 	var initial_pos = Vector2(position_x, position_y)
 	
-	return {"ships": ship_list,
+	# making one destroyer for now.
+	return {"ship": Destroyer.new(),
 			"position": initial_pos,
+			"type": "ship",
 			"faction": faction}
 
 func make_destroyer_array(length):
@@ -38,24 +42,25 @@ func make_destroyer_array(length):
 	
 	return destroyer_array
 
-func make_enemy_squadron():
+func make_enemy_fleet():
 	
 	#var squad = Squadron.new()
 	var ship_list = make_destroyer_array(2)
 	#print(ship_list[0].speed)
 	var initial_pos = Vector2(400, 300)
 	
-	return {"ships": ship_list,
+	return {"ship": Destroyer.new(),
 			"position": initial_pos,
+			"type": "ship",
 			"faction": enemy_faction}
 
-func get_squadron_list():
+func get_fleet_list():
 	var temp_list = []
 		
-	temp_list.append(get_squadron())
+	temp_list.append(get_fleet())
 	
 	if enemy_faction >= 0:
-		temp_list.append(make_enemy_squadron())
+		temp_list.append(make_enemy_fleet())
 		
 	return temp_list
 
@@ -77,7 +82,7 @@ func _on_StartButton_pressed():
 	# Change player faction to 
 	GameState.change_playerFaction(faction)
 	
-	GameState.change_to_main_map("res://Game Map/Map 2.tscn", get_squadron_list(), num_islands)
+	GameState.change_to_main_map("res://Game Map/Map 2.tscn", get_fleet_list(), num_islands)
 
 func _on_Islands_value_changed(value):
 	num_islands = value

@@ -3,9 +3,6 @@
 [ext_resource path="res://Miscellaneous/SquadFull.gd" type="Script" id=1]
 [ext_resource path="res://Squad/Squadron.tscn" type="PackedScene" id=2]
 
-
-
-
 [node name="SquadFull" type="Node2D"]
 script = ExtResource( 1 )
 

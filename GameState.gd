@@ -90,7 +90,7 @@ func change_to_main_map(path, squadron, num_islands):
 func change_to_main_map2(path):
 	call_deferred("goto_main_map2", path)
 
-func goto_main_map(path, squadron_data, num_islands):
+func goto_main_map(path, fleet_data, num_islands):
 	# It is now safe to remove the current scene
 	current_scene.free()
 
@@ -106,7 +106,7 @@ func goto_main_map(path, squadron_data, num_islands):
 	# Optionally, to make it compatible with the SceneTree.change_scene_to_file() API.
 	get_tree().current_scene = current_scene
 	
-	current_scene.init(squadron_data, num_islands)
+	current_scene.init(fleet_data, num_islands)
 
 func goto_main_map2(path):
 	# It is now safe to remove the current scene

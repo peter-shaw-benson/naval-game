@@ -89,6 +89,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://Entities/Ships/Ship.gd"
 }, {
+"base": "CombatUnit",
+"class": "ShipScene",
+"language": "GDScript",
+"path": "res://Ships2/ShipScene.gd"
+}, {
 "base": "Area2D",
 "class": "ShipSquadron",
 "language": "GDScript",
@@ -136,6 +141,7 @@ _global_script_class_icons={
 "LandFortEntity": "",
 "PlaneSquadron": "",
 "Ship": "",
+"ShipScene": "",
 "ShipSquadron": "",
 "SquadFull": "",
 "Squadron": "",
