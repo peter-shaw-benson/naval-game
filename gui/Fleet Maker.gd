@@ -21,46 +21,42 @@ func _ready():
 func get_fleet():
 	# Create a new squadron here, reading from the number boxes
 	
-	#var squad = Squadron.new()
-	var ship_list = make_destroyer_array(num_destroyers)
-	#print(ship_list[0].speed)
 	var initial_pos = Vector2(position_x, position_y)
+	#var squad = Squadron.new()
+	var ship_list = make_destroyer_array(num_destroyers, initial_pos)
+	#print(ship_list[0].speed)
 	
-	# making one destroyer for now.
-	return {"ship": Destroyer.new(),
-			"position": initial_pos,
-			"type": "ship",
-			"faction": faction}
+	return ship_list
 
-func make_destroyer_array(length):
+func make_destroyer_array(length, initial_pos):
 	var destroyer_array = []
 	
-	for i in range(length+1):
+	for i in range(length):
 		var next_destroyer = Destroyer.new()
 		#print(next_destroyer)
-		destroyer_array.append(next_destroyer)
+		
+		destroyer_array.append({"ship": next_destroyer,
+			"position": initial_pos,
+			"type": "ship",
+			"faction": faction})
 	
 	return destroyer_array
 
 func make_enemy_fleet():
-	
-	#var squad = Squadron.new()
-	var ship_list = make_destroyer_array(2)
-	#print(ship_list[0].speed)
 	var initial_pos = Vector2(400, 300)
+	#var squad = Squadron.new()
+	var ship_list = make_destroyer_array(2, initial_pos)
+	#print(ship_list[0].speed)
 	
-	return {"ship": Destroyer.new(),
-			"position": initial_pos,
-			"type": "ship",
-			"faction": enemy_faction}
+	return ship_list
 
 func get_fleet_list():
 	var temp_list = []
 		
-	temp_list.append(get_fleet())
+	temp_list += get_fleet()
 	
 	if enemy_faction >= 0:
-		temp_list.append(make_enemy_fleet())
+		temp_list += make_enemy_fleet()
 		
 	return temp_list
 

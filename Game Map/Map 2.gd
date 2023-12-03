@@ -179,7 +179,12 @@ func place_next_unit(place_list):
 	#print(place_list)
 	#print(unit_data)
 	
+	# here, the place_list is a list of the squadron data
+	# 
+	
 	if len(place_list) > 0:
+		
+		print(unit_data)
 		#print("placing next squad, current place list:", place_list)
 		var squad_index = place_list[0]
 		#print(unit_data[squad_index])
