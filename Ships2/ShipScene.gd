@@ -125,31 +125,32 @@ func _input(event):
 
 # change this (hardcode) for now.
 # change arrow to the ship type later
-func select():
-	print("selecting")
-	
-	if faction == GameState.get_playerFaction():
-		selected = true
-		get_node("Sprite").animation = "arrow" + "_clicked"
-		get_node("Sprite").set_frame(faction)
-		
-		print(get_node("Sprite").animation)
-		
-		emit_signal("ship_selected", self)
-		
-		last_button = ""
-		
-func deselect():
-	print("deselecting")
-	
-	selected = false
-	
-	get_node("Sprite").animation = "arrow" + "_basic"
-	get_node("Sprite").set_frame(faction)
-	
-	print(get_node("Sprite").animation)
-	
-	emit_signal("ship_deselected", self)
+
+#func select():
+#	print("selecting")
+#
+#	if faction == GameState.get_playerFaction():
+#		selected = true
+#		get_node("Sprite").animation = "arrow" + "_clicked"
+#		get_node("Sprite").set_frame(faction)
+#
+#		print(get_node("Sprite").animation)
+#
+#		emit_signal("ship_selected", self)
+#
+#		last_button = ""
+#
+#func deselect():
+#	print("deselecting")
+#
+#	selected = false
+#
+#	get_node("Sprite").animation = "arrow" + "_basic"
+#	get_node("Sprite").set_frame(faction)
+#
+#	print(get_node("Sprite").animation)
+#
+#	emit_signal("ship_deselected", self)
 
 # these are here for later, if we build ports n shit
 func start_repairs():
@@ -279,17 +280,3 @@ func calc_current_speed():
 
 	current_speed = speed_mode_dict[current_speed_mode][0] * self.getSpeed()
 
-
-func _on_Ship_input_event(viewport, event, shape_idx):
-	if event is InputEventMouseButton \
-	and event.button_index == 1 \
-	and event.pressed:
-		#print(event)
-		print("actually clicked ON ship, event status:", event.pressed)
-		
-		self.on_click()
-		
-	if event is InputEventMouseButton \
-	and event.button_index == 1 \
-	and !event.pressed:
-		print("mouse released")

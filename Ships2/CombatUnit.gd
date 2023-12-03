@@ -141,35 +141,34 @@ func set_path_showing(new_showing):
 func get_path_showing():
 	return self.show_path
 	
+# hardcoding "arrow" for now
 func select():
 	if faction == GameState.get_playerFaction():
 		selected = true
-		get_node("Sprite").animation = sprite_type + "_clicked"
+		get_node("Sprite").animation = "arrow" + "_clicked"
 		get_node("Sprite").set_frame(faction)
 		
 		print(get_node("Sprite").animation)
 		
-		emit_signal("squad_selected", self)
+		#emit_signal("ship_selected", self)
 		
 		last_button = ""
 		
 func deselect():
 	selected = false
 	
-	get_node("Sprite").animation = sprite_type + "_basic"
+	get_node("Sprite").animation = "arrow" + "_basic"
 	get_node("Sprite").set_frame(faction)
 	
-	#print(get_node("Sprite").animation)
+	print(get_node("Sprite").animation)
 	
-	emit_signal("squad_deselected", self)
+	#emit_signal("ship_deselected", self)
 	
 func set_sprite_type(new_type):
 	self.sprite_type = new_type
 
 func on_click():
-	if selected:
-		self.deselect()
-	else:
+	if !selected:
 		self.select()
 		
 func get_current_target():
@@ -178,15 +177,20 @@ func get_current_target():
 func get_faction():
 	return faction
 
+
+
+
+
+### INPUT EVENTS 
 func _input_event(viewport, event, shape_idx):
 	if event is InputEventMouseButton \
 	and event.button_index == 1 \
 	and event.pressed:
-		pass
-		# removing for now
-		#print("(combat unit) mouse clicked")
 		
-		#self.on_click()
+		# removing for now
+		# print("(combat unit) mouse clicked")
+		
+		self.on_click()
 
 func _unhandled_input(event):
 	
@@ -196,9 +200,7 @@ func _unhandled_input(event):
 	and event.pressed:
 		print("unhandled input")
 		if self.selected:
-			#self.deselect()
-			# think this is bugged
-			pass
+			self.deselect()
 		
 		if self.placing:
 			self.stop_placing()
@@ -225,6 +227,11 @@ func stop_placing():
 	
 	current_target = self.global_position
 	print("stopped placing ship")
+
+
+
+
+
 
 func enable_spotting():
 	detector.enable_spotting()
