@@ -119,34 +119,35 @@ func subsystem_damage(accuracy_roll, total_accuracy, damage_result):
 	
 	return damage_result
 	
-func damage(weapon: Weapon, t_crossed, distance, enemy_speed_mode):
-	var range_factor_damage = GameState.get_rangeFactor() + 1
-	
-	var hit_dict = calculate_hit(weapon, distance, enemy_speed_mode, true)
-	
-	if hit_dict["hit"]:
-		#print("hit scored!")
-		var damage_result = 0
-		# No matter what, a weapon will somewhat damage the armor of a ship
-		
-		var armor_diff = weapon.piercing - armor
-		
-		# Armor Piercing calculation
-
-		if armor_diff >= 0:
-			damage_result = weapon.damage
-		elif armor_diff < 0:
-			damage_result = weapon.damage / GameState.get_armorReduction()
-		
-		damage_result = subsystem_damage(hit_dict["roll"], hit_dict["final"], damage_result)
-		
-		damage_result *= range_factor_damage 
-		
-		if t_crossed:
-			if damage_result > 0:
-				damage_result *= 2
-
-		hit_points -= damage_result
+# commenting out for now
+# func damage(weapon: Weapon):
+#	var range_factor_damage = GameState.get_rangeFactor() + 1
+#
+#	var hit_dict = calculate_hit(weapon, distance, enemy_speed_mode, true)
+#
+#	if hit_dict["hit"]:
+#		#print("hit scored!")
+#		var damage_result = 0
+#		# No matter what, a weapon will somewhat damage the armor of a ship
+#
+#		var armor_diff = weapon.piercing - armor
+#
+#		# Armor Piercing calculation
+#
+#		if armor_diff >= 0:
+#			damage_result = weapon.damage
+#		elif armor_diff < 0:
+#			damage_result = weapon.damage / GameState.get_armorReduction()
+#
+#		damage_result = subsystem_damage(hit_dict["roll"], hit_dict["final"], damage_result)
+#
+#		damage_result *= range_factor_damage 
+#
+#		if t_crossed:
+#			if damage_result > 0:
+#				damage_result *= 2
+#
+#		hit_points -= damage_result
 
 func repair():
 	if hit_points < max_health:

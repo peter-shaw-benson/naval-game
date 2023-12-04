@@ -28,4 +28,4 @@ position = Vector2( 0.0151672, -0.103558 )
 shape = SubResource( 2 )
 
 [node name="Barrel" type="Position2D" parent="."]
-position = Vector2( 11.3592, -0.180008 )
+position = Vector2( 21.8774, -0.0916195 )

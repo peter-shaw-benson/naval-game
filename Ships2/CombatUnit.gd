@@ -48,6 +48,7 @@ var faction = 0
 
 # turret stuff:
 var firing_target = Vector2(0,0)
+var combat_enabled = false
 
 # movement vars
 var current_target = Vector2()
@@ -157,11 +158,16 @@ func select():
 		
 		last_button = ""
 		
+		unlock_turrets()
+		
+		
 func deselect():
 	selected = false
 	
 	get_node("Sprite").animation = type + "_basic"
 	get_node("Sprite").set_frame(faction)
+	
+	lock_turrets()
 	
 	#print(get_node("Sprite").animation)
 	
@@ -262,13 +268,38 @@ func get_health():
 func get_armor():
 	return self.unitData.get_armor()
 	
+	
+	
+	
+	
+	
+## COMBAT
 func align_turrets():
-	## TODO
+	
 	pass
 	
+func unlock_turrets():
+	for t in turrets:
+		t.unlock()
+		
+func lock_turrets():
+	for t in turrets:
+		t.lock()
+	
 func shoot_turrets():
-	## TODO
-	pass
+	
+	for t in turrets:
+		t.shoot()
+		
+	
+func get_weapon_list():
+	return unitData.get_weapons()
 
 func _ready():
 	pass
+	
+func enable_combat():
+	self.combat_enabled = true
+
+func disable_combat():
+	self.combat_enabled = false
