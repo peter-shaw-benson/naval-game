@@ -16,8 +16,9 @@ var accuracy_gain: float
 
 var speed = 200
 
-func init(max_range, fire_rate, damage, piercing, armor_damage, anti_air, \
+func init(speed, max_range, fire_rate, damage, piercing, armor_damage, anti_air, \
 base_accuracy, accuracy_gain):
+	self.speed = speed
 	self.max_range = max_range
 	self.fire_rate = fire_rate
 	self.damage = damage * GameState.get_damageScaling()

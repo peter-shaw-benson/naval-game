@@ -57,6 +57,9 @@ func _ready():
 		turret.init(w)
 		
 		add_child(turret)
+		
+		turrets.append(turret)
+		
 	
 func handle_right_click(placement):
 	print("handling right click")
@@ -141,6 +144,14 @@ func _input(event):
 			# set speed to be full here
 			set_current_speed_mode("full")
 			calc_current_speed()
+			
+		
+		## COMBAT
+		elif Input.is_action_pressed("shoot"):
+			#print("shooting turrets")
+			if selected:
+				self.shoot_turrets()
+		
 		
 		elif Input.is_action_pressed("cancel"):
 			last_button = ""
@@ -306,5 +317,11 @@ func calc_current_speed():
 
 
 ## COMBAT
-func get_weapon_list():
-	return unitData.get_weapons()
+# this is unique to the ships – different for planes
+# bugged for now 
+#func align_turrets():
+#	## TODO
+#	var mouse_position = get_global_mouse_position()
+#
+#	for t in turrets:
+#		t.point_to(mouse_position)
