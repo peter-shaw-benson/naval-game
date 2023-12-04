@@ -9,6 +9,10 @@ var locked = true
 
 func init(weapon):
 	self.weaponData = weapon
+	
+	print(weapon.get_class())
+	if weapon.get_class() == "Torpedo":
+		Bullet = preload("res://Ships2/Bullets/Torpedo.tscn")
 
 func _ready():
 	pass

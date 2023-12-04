@@ -1,6 +1,7 @@
 extends "res://Weapons/Weapon.gd"
 
 var weapon_stats = {
+	"name": "Torpedo",
 	"speed": 20,
 	"max_range": 500,
 	"fire_rate": 10,
@@ -11,6 +12,8 @@ var weapon_stats = {
 	"base_accuracy": 0.5,
 	"accuracy_gain": 0.03
 }
+
+## TODO: make this a JSON basically
 
 func _init():
 	

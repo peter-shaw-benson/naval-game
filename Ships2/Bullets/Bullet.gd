@@ -9,6 +9,7 @@ var weaponData: Weapon
 var initial_pos = Vector2(0,0)
 
 func init(weaponData, turret_pos):
+		
 	self.weaponData = weaponData
 	
 	self.speed = self.weaponData.get_speed()
