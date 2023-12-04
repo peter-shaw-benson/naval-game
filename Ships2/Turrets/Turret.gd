@@ -20,7 +20,8 @@ func _process(delta):
 func shoot():
 	var bullet = Bullet.instance()
 	
-	bullet.init(weaponData.get_speed(), weaponData.get_range(), self.global_position)
+	bullet.init(weaponData,
+		self.global_position)
 	
 	get_tree().root.add_child(bullet)
 	

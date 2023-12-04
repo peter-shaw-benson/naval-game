@@ -1,14 +1,18 @@
 extends Area2D
+class_name Bullet
 
 var speed: int
 var max_range: int
 
+var weaponData: Weapon
+
 var initial_pos = Vector2(0,0)
 
-func init(speed, max_range, turret_pos):
-	print("making bullet")
-	self.speed = speed
-	self.max_range = max_range
+func init(weaponData, turret_pos):
+	self.weaponData = weaponData
+	
+	self.speed = self.weaponData.get_speed()
+	self.max_range = self.weaponData.get_range()
 	
 	initial_pos = turret_pos
 	
@@ -29,18 +33,15 @@ func _on_Bullet_area_entered(area):
 	
 	if self.global_position.distance_to(self.initial_pos) >= 30:
 	
-		print("bullet entered area")
-		print(area.get_class())
-		print(area.get_type())
-	
 		get_node("AnimatedSprite").animation = "explosion"
 		get_node("AnimatedSprite").play()
 		
 		self.speed = 0
 	
-		if area.get_name() == "ShipScene":
-			# deal damage here
-			pass
+		if area.get_class() == "ShipScene":
+			var ship: ShipScene = area
+			
+			ship.take_damage(self.weaponData)
 	
 		#queue_free()
 

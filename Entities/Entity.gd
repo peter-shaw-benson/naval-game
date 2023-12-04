@@ -143,8 +143,9 @@ func calculate_hit(weapon, distance, enemy_speed_mode, dict=false):
 		return accuracy_roll < final_accuracy
 	
 # Combat function
-func damage(weapon: Weapon, t_crossed, distance, enemy_stopped):
-	pass
+func damage(weapon: Weapon):
+	
+	self.hit_points -= weapon.get_damage()
 
 func _to_string():
 	var s = ""

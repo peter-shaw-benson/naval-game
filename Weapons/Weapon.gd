@@ -46,3 +46,6 @@ func get_range():
 
 func get_speed():
 	return self.speed
+	
+func get_damage():
+	return self.damage

@@ -44,4 +44,5 @@ position = Vector2( 0.353561, 0 )
 shape = SubResource( 2 )
 
 [node name="ShotTimer" type="Timer" parent="."]
+[connection signal="area_entered" from="." to="." method="_on_Ship_area_entered"]
 [connection signal="input_event" from="." to="." method="_input_event"]

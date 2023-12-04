@@ -212,6 +212,8 @@ func _on_squadron_stopped_placement():
 		
 		hide_enemies()
 		
+		enable_combat()
+		
 func raise_controls():
 	get_node("PauseMenu").raise()
 	get_node("ClockDisplay").raise()
@@ -281,15 +283,18 @@ func _on_CrashPopup_id_pressed(id):
 		get_node("PauseMenu").hide()
 		unpause()
 
-func _on_ship_lost(ship: Ship):
-	#var loss_text = ship.get_name() + " lost to Enemy Action!"
+func _on_ship_lost(ship: ShipScene):
 	
-	# taking this out for now
-	pass
-	#get_node("Ship Funeral/Ship Text").text = "loss_text"
+	ship_list.remove(ship_list.find(ship, 0))
 	
-	#get_node("Ship Funeral").popup()
-	#get_node("Ship Popup Timer").start()
+	ship.queue_free()
+
+	var loss_text = ship.get_name() + " lost to Enemy Action!"
+
+	get_node("Ship Funeral/Ship Text").text = loss_text
+
+	get_node("Ship Funeral").popup()
+	get_node("Ship Popup Timer").start()
 
 func _on_squadron_lost(s, enemy_squad):
 	get_node("SquadSelected").hide()
@@ -392,3 +397,10 @@ func launch_plane_squad(plane_squad):
 func recover_plane_squad(plane_squad):
 	squad_list.remove(squad_list.find(plane_squad))
 	plane_squad.queue_free()
+	
+
+## Other control things
+func enable_combat():
+	# only applied to ships right now
+	for s in ship_list:
+		s.enable_combat()

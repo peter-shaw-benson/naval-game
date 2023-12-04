@@ -48,6 +48,7 @@ var faction = 0
 
 # turret stuff:
 var firing_target = Vector2(0,0)
+var combat_enabled = false
 
 # movement vars
 var current_target = Vector2()
@@ -289,9 +290,16 @@ func shoot_turrets():
 	
 	for t in turrets:
 		t.shoot()
+		
 	
 func get_weapon_list():
 	return unitData.get_weapons()
 
 func _ready():
 	pass
+	
+func enable_combat():
+	self.combat_enabled = true
+
+func disable_combat():
+	self.combat_enabled = false
