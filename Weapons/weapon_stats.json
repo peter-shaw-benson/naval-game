@@ -1,6 +1,7 @@
 {
   "Torpedo": {
     "name": "torpedo",
+    "speed": 40,
     "max_range": 500,
   	"fire_rate": 10,
   	"damage": 10,

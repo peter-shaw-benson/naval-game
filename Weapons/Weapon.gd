@@ -1,5 +1,5 @@
 extends Node
-class_name Weapon
+class_name WeaponLegacy
 
 var max_range: float
 var fire_rate: int
