@@ -151,7 +151,7 @@ func _input(event):
 			
 		
 		## COMBAT
-		elif Input.is_action_pressed("shoot"):
+		elif Input.is_action_just_pressed("shoot"):
 			#print("shooting turrets")
 			if selected and combat_enabled:
 				self.shoot_turrets()

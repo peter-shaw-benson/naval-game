@@ -16,12 +16,18 @@ var DestroyerNames = ["HMS Beverly",
 "HMS Ramsey",
 ]
 
+var fletcher_turret_path = "res://art/Turrets/Light Gun 1/LightGunSprite.tres"
+
+# this determines the placement of each individual turret. 
+# while this seems excessive for a simple ship, if we want to add MG's or something later, 
+# this will become much more complex (with multiple sprite paths, multiple offsets, etc).
+
 var turret_list = [
-	{"weapon": LightGun.new(), "y_offset": 30, "barrels": 1},
-	{"weapon": LightGun.new(), "y_offset": 20, "barrels": 1},
-	{"weapon": LightGun.new(), "y_offset": 0, "barrels": 1},
-	{"weapon": LightGun.new(), "y_offset": -10, "barrels": 1},
-	{"weapon": LightGun.new(), "y_offset": -20, "barrels": 1},
+	{"weapon": LightGun.new(), "offset": [0,30], "barrels": 1, "sprite_path": fletcher_turret_path},
+	{"weapon": LightGun.new(), "offset": [0,20], "barrels": 1, "sprite_path": fletcher_turret_path},
+	{"weapon": LightGun.new(), "offset": [0,0], "barrels": 1, "sprite_path": fletcher_turret_path},
+	{"weapon": LightGun.new(), "offset": [0,-10], "barrels": 1, "sprite_path": fletcher_turret_path},
+	{"weapon": LightGun.new(), "offset": [0,-20], "barrels": 1, "sprite_path": fletcher_turret_path},
 ]
 
 var ship_stats = {

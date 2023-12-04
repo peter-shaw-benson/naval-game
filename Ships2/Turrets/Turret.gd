@@ -14,8 +14,17 @@ func init(weapon):
 	# here, weapon is a dict of weapon data, y offset, and number of barrels
 	self.weaponData = weapon["weapon"]
 	
-	self.y_offset = weapon["y_offset"]
+	self.y_offset = weapon["offset"][1]
+	self.x_offset = weapon["offset"][0]
 	self.num_barrels = weapon["barrels"]
+	
+	# set sprite from the sprite path given in the weapon dict
+	var frames = load(weapon["sprite_path"])
+	get_node("AnimatedSprite").set_sprite_frames(frames)
+	
+	get_node("AnimatedSprite").animation = "default"
+	
+	#get_node("AnimatedSprite").speed_scale = 1
 	
 	self.position.y += self.y_offset
 	
@@ -38,6 +47,20 @@ func shoot():
 		get_tree().root.add_child(bullet)
 		
 		bullet.transform = $Barrel.global_transform
+		
+	get_node("AnimatedSprite").animation = "shoot"
+	get_node("AnimatedSprite").play()
+	
+	get_node("AnimatedSprite").animation = "default"
+	
+	#if get_node("AnimatedSprite").animation == "default":
+	#play_shoot_animation()
+
+func play_shoot_animation():
+	get_node("AnimatedSprite").animation = "shoot"
+	get_node("AnimatedSprite").play()
+	
+	get_node("AnimatedSprite").animation = "default"
 
 func unlock():
 	self.locked = false

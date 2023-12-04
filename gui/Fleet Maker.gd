@@ -12,7 +12,7 @@ var position_x = 0
 var position_y = 0
 var num_islands = 0
 
-var faction = 0
+var player_faction = 0
 var enemy_faction = -1
 
 func _ready():
@@ -23,12 +23,12 @@ func get_fleet():
 	
 	var initial_pos = Vector2(position_x, position_y)
 	#var squad = Squadron.new()
-	var ship_list = make_destroyer_array(num_destroyers, initial_pos)
+	var ship_list = make_destroyer_array(num_destroyers, initial_pos, player_faction)
 	#print(ship_list[0].speed)
 	
 	return ship_list
 
-func make_destroyer_array(length, initial_pos):
+func make_destroyer_array(length, initial_pos, faction):
 	var destroyer_array = []
 	
 	for i in range(length):
@@ -48,7 +48,7 @@ func make_destroyer_array(length, initial_pos):
 func make_enemy_fleet():
 	var initial_pos = Vector2(400, 300)
 	#var squad = Squadron.new()
-	var ship_list = make_destroyer_array(2, initial_pos)
+	var ship_list = make_destroyer_array(2, initial_pos, enemy_faction)
 	#print(ship_list[0].speed)
 	
 	return ship_list
@@ -79,7 +79,7 @@ func _on_y_pos_value_changed(value):
 func _on_StartButton_pressed():
 	print("num_islands:", num_islands)
 	# Change player faction to 
-	GameState.change_playerFaction(faction)
+	GameState.change_playerFaction(player_faction)
 	
 	GameState.change_to_main_map("res://Game Map/Map 2.tscn", get_fleet_list(), num_islands)
 
@@ -87,7 +87,7 @@ func _on_Islands_value_changed(value):
 	num_islands = value
 
 func _on_Faction_value_changed(value):
-	faction = value
+	player_faction = value
 	#print(faction)
 func _on_Enemy_Faction_value_changed(value):
 	enemy_faction = value
