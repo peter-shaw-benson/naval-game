@@ -17,7 +17,7 @@ var weapon_stats = {
 
 func _init():
 	
-	
+	self.init("Torpedo")
 	
 #	self.init(weapon_stats["speed"], weapon_stats["max_range"], \
 #	weapon_stats["fire_rate"], weapon_stats["damage"], weapon_stats["piercing"], \

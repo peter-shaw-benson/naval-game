@@ -4,7 +4,7 @@
     "speed": 20
   },
   "LightGun": {
-    "name": "lightgun"
+    "name": "lightgun",
     "speed": 450,
   	"max_range": 100,
   	"fire_rate": 1,
