@@ -57,6 +57,7 @@ func _ready():
 	for w in self.get_weapon_list():
 		var turret = Turret.instance()
 		
+		# 
 		turret.init(w)
 		
 		add_child(turret)
