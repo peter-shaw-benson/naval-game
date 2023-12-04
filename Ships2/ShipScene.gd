@@ -1,7 +1,10 @@
 extends CombatUnit
 class_name ShipScene
 
+func get_class(): return "ShipScene"
+
 export var Turret: PackedScene
+export var TorpedoTube: PackedScene
 
 signal new_course_change(current_target, placement)
 signal reached_target()
@@ -50,10 +53,16 @@ func _ready():
 	stop_moving()
 	#print("stopped with the ready method, starting game.")
 	
-	# create turret here:
-	var turret = Turret.instance()
-	
-	add_child(turret)
+	# create turrets here:
+	for w in self.get_weapon_list():
+		var turret = Turret.instance()
+		
+		turret.init(w)
+		
+		add_child(turret)
+		
+		turrets.append(turret)
+		
 	
 func handle_right_click(placement):
 	print("handling right click")
@@ -138,6 +147,14 @@ func _input(event):
 			# set speed to be full here
 			set_current_speed_mode("full")
 			calc_current_speed()
+			
+		
+		## COMBAT
+		elif Input.is_action_pressed("shoot"):
+			#print("shooting turrets")
+			if selected and combat_enabled:
+				self.shoot_turrets()
+		
 		
 		elif Input.is_action_pressed("cancel"):
 			last_button = ""
@@ -273,14 +290,13 @@ func _on_ShotTimer_timeout():
 	pass
 	
 # TODO: make a bullet deal damage.
-func take_damage(bullet):
+func take_damage(weapon: Weapon):
 	
-	pass
-
-func check_removal():
+	self.unitData.damage(weapon)
+	
 	if self.get_health() <= 0:
-		# free the ship from the scene
-		emit_signal("ship_unit_lost", self)
+		print("ship lost")
+		emit_signal("ship_lost", self)
 
 # if / when we add back fuel, we can use the prototypes in the Ship Squadron class.
 
@@ -303,4 +319,16 @@ func calc_current_speed():
 
 
 ## COMBAT
+# this is unique to the ships – different for planes
+# bugged for now 
+#func align_turrets():
+#	## TODO
+#	var mouse_position = get_global_mouse_position()
+#
+#	for t in turrets:
+#		t.point_to(mouse_position)
 
+
+func _on_Ship_area_entered(area):
+	#print(area.get_class())
+	pass

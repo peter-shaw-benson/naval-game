@@ -2,18 +2,40 @@ extends Area2D
 
 export var Bullet : PackedScene
 
+# bullet data here
+var weaponData: Weapon
+
+var locked = true
+
+func init(weapon):
+	self.weaponData = weapon
+	
+	print(weapon.get_class())
+	if weapon.get_class() == "Torpedo":
+		Bullet = preload("res://Ships2/Bullets/Torpedo.tscn")
+
 func _ready():
 	pass
 
 func _process(delta):
-	look_at(get_global_mouse_position())
-
-	if Input.is_action_just_pressed("shoot"):
-		 shoot()
+	if not locked:
+		look_at(get_global_mouse_position())
 	
 func shoot():
-	var b = Bullet.instance()
+	var bullet = Bullet.instance()
 	
-	get_tree().root.add_child(b)
+	bullet.init(weaponData,
+		self.global_position)
 	
-	b.transform = $Barrel.global_transform
+	get_tree().root.add_child(bullet)
+	
+	bullet.transform = $Barrel.global_transform
+
+func unlock():
+	self.locked = false
+
+func lock():
+	self.locked = true
+
+func point_to(position):
+	self.look_at(position)
