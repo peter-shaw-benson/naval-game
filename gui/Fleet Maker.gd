@@ -32,7 +32,9 @@ func make_destroyer_array(length, initial_pos):
 	var destroyer_array = []
 	
 	for i in range(length):
-		var next_destroyer = TorpDestroyer.new()
+		# testing fletcher-class:
+		var next_destroyer = FletcherClassDestroyer.new()
+		#var next_destroyer = TorpDestroyer.new()
 		#print(next_destroyer)
 		
 		destroyer_array.append({"ship": next_destroyer,

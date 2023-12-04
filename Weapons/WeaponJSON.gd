@@ -37,15 +37,8 @@ func read_json_file(file_path):
 	#test_data = '{"Torpedo": {"name": "torpedo","speed": 20},"LightGun": {"name": "lightgun""speed": 450,"max_range": 100,"fire_rate": 1,"damage": 0.5,"piercing": 2,"armor_damage": 0.2,"anti_air": 1,"base_accuracy": 0.3,"accuracy_gain": 0.03}}'
 	
 	var data_received = JSON.parse(content_as_text).result
-	
-	if typeof(data_received) == TYPE_ARRAY:
-		print("array data:", data_received[0])
-	elif typeof(data_received) == TYPE_DICTIONARY:
-		print("dict data:", data_received["LightGun"])
-	else:
-		print("data type:", typeof(data_received))
 		
-	print(data_received)
+	#print(data_received)
 	
 	return data_received
 

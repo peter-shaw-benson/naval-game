@@ -5,15 +5,20 @@ export var Bullet : PackedScene
 # bullet data here
 var weaponData: Weapon
 
+var y_offset = 0
+var num_barrels = 1
+
 var locked = true
 
 func init(weapon):
-	self.weaponData = weapon
+	# here, weapon is a dict of weapon data, y offset, and number of barrels
+	self.weaponData = weapon["weapon"]
 	
-	print(weapon.get_class())
-	if weapon.get_class() == "Torpedo":
-		Bullet = preload("res://Ships2/Bullets/Torpedo.tscn")
-
+	self.y_offset = weapon["y_offset"]
+	self.num_barrels = weapon["barrels"]
+	
+	self.position.y += self.y_offset
+	
 func _ready():
 	pass
 
@@ -22,14 +27,17 @@ func _process(delta):
 		look_at(get_global_mouse_position())
 	
 func shoot():
-	var bullet = Bullet.instance()
 	
-	bullet.init(weaponData,
-		self.global_position)
-	
-	get_tree().root.add_child(bullet)
-	
-	bullet.transform = $Barrel.global_transform
+	for b in self.num_barrels:
+		# shoot one bullet per barrel
+		var bullet = Bullet.instance()
+		
+		bullet.init(weaponData,
+			self.global_position)
+		
+		get_tree().root.add_child(bullet)
+		
+		bullet.transform = $Barrel.global_transform
 
 func unlock():
 	self.locked = false
