@@ -17,16 +17,18 @@ func init(weaponData, turret_pos):
 	
 	initial_pos = turret_pos
 	
+	# set sprite frames here
+	if self.weaponData.get_name() == "torpedo":
+		var frames = preload("res://art/Bullets/Torpedo/TorpedoFrames.tres")
+		get_node("AnimatedSprite").set_sprite_frames(frames)
+	
 	get_node("AnimatedSprite").animation = "shell"
 
 func _physics_process(delta):
 	position += transform.x * speed * delta
 	
 	# test if max range is reached
-
-	
 	if self.global_position.distance_to(self.initial_pos) >= self.max_range:
-		print("reached max range")
 		queue_free()
 
 

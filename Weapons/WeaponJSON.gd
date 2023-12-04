@@ -53,28 +53,6 @@ func init(weapon_name):
 	
 	print("reading weapons from file")
 	weapon_data = read_json_file(weapon_data_path)[weapon_name]
-	
-	#print(weapon_data)
-#
-#	self.speed = speed
-#	self.max_range = max_range
-#	self.fire_rate = fire_rate
-#	self.damage = damage * GameState.get_damageScaling()
-#	self.piercing = piercing
-#	self.armor_damage = armor_damage
-#	self.anti_air = anti_air
-#	self.base_accuracy = base_accuracy * GameState.get_accuracyScaling()
-#	self.accuracy_gain = accuracy_gain
-
-#func _to_string():
-#	print("Max Range: \t", self.max_range)
-#	print("Fire Rate: \t", self.fire_rate)
-#	print("Damage: \t", self.damage)
-#	print("Piercing: \t", self.piercing)
-#	print("Armor Damage: \t", self.armor_damage)
-#	print("Anti Air: \t", self.anti_air)
-#	print("Base Accuracy: \t", self.base_accuracy)
-#	print("Accuracy Gain: \t", self.accuracy_gain)
 
 func get_fire_rate():
 	return self.weapon_data["fire_rate"]
@@ -87,3 +65,6 @@ func get_speed():
 	
 func get_damage():
 	return self.weapon_data["damage"]
+
+func get_name():
+	return self.weapon_data["name"]
