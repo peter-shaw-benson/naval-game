@@ -78,6 +78,8 @@ func _ready():
 func handle_right_click(placement):
 	#print("handling right click")
 	
+	## THIS FUNCTION will be changed
+	
 	if selected and GameState.get_playerFaction() == get_faction():
 		# this works properly for patrols:
 		# print("last button:", last_button)
@@ -258,6 +260,8 @@ func _physics_process(delta):
 		current_target = self.global_position
 	
 	else:
+		
+		var movement_vector = Vector2(0,0)
 		#if distance to target is small and there are queued targets,
 		#remove the target from the queue and update the current target
 		if global_position.distance_to(current_target) < 10 and len(target_array) > 0:
@@ -277,11 +281,13 @@ func _physics_process(delta):
 
 		if int(global_position.distance_to(current_target)) > 1:
 			self.rotation = lerp_angle(self.rotation, (current_target - self.global_position).normalized().angle() + PI/2, self.turn_weight)
-		#print(position.move_toward(current_target, delta*current_speed))
+
 		if not stopped:
 			self.calc_new_velocity()
-			global_position = global_position.move_toward(get_movement_vector(), delta*(velocity_vector.length()))
-		
+			
+			velocity_vector = move_and_slide(self.velocity_vector)
+			
+	
 	position.x = clamp(position.x, 0, screen_size.x)
 	position.y = clamp(position.y, 0, screen_size.y)
 

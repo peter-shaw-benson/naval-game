@@ -114,7 +114,9 @@ func init(entity, initial_position, faction, type):
 	
 #creates new velocity vector with applied wind
 func calc_new_velocity():
-	var unit_velocity_cartesian = Vector2(current_speed * cos(global_rotation), current_speed * sin(global_rotation))
+	# if we don't add the PI/2 here, it will fuck it all up lmao
+	var unit_velocity_cartesian = Vector2(current_speed, 0).rotated(global_rotation - PI/2)
+	
 	self.velocity_vector = unit_velocity_cartesian + 10 * applied_wind
 
 #calculates the wind vector on wind change
@@ -123,10 +125,11 @@ func calc_new_wind_vector(wind_cartesian):
 
 #calculates movement vector that will be the target in physics_process
 func get_movement_vector():
-	var current_speed = velocity_vector.length()
-	return global_position + applied_wind + \
-	 Vector2(current_speed * cos(global_rotation), \
-	 current_speed * sin(global_rotation)).rotated(3*PI/2)
+	var temp_current_speed = velocity_vector.length()
+	
+	return applied_wind + \
+	 Vector2(temp_current_speed * cos(global_rotation), \
+	 temp_current_speed * sin(global_rotation)).rotated(3*PI/2)
 
 func get_type():
 	return self.type
