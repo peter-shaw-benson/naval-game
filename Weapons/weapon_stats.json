@@ -1,10 +1,18 @@
 {
   "Torpedo": {
     "name": "torpedo",
-    "speed": 20
+    "speed": 40,
+    "max_range": 500,
+  	"fire_rate": 10,
+  	"damage": 10,
+  	"piercing": 12,
+  	"armor_damage": 1,
+  	"anti_air": 0,
+  	"base_accuracy": 0.5,
+  	"accuracy_gain": 0.03
   },
   "LightGun": {
-    "name": "lightgun"
+    "name": "lightgun",
     "speed": 450,
   	"max_range": 100,
   	"fire_rate": 1,
@@ -13,6 +21,29 @@
   	"armor_damage": 0.2,
   	"anti_air": 1,
   	"base_accuracy": 0.3,
+  	"accuracy_gain": 0.03
+  },
+  "HeavyGun": {
+    "name": "heavygun",
+    "speed": 300,
+  	"max_range": 150,
+  	"fire_rate": 4,
+  	"damage": 5,
+  	"piercing": 11,
+  	"armor_damage": 1,
+  	"anti_air": 0,
+  	"base_accuracy": 0.5,
+  	"accuracy_gain": 0.03
+  },
+  "MediumGun": {
+    "speed": 400,
+  	"max_range": 100,
+  	"fire_rate": 2,
+  	"damage": 3,
+  	"piercing": 7,
+  	"armor_damage": 0.5,
+  	"anti_air": 0.2,
+  	"base_accuracy": 0.4,
   	"accuracy_gain": 0.03
   }
 }

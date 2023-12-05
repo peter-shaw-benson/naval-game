@@ -1,5 +1,5 @@
 extends Node
-class_name WeaponJSON
+class_name Weapon
 
 var max_range: float
 var fire_rate: int
@@ -19,21 +19,6 @@ var speed = 200
 var weapon_data_path = "res://Weapons/weapon_stats.json"
 
 var weapon_data: Dictionary
-
-func read_file(filename):
-	var f = File.new()
-	
-	var filedata = ""
-	
-	f.open(filename, File.READ)
-	
-	while not f.eof_reached(): # iterate through all lines until the end of file is reached
-		var line = f.get_line()
-		filedata += line + "\n"
-		print(line)
-
-	f.close()
-	return filedata
 	
 func read_json_file(file_path):
 	# from the internets
@@ -41,66 +26,38 @@ func read_json_file(file_path):
 	file.open(file_path, File.READ)
 	
 	var content_as_text = file.get_as_text()
+
 	print(content_as_text)
 	
-	var json = JSON.new()
-	var error = json.parse(content_as_text)
-	var data_received = json.data
+	#load_weapon_stats(content_as_text)
 	
-	print(data_received)
+	# TESTING:
+	#var test_data = "[0,1,2]"
+	#test_data = '{"jello": "marshmallow"}'
+	#test_data = '{"Torpedo": {"name": "torpedo","speed": 20},"LightGun": {"name": "lightgun""speed": 450,"max_range": 100,"fire_rate": 1,"damage": 0.5,"piercing": 2,"armor_damage": 0.2,"anti_air": 1,"base_accuracy": 0.3,"accuracy_gain": 0.03}}'
+	
+	var data_received = JSON.parse(content_as_text).result
+		
+	#print(data_received)
 	
 	return data_received
-	
-	# convert to JSON
-func load_weapon_stats(JSONdata):
-	
-	var json = JSON.new()
-	var error = json.parse(JSONdata)
-	
-	if error == OK:
-		var data_received = json.data
-		if typeof(data_received) == TYPE_ARRAY:
-			print(data_received) # Prints array
-		else:
-			print("Unexpected data")
-	else:
-		print("JSON Parse Error: ", json.get_error_message(), " in ", JSONdata, " at line ", json.get_error_line())
 
 func init(weapon_name):
 	
 	print("reading weapons from file")
-	weapon_data = read_json_file(weapon_data_path)
-	
-	print(weapon_data)
-	
-	self.speed = speed
-	self.max_range = max_range
-	self.fire_rate = fire_rate
-	self.damage = damage * GameState.get_damageScaling()
-	self.piercing = piercing
-	self.armor_damage = armor_damage
-	self.anti_air = anti_air
-	self.base_accuracy = base_accuracy * GameState.get_accuracyScaling()
-	self.accuracy_gain = accuracy_gain
-
-func _to_string():
-	print("Max Range: \t", self.max_range)
-	print("Fire Rate: \t", self.fire_rate)
-	print("Damage: \t", self.damage)
-	print("Piercing: \t", self.piercing)
-	print("Armor Damage: \t", self.armor_damage)
-	print("Anti Air: \t", self.anti_air)
-	print("Base Accuracy: \t", self.base_accuracy)
-	print("Accuracy Gain: \t", self.accuracy_gain)
+	weapon_data = read_json_file(weapon_data_path)[weapon_name]
 
 func get_fire_rate():
-	return self.fire_rate
+	return self.weapon_data["fire_rate"]
 	
 func get_range():
-	return self.max_range
+	return self.weapon_data["max_range"]
 
 func get_speed():
-	return self.speed
+	return self.weapon_data["speed"]
 	
 func get_damage():
-	return self.damage
+	return self.weapon_data["damage"]
+
+func get_name():
+	return self.weapon_data["name"]

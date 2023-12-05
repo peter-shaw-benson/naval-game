@@ -25,6 +25,8 @@ var max_health: float
 var armor: float
 var max_armor: float
 
+# this is an array where each element is a dict.
+# weapon, y_offset, barrels
 var weapons_list: Array
 var aircraft_list = []
 
