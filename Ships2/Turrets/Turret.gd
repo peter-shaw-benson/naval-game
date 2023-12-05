@@ -51,15 +51,10 @@ func _process(delta):
 				
 				close_enemy = enemy  ## --->## after get the current close_enemy
 				
-			# lerped (slowed down rotation)
-	
+				# lerped (slowed down rotation)
+				# need to use global rotation otherwise things get bad
 				target = close_enemy.global_position
 				
-				if int(delta) % 30 == 0:
-					print(target, self.global_position)
-					print(target - self.global_position)
-					print((target - self.global_position).normalized().angle())
-								
 				self.global_rotation = lerp_angle(self.global_rotation, 
 					(target - self.global_position).normalized().angle(), 
 					self.turn_weight)

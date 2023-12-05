@@ -24,15 +24,15 @@ var fletcher_turret_path = "res://art/Turrets/Light Gun 1/LightGunSprite.tres"
 
 var turret_list = [
 	{"weapon": LightGun.new(), "offset": [0,30], "barrels": 1, 
-	"sprite_path": fletcher_turret_path, "turn_weight":0.2},
+	"sprite_path": fletcher_turret_path, "turn_weight":0.02},
 	{"weapon": LightGun.new(), "offset": [0,20], "barrels": 1, 
-	"sprite_path": fletcher_turret_path, "turn_weight":0.2},
+	"sprite_path": fletcher_turret_path, "turn_weight":0.02},
 	{"weapon": LightGun.new(), "offset": [0,0], "barrels": 1, 
-	"sprite_path": fletcher_turret_path, "turn_weight":0.2},
+	"sprite_path": fletcher_turret_path, "turn_weight":0.02},
 	{"weapon": LightGun.new(), "offset": [0,-10], "barrels": 1, 
-	"sprite_path": fletcher_turret_path, "turn_weight":0.2},
+	"sprite_path": fletcher_turret_path, "turn_weight":0.02},
 	{"weapon": LightGun.new(), "offset": [0,-20], "barrels": 1, 
-	"sprite_path": fletcher_turret_path, "turn_weight":0.2}
+	"sprite_path": fletcher_turret_path, "turn_weight":0.02}
 ]
 
 var ship_stats = {
@@ -42,7 +42,7 @@ var ship_stats = {
 	"hit_points": 12,
 	"armor": 5.5,
 	"hide": 20,
-	"visibility": 15,
+	"visibility": 30,
 	"crew": 5,
 	"class": "Destroyer",
 	"turrets": turret_list
