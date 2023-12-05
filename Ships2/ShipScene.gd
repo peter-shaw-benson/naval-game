@@ -36,6 +36,8 @@ var current_speed_mode
 
 func _ready():
 	
+	add_to_group("ship")
+	
 	# add self to proper group (faction)
 	if self.faction == 0:
 		add_to_group("faction_0")
@@ -77,7 +79,7 @@ func _ready():
 		
 	
 func handle_right_click(placement):
-	print("handling right click")
+	#print("handling right click")
 	
 	if selected and GameState.get_playerFaction() == get_faction():
 		# this works properly for patrols:

@@ -8,6 +8,7 @@ var weaponData: Weapon
 var y_offset = 0
 var x_offset = 0
 var num_barrels = 1
+var turn_weight = 0
 
 var locked = true
 
@@ -21,6 +22,7 @@ func init(weapon):
 	self.y_offset = weapon["offset"][1]
 	self.x_offset = weapon["offset"][0]
 	self.num_barrels = weapon["barrels"]
+	self.turn_weight = weapon["turn_weight"]
 	
 	# set sprite from the sprite path given in the weapon dict
 	var frames = load(weapon["sprite_path"])
@@ -48,9 +50,15 @@ func _process(delta):
 			if gun2enemy_distance < self.weaponData.get_range():
 		
 				close_enemy = enemy  ## --->## after get the current close_enemy
-		
-				look_at(close_enemy.global_position) ## ---> look at the close_enemy
-	
+				
+				target = close_enemy.global_position
+				
+				print(target - self.global_position)
+				print((target - self.global_position).normalized().angle())
+				
+				self.rotation = lerp_angle(self.rotation, (target - self.global_position).normalized().angle(), self.turn_weight)
+				# lerped (slowed down rotation)
+
 func shoot():
 	
 	for b in self.num_barrels:

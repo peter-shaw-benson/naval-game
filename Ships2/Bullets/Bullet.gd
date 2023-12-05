@@ -41,7 +41,7 @@ func _on_Bullet_area_entered(area):
 		
 		self.speed = 0
 	
-		if area.get_class() == "ShipScene":
+		if area.is_in_group("ship"):
 			var ship: ShipScene = area
 			
 			ship.take_damage(self.weaponData)

@@ -23,11 +23,16 @@ var fletcher_turret_path = "res://art/Turrets/Light Gun 1/LightGunSprite.tres"
 # this will become much more complex (with multiple sprite paths, multiple offsets, etc).
 
 var turret_list = [
-	{"weapon": LightGun.new(), "offset": [0,30], "barrels": 1, "sprite_path": fletcher_turret_path},
-	{"weapon": LightGun.new(), "offset": [0,20], "barrels": 1, "sprite_path": fletcher_turret_path},
-	{"weapon": LightGun.new(), "offset": [0,0], "barrels": 1, "sprite_path": fletcher_turret_path},
-	{"weapon": LightGun.new(), "offset": [0,-10], "barrels": 1, "sprite_path": fletcher_turret_path},
-	{"weapon": LightGun.new(), "offset": [0,-20], "barrels": 1, "sprite_path": fletcher_turret_path},
+	{"weapon": LightGun.new(), "offset": [0,30], "barrels": 1, 
+	"sprite_path": fletcher_turret_path, "turn_weight":0.2},
+	{"weapon": LightGun.new(), "offset": [0,20], "barrels": 1, 
+	"sprite_path": fletcher_turret_path, "turn_weight":0.2},
+	{"weapon": LightGun.new(), "offset": [0,0], "barrels": 1, 
+	"sprite_path": fletcher_turret_path, "turn_weight":0.2},
+	{"weapon": LightGun.new(), "offset": [0,-10], "barrels": 1, 
+	"sprite_path": fletcher_turret_path, "turn_weight":0.2},
+	{"weapon": LightGun.new(), "offset": [0,-20], "barrels": 1, 
+	"sprite_path": fletcher_turret_path, "turn_weight":0.2}
 ]
 
 var ship_stats = {
