@@ -68,4 +68,10 @@ shape = SubResource( 8 )
 
 [node name="ShotTimer" type="Timer" parent="."]
 
-[connection signal="input_event" from="." to="." method="_input_event"]
+[node name="MouseClickHitbox" type="Area2D" parent="."]
+
+[node name="Hitbox" type="CollisionShape2D" parent="MouseClickHitbox"]
+position = Vector2( 0.353561, 0 )
+shape = SubResource( 8 )
+
+[connection signal="input_event" from="MouseClickHitbox" to="." method="_input_event"]
