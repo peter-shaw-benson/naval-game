@@ -27,7 +27,7 @@ func read_json_file(file_path):
 	
 	var content_as_text = file.get_as_text()
 
-	print(content_as_text)
+	#print(content_as_text)
 	
 	#load_weapon_stats(content_as_text)
 	
