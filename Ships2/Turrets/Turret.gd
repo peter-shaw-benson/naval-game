@@ -6,9 +6,13 @@ export var Bullet : PackedScene
 var weaponData: Weapon
 
 var y_offset = 0
+var x_offset = 0
 var num_barrels = 1
 
 var locked = true
+
+var target = Vector2(0,0)
+var close_enemy
 
 func init(weapon):
 	# here, weapon is a dict of weapon data, y offset, and number of barrels
@@ -32,8 +36,20 @@ func _ready():
 	pass
 
 func _process(delta):
+	# fuck. we have to handle the turret alignment here:
+	
 	if not locked:
-		look_at(get_global_mouse_position())
+		
+		var all_enemy = get_tree().get_nodes_in_group("enemy")
+		
+		for enemy in all_enemy:
+			var gun2enemy_distance = self.global_position.distance_to(enemy.global_position)
+			#print(gun2enemy_distance)
+			if gun2enemy_distance < self.weaponData.get_range():
+		
+				close_enemy = enemy  ## --->## after get the current close_enemy
+		
+				look_at(close_enemy.global_position) ## ---> look at the close_enemy
 	
 func shoot():
 	
@@ -67,6 +83,9 @@ func unlock():
 
 func lock():
 	self.locked = true
+	
+func set_target(new_target):
+	self.target = new_target
 
 func point_to(position):
 	self.look_at(position)

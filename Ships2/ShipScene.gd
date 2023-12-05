@@ -36,6 +36,17 @@ var current_speed_mode
 
 func _ready():
 	
+	# add self to proper group (faction)
+	if self.faction == 0:
+		add_to_group("faction_0")
+	elif self.faction == 1:
+		add_to_group("faction_1")
+	elif self.faction == 2:
+		add_to_group("faction_2")
+		
+	if self.faction != GameState.get_playerFaction():
+		add_to_group("enemy")
+	
 	# Combat Variables:
 	get_node("ShotTimer").wait_time = GameState.get_combatPace()
 	
