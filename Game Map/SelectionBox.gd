@@ -35,7 +35,8 @@ func _unhandled_input(event):
 			# this is what actually finds what's selected
 			selected = space.intersect_shape(query)
 			
-			# this is empty for some reason
+			# this is empty for some reason – 
+			# need to change everything to Kinematic Bodies
 			print(selected)
 			# selected is an array of dicts
 			for item in selected:

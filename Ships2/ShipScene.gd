@@ -342,7 +342,3 @@ func calc_current_speed():
 #	for t in turrets:
 #		t.point_to(mouse_position)
 
-
-func _on_Ship_area_entered(area):
-	#print(area.get_class())
-	pass

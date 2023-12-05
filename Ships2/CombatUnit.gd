@@ -1,4 +1,4 @@
-extends Area2D
+extends KinematicBody2D
 class_name CombatUnit
 
 var unitData: Entity
@@ -147,6 +147,7 @@ func get_path_showing():
 # SELECT / DESELCT
 
 func select():
+	print("ship selected")
 	if faction == GameState.get_playerFaction():
 		selected = true
 		get_node("Sprite").animation = type + "_clicked"

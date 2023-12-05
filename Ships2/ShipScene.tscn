@@ -52,7 +52,7 @@ animations = [ {
 radius = 23.969
 height = 11.4084
 
-[node name="Ship" type="Area2D"]
+[node name="Ship" type="KinematicBody2D"]
 script = ExtResource( 2 )
 detector_scene = ExtResource( 3 )
 Turret = ExtResource( 5 )
@@ -73,4 +73,3 @@ position = Vector2( 0.353561, 0 )
 shape = SubResource( 8 )
 
 [node name="ShotTimer" type="Timer" parent="."]
-[connection signal="area_entered" from="." to="." method="_on_Ship_area_entered"]
