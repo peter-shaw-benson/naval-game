@@ -48,16 +48,22 @@ func _process(delta):
 			var gun2enemy_distance = self.global_position.distance_to(enemy.global_position)
 			#print(gun2enemy_distance)
 			if gun2enemy_distance < self.weaponData.get_range():
-		
+				
 				close_enemy = enemy  ## --->## after get the current close_enemy
 				
+			# lerped (slowed down rotation)
+	
 				target = close_enemy.global_position
 				
-				print(target - self.global_position)
-				print((target - self.global_position).normalized().angle())
-				
-				self.rotation = lerp_angle(self.rotation, (target - self.global_position).normalized().angle(), self.turn_weight)
-				# lerped (slowed down rotation)
+				if int(delta) % 30 == 0:
+					print(target, self.global_position)
+					print(target - self.global_position)
+					print((target - self.global_position).normalized().angle())
+								
+				self.global_rotation = lerp_angle(self.global_rotation, 
+					(target - self.global_position).normalized().angle(), 
+					self.turn_weight)
+					
 
 func shoot():
 	
