@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=2]
+[gd_scene load_steps=22 format=2]
 
 [ext_resource path="res://Game Map/Map 2.gd" type="Script" id=1]
 [ext_resource path="res://Squad/Squadron.tscn" type="PackedScene" id=2]
@@ -19,6 +19,7 @@
 [ext_resource path="res://Squad/LandFort/LandFort.tscn" type="PackedScene" id=17]
 [ext_resource path="res://gui/SquadSelected.tscn" type="PackedScene" id=18]
 [ext_resource path="res://Ships2/ShipScene.tscn" type="PackedScene" id=19]
+[ext_resource path="res://Game Map/SelectionBox.gd" type="Script" id=20]
 
 [sub_resource type="DynamicFont" id=1]
 size = 36
@@ -36,12 +37,8 @@ ship_scene = ExtResource( 19 )
 fog_scene = ExtResource( 15 )
 
 [node name="ColorRect" type="ColorRect" parent="."]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 3.0
-margin_top = 2.0
-margin_right = 3.0
-margin_bottom = 2.0
+margin_right = 1024.0
+margin_bottom = 720.0
 mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -52,6 +49,9 @@ __meta__ = {
 
 [node name="LineDrawer" type="Node2D" parent="."]
 script = ExtResource( 3 )
+
+[node name="SelectionBox" type="Node2D" parent="."]
+script = ExtResource( 20 )
 
 [node name="ClockDisplay" type="RichTextLabel" parent="."]
 anchor_left = 0.999309
@@ -94,6 +94,7 @@ __meta__ = {
 }
 
 [node name="SquadSelected" parent="." instance=ExtResource( 18 )]
+visible = false
 
 [node name="Ship Popup Timer" type="Timer" parent="."]
 wait_time = 2.0

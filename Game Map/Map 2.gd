@@ -33,8 +33,7 @@ var ai_on = false
 onready var LineRenderer = get_node("LineDrawer")
 onready var IslandTexture = get_node("IslandTexture")
 
-# new approach to unit selection:
-
+var selected = []
 
 func init(input_unit_list, num_islands):
 	# Display stuff
@@ -407,3 +406,5 @@ func enable_combat():
 	# only applied to ships right now
 	for s in ship_list:
 		s.enable_combat()
+
+
