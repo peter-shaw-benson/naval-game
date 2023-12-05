@@ -59,6 +59,8 @@ func init(input_unit_list, num_islands):
 	unit_data = input_unit_list
 	place_list = range(len(unit_data))
 	place_next_unit(place_list)
+	
+	get_node("SelectionBox").clear_selections()
 
 func hide_enemies():
 	print("hiding enemies")

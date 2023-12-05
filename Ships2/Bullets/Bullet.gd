@@ -19,6 +19,7 @@ func init(weaponData, turret_pos):
 	
 	# set sprite frames here
 	if self.weaponData.get_name() == "torpedo":
+		# we use preload because it would be way faster than doing this for all bullets at runtime with "load"
 		var frames = preload("res://art/Bullets/Torpedo/TorpedoFrames.tres")
 		get_node("AnimatedSprite").set_sprite_frames(frames)
 	

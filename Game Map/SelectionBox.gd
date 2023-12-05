@@ -10,20 +10,30 @@ var select_rect = RectangleShape2D.new()  # Collision shape for drag box.
 
 ### SELECTION
 func _ready():
-	pass
+	var selected = [] 
 
 func _unhandled_input(event):
 	if event is InputEventMouseButton and event.button_index == BUTTON_LEFT:
+		
+		#print(" left mouse event in selection box")
 		if event.pressed:
+			#print(" left mouse press in selection box")
+			#print("selected array: ", selected)
 			# We only want to start a drag if there's no selection.
 			if selected.size() == 0:
 				dragging = true
 				drag_start = event.position
+			
+			else:
+				selected = []
+				
 		elif dragging:
+			#print("left mouse release in selection box")
 			# Button released while dragging.
 			dragging = false
 			
 			update()
+			
 			var drag_end = event.position
 			select_rect.extents = (drag_end - drag_start) / 2
 			
@@ -35,14 +45,14 @@ func _unhandled_input(event):
 			# this is what actually finds what's selected
 			selected = space.intersect_shape(query)
 			
-			# this is empty for some reason – 
-			# need to change everything to Kinematic Bodies
-			print(selected)
+			#print(selected)
+			
 			# selected is an array of dicts
 			for item in selected:
 				# need to check if it's in the right group
-				print(item)
-				if item.collider.is_in_group("ships"):
+				
+				if item.collider.is_in_group("ship"):
+					#print(item.collider)
 					item.collider.select()
 
 	if event is InputEventMouseMotion and dragging:
@@ -55,3 +65,6 @@ func _draw():
 
 func _process(delta):
 	update()
+
+func clear_selections():
+	self.selected = []

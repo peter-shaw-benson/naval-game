@@ -145,6 +145,7 @@ items = [ "Main Menu", null, 0, false, false, 0, 0, null, "", false, "Quit", nul
 
 [node name="Calvinatron" type="Node" parent="."]
 script = ExtResource( 16 )
+
 [connection signal="timeout" from="Ship Popup Timer" to="." method="_on_Ship_Popup_Timer_timeout"]
 [connection signal="timeout" from="GameClock" to="." method="_on_GameClock_timeout"]
 [connection signal="id_pressed" from="PauseMenu" to="." method="_on_CrashPopup_id_pressed"]
