@@ -35,9 +35,12 @@ func _unhandled_input(event):
 			# this is what actually finds what's selected
 			selected = space.intersect_shape(query)
 			
+			# this is empty for some reason
+			print(selected)
 			# selected is an array of dicts
 			for item in selected:
 				# need to check if it's in the right group
+				print(item)
 				if item.collider.is_in_group("ships"):
 					item.collider.select()
 
