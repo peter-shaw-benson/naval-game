@@ -33,6 +33,9 @@ var ai_on = false
 onready var LineRenderer = get_node("LineDrawer")
 onready var IslandTexture = get_node("IslandTexture")
 
+# new approach to unit selection:
+
+
 func init(input_unit_list, num_islands):
 	# Display stuff
 	var screen_size = get_viewport().size

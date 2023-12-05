@@ -27,8 +27,9 @@ var turret_list = [
 	"sprite_path": fletcher_turret_path, "turn_weight":0.02},
 	{"weapon": LightGun.new(), "offset": [0,20], "barrels": 1, 
 	"sprite_path": fletcher_turret_path, "turn_weight":0.02},
-	{"weapon": LightGun.new(), "offset": [0,0], "barrels": 1, 
+	{"weapon": LightGun.new(), "offset": [0,10], "barrels": 1, 
 	"sprite_path": fletcher_turret_path, "turn_weight":0.02},
+	# these two are the forward guns
 	{"weapon": LightGun.new(), "offset": [0,-10], "barrels": 1, 
 	"sprite_path": fletcher_turret_path, "turn_weight":0.02},
 	{"weapon": LightGun.new(), "offset": [0,-20], "barrels": 1, 
