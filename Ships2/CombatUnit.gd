@@ -1,4 +1,4 @@
-extends Area2D
+extends KinematicBody2D
 class_name CombatUnit
 
 var unitData: Entity
@@ -222,7 +222,6 @@ func start_placing():
 	
 	global_position = get_viewport().get_mouse_position()
 	
-	get_node("IslandCollision").disabled = true
 	
 func stop_placing():
 	#print("stopped placing: " + self.get_name())
@@ -232,7 +231,6 @@ func stop_placing():
 
 	emit_signal("stopped_placing")
 	
-	get_node("IslandCollision").disabled = false
 	#print(get_node("IslandCollision").disabled)
 	detector.enable_spotting()
 	

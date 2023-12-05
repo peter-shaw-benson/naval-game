@@ -58,9 +58,6 @@ func _ready():
 	
 	last_button = ""
 	
-	# Make sure it doesn't crash until we're done placing
-	get_node("IslandCollision").disabled = true
-	
 	self.deselect()
 	
 	stop_moving()
