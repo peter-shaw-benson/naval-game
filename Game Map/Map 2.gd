@@ -178,8 +178,8 @@ func place_carrier(carrier_data):
 	carrier.start_placing()
 
 func place_next_unit(place_list):
-	print(place_list)
-	print(unit_data)
+	#print(place_list)
+	#print(unit_data)
 	
 	# here, the place_list is a list of the squadron data
 	# 
