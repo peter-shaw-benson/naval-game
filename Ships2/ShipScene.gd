@@ -17,6 +17,7 @@ signal ship_deselected(ship)
 var stopped = false
 var patrolling = false
 var target_array = []
+var target_angle = {"turning": false, "angle":0}
 
 # fire stuff
 var burning_ships = []
@@ -135,6 +136,13 @@ func handle_right_click(placement):
 				set_current_speed_mode(get_current_speed_mode())
 			
 			current_target = placement
+
+
+func handle_final_turn(vector):
+	self.target_angle["turning"] = true
+	self.target_angle["angle"] = vector.angle() + PI/2
+	
+	#print(self.target_angle)
 
 func _input(event):
 	if selected:
@@ -273,6 +281,7 @@ func _physics_process(delta):
 		#remove the target from the queue and update the current target
 		if global_position.distance_to(current_target) < 10 and len(target_array) > 0:
 			emit_signal("reached_target")
+			
 			if patrolling: 
 				target_array.append(current_target)
 			
@@ -282,11 +291,12 @@ func _physics_process(delta):
 		
 		#if we are close to the last target, set stopped to true
 		elif global_position.distance_to(current_target) < 10:
+			
 			emit_signal("reached_target")
 			
 			stop_moving()
 
-		if int(global_position.distance_to(current_target)) > 1:
+		if int(global_position.distance_to(current_target)) > 1 and not stopped:
 			self.rotation = lerp_angle(self.rotation, (current_target - self.global_position).normalized().angle() + PI/2, self.turn_weight)
 
 		if not stopped:
@@ -294,6 +304,19 @@ func _physics_process(delta):
 			
 			velocity_vector = move_and_slide(self.velocity_vector)
 			
+		elif self.target_angle["turning"]:
+			self.global_rotation = lerp_angle(self.global_rotation, target_angle["angle"], self.turn_weight)
+			#self.rotation = target_angle["angle"]
+			# small amount in radians
+			#print(self.rotation, "\t", target_angle["angle"])
+			
+			if abs(self.global_rotation - target_angle["angle"]) <= 0.01:
+				
+				print("ship rotation; target angle")
+				print(self.global_rotation, "\t", target_angle["angle"])
+				
+				self.target_angle["turning"] = false
+				self.target_angle["angle"] = 0
 	
 	position.x = clamp(position.x, 0, screen_size.x)
 	position.y = clamp(position.y, 0, screen_size.y)

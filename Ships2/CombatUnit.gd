@@ -54,8 +54,11 @@ var selected = false
 var placing = false
 var initial_rot = 0
 var screen_size
+
+# ummmm what is the difference between "current speed" and "actual speed"
 var current_speed
 var actual_speed
+
 var applied_wind: Vector2
 var velocity_vector: Vector2
 
