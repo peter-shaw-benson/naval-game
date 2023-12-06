@@ -34,6 +34,9 @@ func _input(event):
 			
 			#print("right mouse clicked")
 			get_parent().get_node("LineDrawer").set_temp_target(event.position)
+			for s in selected_ships:
+				
+				s.set_temp_target(event.position)
 			
 		# if the right mouse is released 
 		# need to add a "final angle" to the ship targeting
@@ -196,6 +199,3 @@ func get_average_ship_position():
 	
 	return average_position
 
-func draw_ghost_ships():
-	# go through 
-	pass

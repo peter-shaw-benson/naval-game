@@ -19,6 +19,9 @@ var patrolling = false
 var target_array = []
 var target_angle = {"turning": false, "turn_point": Vector2(0,0)}
 
+# this is for placing the ghost sprite
+var temp_target = Vector2(0,0)
+
 # fire stuff
 var burning_ships = []
 # var ongoing_fire = Fire.new()
@@ -200,7 +203,7 @@ func select():
 		get_node("Sprite").animation = type + "_clicked"
 		get_node("Sprite").set_frame(faction)
 		
-		print(get_node("Sprite").animation)
+		#print(get_node("Sprite").animation)
 		
 		# yikes this might not hold up
 		emit_signal("ship_selected", self)
@@ -209,7 +212,7 @@ func select():
 		
 		unlock_turrets()
 		
-		draw_ghost_sprite()
+		show_ghost_sprite()
 		
 func deselect():
 	selected = false
@@ -219,7 +222,7 @@ func deselect():
 	
 	lock_turrets()
 	
-	print(get_node("Sprite").animation)
+	#print(get_node("Sprite").animation)
 	
 	emit_signal("ship_deselected", self)
 	
@@ -359,8 +362,7 @@ func _physics_process(delta):
 
 func _process(delta):
 	
-	# taking out the bars, so this method doesn't do anything yet.
-	pass
+	draw_ghost_sprite()
 	
 func set_firing_target(firing_target):
 	
@@ -413,10 +415,30 @@ func calc_current_speed():
 
 
 func draw_ghost_sprite():
-	get_node("GhostSprite").visible = false
+	# here, we put the position of the ghost sprite over the mouse
+	# then, if the right mouse is already being held down, 
+	# we rotate the sprite so it's facing the right mouse
 	
+	var ghost_sprite = get_node("GhostSprite")
+	
+	# sets the alpha value to be very low
+	ghost_sprite.self_modulate.a = 0.2
+	
+	ghost_sprite.global_position = get_global_mouse_position()
+	
+	if Input.is_action_pressed("right_click"):
+		#print("rotating ghost sprite")
+		# ideally, this should stick on the temp target
+		ghost_sprite.global_position = self.temp_target
+		ghost_sprite.look_at(get_global_mouse_position())
+		ghost_sprite.rotation += PI/2
 	
 func hide_ghost_sprite():
 	#print("hiding ghost sprite")
 	get_node("GhostSprite").visible = false
-	
+
+func show_ghost_sprite():
+	get_node("GhostSprite").visible = true
+
+func set_temp_target(new_temp_target):
+	self.temp_target = new_temp_target
