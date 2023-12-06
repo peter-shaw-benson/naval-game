@@ -11,6 +11,9 @@ signal reached_target()
 signal ship_lost()
 signal hit(ship)
 
+signal ship_selected(ship)
+signal ship_deselected(ship)
+
 var stopped = false
 var patrolling = false
 var target_array = []

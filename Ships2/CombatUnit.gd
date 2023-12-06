@@ -9,8 +9,6 @@ export var detector_scene: PackedScene
 var turrets = []
 
 signal stopped_placing()
-signal squad_selected(squad)
-signal squad_deselected(squad)
 
 func getSpeed(): 
 	return self.unitData.get_speed()
@@ -151,14 +149,17 @@ func get_path_showing():
 
 func select():
 	print("ship selected")
-	if faction == GameState.get_playerFaction():
+	
+	if self.is_in_group("player"):
+		
 		selected = true
 		get_node("Sprite").animation = type + "_clicked"
 		get_node("Sprite").set_frame(faction)
 		
 		#print(get_node("Sprite").animation)
 		
-		#emit_signal("ship_selected", self)
+		# yikes this might not hold up
+		emit_signal("ship_selected", self)
 		
 		last_button = ""
 		
@@ -175,7 +176,7 @@ func deselect():
 	
 	#print(get_node("Sprite").animation)
 	
-	#emit_signal("ship_deselected", self)
+	emit_signal("ship_deselected", self)
 	
 func set_sprite_type(new_type):
 	self.sprite_type = new_type

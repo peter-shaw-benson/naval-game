@@ -131,6 +131,9 @@ func place_ship(ship_data):
 	ship.connect("ship_lost", self, "_on_ship_lost")
 	ship.connect("stopped_placing", self, "_on_squadron_stopped_placement")
 	
+	ship.connect("ship_selected", self, "add_ship_to_selected")
+	ship.connect("ship_deselected", self, "remove_ship_from_selected")
+	
 	# Find mouse position, set ship position based on it
 	ship.start_placing()
 
@@ -227,18 +230,7 @@ func raise_controls():
 
 func _input(event):
 			
-			#print("Left button was clicked at ", event.position)
-	if event is InputEventMouseButton and event.pressed and event.button_index == 2:
-		for s in squad_list:
-			s.handle_right_click(event.position)
-		
-		for a in airbase_list:
-			a.handle_right_click(event.position)
-			
-		for sh in ship_list:
-			sh.handle_right_click(event.position)
-	
-	elif Input.is_action_pressed("pause_menu"):
+	if Input.is_action_pressed("pause_menu"):
 		if not paused:
 			handle_pause()
 			
@@ -290,6 +282,8 @@ func _on_CrashPopup_id_pressed(id):
 func _on_ship_lost(ship: ShipScene):
 	
 	ship_list.remove(ship_list.find(ship, 0))
+	
+	get_node("SelectionBox").remove_ship(ship)
 	
 	ship.queue_free()
 
@@ -410,3 +404,12 @@ func enable_combat():
 		s.enable_combat()
 
 
+## Selection (calling the selection box)
+
+func add_ship_to_selected(ship: ShipScene):
+	
+	get_node("SelectionBox").add_ship(ship)
+
+func remove_ship_from_selected(ship: ShipScene):
+	
+	get_node("SelectionBox").remove_ship(ship)
