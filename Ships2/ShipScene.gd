@@ -48,6 +48,10 @@ func _ready():
 		
 	if self.faction != GameState.get_playerFaction():
 		add_to_group("enemy")
+	else:
+		add_to_group("player")
+		
+	# a ship should have three groups (flags): ship, faction, animosity
 	
 	# Combat Variables:
 	get_node("ShotTimer").wait_time = GameState.get_combatPace()
