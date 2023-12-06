@@ -442,3 +442,6 @@ func show_ghost_sprite():
 
 func set_temp_target(new_temp_target):
 	self.temp_target = new_temp_target
+
+func get_temp_target():
+	return self.temp_target

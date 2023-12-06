@@ -9,10 +9,10 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "Area2D",
+"base": "KinematicBody2D",
 "class": "Airbase",
 "language": "GDScript",
-"path": "res://Squad/Airbase/Airbase.gd"
+"path": "res://Ships2/Plane Launchers/Airbase.gd"
 }, {
 "base": "Ship",
 "class": "Battleship",

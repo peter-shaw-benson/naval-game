@@ -33,10 +33,14 @@ func _input(event):
 			initial_right_mouse_pos = event.position
 			
 			#print("right mouse clicked")
-			get_parent().get_node("LineDrawer").set_temp_target(event.position)
-			for s in selected_ships:
+			#get_parent().get_node("LineDrawer").set_temp_target(event.position)
+			
+			if len(selected_ships) == 1:
+				selected_ships[0].set_temp_target(event.position)
 				
-				s.set_temp_target(event.position)
+			elif len(selected_ships) > 1:
+				set_temp_squadron_targets(event.position)
+				
 			
 		# if the right mouse is released 
 		# need to add a "final angle" to the ship targeting
@@ -150,7 +154,24 @@ func move_in_formation(event_position):
 			for s in selected_ships:
 				virtual_target = s.global_position + target_vector
 				s.handle_right_click(virtual_target)
-				
+
+func set_temp_squadron_targets(temp_target):
+	# find the average position
+	var average_position = get_average_ship_position()
+	
+	# then, we find the offset between the average position and the placement
+	# this is the vector from the ship cluster to the target
+	var target_vector = temp_target - average_position
+
+	# finally, we create "virtual targets" for all the ships, and handle the right click
+	var virtual_target = Vector2(0,0)
+	
+	#print(selected_ships)
+	#print(selected)
+	for s in selected_ships:
+		virtual_target = s.global_position + target_vector
+		s.set_temp_target(virtual_target)
+		
 
 func handle_squadron_turn(mouse_turn_target):
 	

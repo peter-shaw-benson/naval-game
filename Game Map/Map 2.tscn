@@ -7,7 +7,7 @@
 [ext_resource path="res://gui/Crash Popup.tscn" type="PackedScene" id=5]
 [ext_resource path="res://fonts/neon-pixel-7/neon_pixel-7.ttf" type="DynamicFontData" id=6]
 [ext_resource path="res://fonts/basic_font.tres" type="DynamicFont" id=7]
-[ext_resource path="res://Squad/Airbase/Airbase.tscn" type="PackedScene" id=8]
+[ext_resource path="res://Ships2/Plane Launchers/Airbase.tscn" type="PackedScene" id=8]
 [ext_resource path="res://Game Map/Weather/Weather.gd" type="Script" id=9]
 [ext_resource path="res://art/map_assets/wind_arrow.png" type="Texture" id=10]
 [ext_resource path="res://Game Map/WindSpeed.gd" type="Script" id=11]

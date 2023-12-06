@@ -1,9 +1,11 @@
-extends "res://Squad/CombatUnitsWrapper.gd"
+extends "res://Ships2/CombatUnit.gd"
 class_name Airbase
 
 export var PlaneSquadScene: PackedScene
+export var PlaneBoidScene: PackedScene
 
 const ScoutPlane = preload("res://Entities/Planes/ScoutPlane.gd")
+const PlaneBoid = preload("res://Ships2/Planes/PlaneBoid.gd")
 
 signal plane_launch(plane_squad)
 signal planes_recovered(plane_squad)
@@ -24,6 +26,8 @@ func _ready():
 	self.scale = Vector2(0.6, 0.6)
 	
 	last_button = ""
+	
+	add_to_group("airbase")
 
 func _process(delta):
 	if placing:
