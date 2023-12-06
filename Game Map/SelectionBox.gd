@@ -8,7 +8,8 @@ var drag_start = Vector2.ZERO  # Location where drag began.
 var select_rect = RectangleShape2D.new()  # Collision shape for drag box.
 
 var dragging_right = false
-var right_mouse_pos = Vector2.ZERO
+var initial_right_mouse_pos = Vector2.ZERO
+var final_right_mouse_pos = Vector2.ZERO
 
 # implement this later lmao
 var formations = [
@@ -29,34 +30,37 @@ func _input(event):
 	if event is InputEventMouseButton and event.button_index == 2:
 		if event.pressed:
 			dragging_right = true
-			right_mouse_pos = event.position
+			initial_right_mouse_pos = event.position
 			
-			#print(selected_ships)
+			#print("right mouse clicked")
+			get_parent().get_node("LineDrawer").set_temp_target(event.position)
 			
-			if len(selected_ships) == 1:
-				var selected_ship: ShipScene = selected_ships[0]
-				
-				if selected_ship.is_in_group("player") and selected_ship.is_in_group("ship"):
-					selected_ship.handle_right_click(event.position)
-			
-			# if there's multiple ships
-			else:
-				move_in_formation(event.position)
 		# if the right mouse is released 
 		# need to add a "final angle" to the ship targeting
 		else:
 			dragging_right = false
+			final_right_mouse_pos = event.position
+			
 			
 			if len(selected_ships) == 1:
 				var selected_ship: ShipScene = selected_ships[0]
-			
-				var angle_to_mouse = selected_ship.global_position.angle_to(event.position)
-				#print(angle_to_mouse)
 				
 				if selected_ship.is_in_group("player") and selected_ship.is_in_group("ship"):
-					selected_ship.handle_final_turn(event.position)
+					selected_ship.handle_right_click(initial_right_mouse_pos)
+					
+			# if there's multiple ships
 			else:
-				handle_final_turn(event.position)
+				move_in_formation(initial_right_mouse_pos)
+			
+			if len(selected_ships) == 1:
+				var selected_ship: ShipScene = selected_ships[0]
+				
+				if selected_ship.is_in_group("player") and selected_ship.is_in_group("ship"):
+					selected_ship.handle_final_turn(final_right_mouse_pos)
+			else:
+				self.handle_squadron_turn(final_right_mouse_pos)
+				
+			
 			
 
 func _unhandled_input(event):
@@ -99,10 +103,10 @@ func _unhandled_input(event):
 			for item in selected:
 				# need to check if it's in the right group
 				
-				if item.collider.is_in_group("ship"):
+				if item.collider.is_in_group("ship") and not item.collider in selected_ships:
 					selected_ships.append(item.collider)
-					
-					#print(item.collider)
+				
+				#print(item.collider)
 					item.collider.select()
 
 	if event is InputEventMouseMotion and dragging:
@@ -114,7 +118,7 @@ func _draw():
 				Color(.9, .9, .9, 0.15), true)
 				
 	if dragging_right:
-		draw_line(right_mouse_pos, get_global_mouse_position(), Color.purple, 1.0)
+		draw_line(initial_right_mouse_pos, get_global_mouse_position(), Color.purple, 1.0)
 
 func _process(delta):
 	update()
@@ -123,7 +127,8 @@ func move_in_formation(event_position):
 	if Input.is_action_pressed("modifier"):
 					
 		for s in selected_ships:
-			s.handle_right_click(event_position)
+			#s.handle_right_click(event_position)
+			pass
 		
 	else:
 		if len(selected_ships) > 1:
@@ -137,28 +142,38 @@ func move_in_formation(event_position):
 			# finally, we create "virtual targets" for all the ships, and handle the right click
 			var virtual_target = Vector2(0,0)
 			
+			#print(selected_ships)
+			#print(selected)
 			for s in selected_ships:
 				virtual_target = s.global_position + target_vector
 				s.handle_right_click(virtual_target)
 				
 
-func handle_final_turn(mouse_turn_target):
+func handle_squadron_turn(mouse_turn_target):
 	
-	var average_position = get_average_ship_position()
-	
-	var angle_to_mouse = average_position.angle_to(mouse_turn_target)
-	#print(angle_to_mouse)
-	
-	for s in selected_ships:
-		s.handle_final_turn(mouse_turn_target)
-				
+		if len(selected_ships) > 1:
+			# here, we find the average position of all the ships in the array
+			var average_position = get_average_ship_position()
+			
+			# then, we find the offset between the average position and the placement
+			# this is the vector from the ship cluster to the target
+			var target_vector = mouse_turn_target - average_position
+		
+			# finally, we create "virtual targets" for all the ships, and handle the right click
+			var virtual_target = Vector2(0,0)
+			
+			for s in selected_ships:
+				virtual_target = s.global_position + target_vector
+				s.handle_final_turn(virtual_target)
 				
 func clear_selections():
 	self.selected = []
 
 func add_ship(ship):
-	#print("adding ship to selected array")
-	self.selected_ships.append(ship)
+	
+	if not ship in selected_ships:
+		#print("adding ship to selected array")
+		self.selected_ships.append(ship)
 	
 func remove_ship(ship):
 	
@@ -180,3 +195,7 @@ func get_average_ship_position():
 	average_position.y /= len(selected_ships)
 	
 	return average_position
+
+func draw_ghost_ships():
+	# go through 
+	pass

@@ -17,7 +17,7 @@ signal ship_deselected(ship)
 var stopped = false
 var patrolling = false
 var target_array = []
-var target_angle = {"turning": false, "angle":0}
+var target_angle = {"turning": false, "turn_point": Vector2(0,0)}
 
 # fire stuff
 var burning_ships = []
@@ -86,8 +86,6 @@ func _ready():
 func handle_right_click(placement):
 	#print("handling right click")
 	
-	## THIS FUNCTION will be changed
-	
 	if selected and GameState.get_playerFaction() == get_faction():
 		# this works properly for patrols:
 		# print("last button:", last_button)
@@ -100,6 +98,7 @@ func handle_right_click(placement):
 			#print(target_array)
 			
 		elif last_button == "patrol":
+			print("patrolling")
 			patrolling = true
 			current_target = placement
 			target_array.append(self.global_position)
@@ -107,6 +106,7 @@ func handle_right_click(placement):
 			print(target_array)
 			print(current_target)
 			print(self.global_position)
+			print("patrolling value:", patrolling)
 			
 			emit_signal("new_course_change", current_target, placement)
 			
@@ -119,6 +119,7 @@ func handle_right_click(placement):
 		else:
 			patrolling = false
 			target_array = []
+			#print("stopped patrolling for some reason?")
 
 			# unstops the ship, and also sets the current speed mode
 			if stopped:
@@ -138,9 +139,10 @@ func handle_right_click(placement):
 			current_target = placement
 
 
-func handle_final_turn(vector):
+func handle_final_turn(turn_point):
 	self.target_angle["turning"] = true
-	self.target_angle["angle"] = vector.angle() + PI/2
+	
+	self.target_angle["turn_point"] = turn_point
 	
 	#print(self.target_angle)
 
@@ -189,6 +191,39 @@ func _input(event):
 
 # change this (hardcode) for now.
 # change arrow to the ship type later
+
+func select():
+	
+	if self.is_in_group("player"):
+		
+		selected = true
+		get_node("Sprite").animation = type + "_clicked"
+		get_node("Sprite").set_frame(faction)
+		
+		print(get_node("Sprite").animation)
+		
+		# yikes this might not hold up
+		emit_signal("ship_selected", self)
+		
+		last_button = ""
+		
+		unlock_turrets()
+		
+		draw_ghost_sprite()
+		
+func deselect():
+	selected = false
+	
+	get_node("Sprite").animation = type + "_basic"
+	get_node("Sprite").set_frame(faction)
+	
+	lock_turrets()
+	
+	print(get_node("Sprite").animation)
+	
+	emit_signal("ship_deselected", self)
+	
+	hide_ghost_sprite()
 
 #func select():
 #	print("selecting")
@@ -279,11 +314,15 @@ func _physics_process(delta):
 		var movement_vector = Vector2(0,0)
 		#if distance to target is small and there are queued targets,
 		#remove the target from the queue and update the current target
+		
+		
+		#print("patrolling, target array:", target_array)
 		if global_position.distance_to(current_target) < 10 and len(target_array) > 0:
 			emit_signal("reached_target")
 			
 			if patrolling: 
 				target_array.append(current_target)
+				#print("patrolling, target array:", target_array)
 			
 			current_target = target_array[0]
 			
@@ -305,18 +344,15 @@ func _physics_process(delta):
 			velocity_vector = move_and_slide(self.velocity_vector)
 			
 		elif self.target_angle["turning"]:
-			self.global_rotation = lerp_angle(self.global_rotation, target_angle["angle"], self.turn_weight)
-			#self.rotation = target_angle["angle"]
-			# small amount in radians
-			#print(self.rotation, "\t", target_angle["angle"])
+			var angle_to_turn_target = (target_angle["turn_point"] - self.global_position).normalized().angle() + PI/2
 			
-			if abs(self.global_rotation - target_angle["angle"]) <= 0.01:
-				
-				print("ship rotation; target angle")
-				print(self.global_rotation, "\t", target_angle["angle"])
-				
+			self.global_rotation = lerp_angle(self.global_rotation, angle_to_turn_target, self.turn_weight)
+			# recycling some code earlier – couldn't figure it out any other way
+			
+			if abs(angle_to_turn_target - self.global_rotation) <= 0.01:
+				# if we reached the turn targe,t stope turning
 				self.target_angle["turning"] = false
-				self.target_angle["angle"] = 0
+				self.target_angle["turn_point"] = self.global_position
 	
 	position.x = clamp(position.x, 0, screen_size.x)
 	position.y = clamp(position.y, 0, screen_size.y)
@@ -375,3 +411,12 @@ func calc_current_speed():
 #	for t in turrets:
 #		t.point_to(mouse_position)
 
+
+func draw_ghost_sprite():
+	get_node("GhostSprite").visible = false
+	
+	
+func hide_ghost_sprite():
+	#print("hiding ghost sprite")
+	get_node("GhostSprite").visible = false
+	

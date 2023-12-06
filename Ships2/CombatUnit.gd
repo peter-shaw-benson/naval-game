@@ -149,37 +149,13 @@ func get_path_showing():
 
 
 # SELECT / DESELCT
-
 func select():
-	print("ship selected")
-	
-	if self.is_in_group("player"):
-		
-		selected = true
-		get_node("Sprite").animation = type + "_clicked"
-		get_node("Sprite").set_frame(faction)
-		
-		#print(get_node("Sprite").animation)
-		
-		# yikes this might not hold up
-		emit_signal("ship_selected", self)
-		
-		last_button = ""
-		
-		unlock_turrets()
-		
-		
+	pass
+
 func deselect():
-	selected = false
-	
-	get_node("Sprite").animation = type + "_basic"
-	get_node("Sprite").set_frame(faction)
-	
-	lock_turrets()
-	
-	#print(get_node("Sprite").animation)
-	
-	emit_signal("ship_deselected", self)
+	pass
+
+
 	
 func set_sprite_type(new_type):
 	self.sprite_type = new_type
@@ -202,8 +178,7 @@ func get_faction():
 func _input_event(viewport, event, shape_idx):
 	if event is InputEventMouseButton \
 	and event.button_index == 1 \
-	and event.pressed:
-		
+	and !event.pressed:
 		# removing for now
 		# print("(combat unit) mouse clicked")
 		# this still registers 4 mouse press events per actual mouse click 
@@ -215,7 +190,7 @@ func _unhandled_input(event):
 	# Deselct when clicked outside the squadron
 	if event is InputEventMouseButton \
 	and event.button_index == BUTTON_LEFT \
-	and event.pressed:
+	and !event.pressed:
 		#print("unhandled input")
 		if self.selected:
 			self.deselect()
