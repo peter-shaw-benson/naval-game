@@ -1,9 +1,11 @@
 extends KinematicBody2D
 
+const ScoutPlane = preload("res://Entities/Planes/ScoutPlane.gd")
+
 signal plane_recovered(PlaneBoid)
 signal plane_lost(PlaneBoid)
 
-export var max_speed: = 200.0
+export var max_speed: = 100.0
 export var mouse_follow_force: = 0.05
 export var cohesion_force: = 0.05
 export var algin_force: = 0.05
@@ -24,6 +26,9 @@ var current_target: Vector2
 
 # plane characteristics
 var plane_type: String
+var plane_data: Entity
+
+var fuel_time = 8
 
 func init(plane_type, airbase_pos, strike_target):
 	self.strike_target = strike_target
@@ -32,8 +37,22 @@ func init(plane_type, airbase_pos, strike_target):
 	# the plane will always go towards its current target.
 	self.current_target = strike_target
 	
-	# implement later, this will handle the weaponry and sprites
+	# handles weaponry and such
 	self.plane_type = plane_type
+	
+	if plane_type == "scout":
+		self.plane_data = ScoutPlane.new()
+		plane_data._init()
+		
+		var frames = load("res://art/Plane Sprites/ScoutPlaneSprite.tres")
+		get_node("AnimatedSprite").set_sprite_frames(frames)
+	
+		get_node("AnimatedSprite").animation = "default"
+		
+		self.max_speed = self.plane_data.get_speed()
+	
+	get_node("FuelTimer").wait_time = fuel_time
+	get_node("FuelTimer").start()
 	
 
 func _ready():
@@ -67,7 +86,7 @@ func _physics_process(_delta):
 	
 	# check if we have reached the strike target – if so, turn around
 	# if we reach the airbase, start recovering?
-	if global_position.distance_to(current_target) <= 10:
+	if global_position.distance_to(current_target) <= 20:
 		if strike_target == current_target:
 			current_target = parent_airbase_pos
 		elif parent_airbase_pos == current_target:
@@ -88,6 +107,9 @@ func _physics_process(_delta):
 	_velocity = (_velocity + acceleration).clamped(max_speed)
 	
 	_velocity = move_and_slide(_velocity)
+	
+	# this looks in the same direction as its movement
+	global_rotation = _velocity.angle() + PI/2
 
 
 func get_flock_status(flock: Array):
@@ -124,3 +146,8 @@ func get_random_target():
 
 func get_plane_type():
 	return self.plane_type
+
+func _on_FuelTimer_timeout():
+	#print("plane out of fuel")
+	current_target = parent_airbase_pos
+	

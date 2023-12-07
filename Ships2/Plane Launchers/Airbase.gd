@@ -18,6 +18,7 @@ var airbase_armor = 100
 var launching = false
 var launching_squad
 var launch_type = "scout"
+var squad_launch_time = 0.2
 
 var strike_target: Vector2
 
@@ -138,9 +139,9 @@ func _unhandled_input(event):
 # while strike force is 
 func handle_right_click(placement):
 	if selected:
-		print("right clicked for course")
+		#print("right clicked for course")
 		# Turn logic is here for now?
-		print(plane_numbers)
+		#print(plane_numbers)
 		
 		if last_button == "scout" and plane_numbers["scout"] > 0:
 			# Send planes
@@ -176,7 +177,7 @@ func _input(event):
 		elif Input.is_action_pressed("cancel"):
 			last_button = ""
 		
-		print(last_button)
+		#print(last_button)
 
 # Combat stuff:
 func take_plane_damage(plane_squad):
@@ -215,7 +216,6 @@ func start_launch(placement, strike_type):
 	launching = true
 	
 	# hard-coding for now – this means that 2 planes should launch per second
-	var squad_launch_time = 0.5
 	get_node("LaunchTimer").wait_time = squad_launch_time
 	get_node("LaunchTimer").start()
 		
@@ -247,11 +247,11 @@ func end_launch():
 func _on_LaunchTimer_timeout():
 	#end_launch()
 	# spawn new boid
-	print(launch_type, plane_numbers[launch_type])
+	#print(launch_type, plane_numbers[launch_type])
 	
 	if plane_numbers[launch_type] > 0:
 		#spawn new boid
-		print("spawning new plane")
+		#print("spawning new plane")
 		
 		var plane_squad = PlaneBoidScene.instance()
 		

@@ -12,7 +12,7 @@ var plane_stats = {
 	"class": "ScoutPlane",
 	"weapons": [],
 	"agility": 0.3,
-	"launch_time": 3
+	"launch_time": 3,
 }
 
 func _init():
