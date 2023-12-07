@@ -1,7 +1,7 @@
 extends KinematicBody2D
 class_name CombatUnit
 
-var unitData: Entity
+var unitData: EntityJSON
 
 export var detector_scene: PackedScene
 

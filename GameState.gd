@@ -96,7 +96,7 @@ func goto_main_map(path, fleet_data, num_islands):
 
 	# Load the new scene.
 	var s = ResourceLoader.load(path)
-
+	print(s)
 	# Instance the new scene.
 	current_scene = s.instance()
 

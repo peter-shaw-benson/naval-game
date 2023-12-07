@@ -15,31 +15,23 @@ var DestroyerNames = ["HMS Beverly",
 "HMS Ramsey",
 ]
 
-var ship_stats = {
-	"speed": 40,
-	"range": 1000,
-	"turn_weight": 0.1,
-	"hit_points": 10,
-	"armor": 5,
-	"hide": 20,
-	"visibility": 15,
-	"crew": 5,
-	"class": "Destroyer",
-	"weapons": [LightGun.new(), LightGun.new()],
-	"fuel_storage": 5,
-	"fuel_consumption": 0.1
-}
+var fletcher_turret_path = "res://art/Turrets/Light Gun 1/LightGunSprite.tres"
+
+var turret_list = [
+	{"weapon": LightGun.new(), "offset": [0,30], "barrels": 1, 
+	"sprite_path": fletcher_turret_path, "turn_weight":0.02},
+	{"weapon": LightGun.new(), "offset": [0,10], "barrels": 1, 
+	"sprite_path": fletcher_turret_path, "turn_weight":0.02},
+	# these two are the forward guns
+	{"weapon": LightGun.new(), "offset": [0,-10], "barrels": 1, 
+	"sprite_path": fletcher_turret_path, "turn_weight":0.02},
+]
 
 func _init():
 	
-	self.init(ship_stats["speed"], ship_stats["range"], ship_stats["turn_weight"], \
-	ship_stats["hit_points"], ship_stats["armor"], \
-	ship_stats["hide"], ship_stats["visibility"], \
-	ship_stats["crew"])
+	self.init("ship", "destroyer")
 	
-	self.set_class(ship_stats["class"])
-	self.armament(ship_stats["weapons"])
-	self.set_fuel(ship_stats["fuel_storage"], ship_stats["fuel_consumption"])
+	self.armament(turret_list)
 	
 	# choose name from list
 	var name = DestroyerNames[randi() % DestroyerNames.size()]

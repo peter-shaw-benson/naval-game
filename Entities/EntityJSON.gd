@@ -44,11 +44,11 @@ func read_json_file(file_path):
 	
 	var content_as_text = file.get_as_text()
 
-	print(content_as_text)
+	#print(content_as_text)
 	
 	var data_received = JSON.parse(content_as_text).result
 	
-	print(data_received)
+	#print(data_received)
 	
 	return data_received
 

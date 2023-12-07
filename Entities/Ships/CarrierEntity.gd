@@ -11,33 +11,23 @@ var CarrierNames = ["HMS Glorious",
 "USS Lexington"
 ]
 
-var ship_stats = {
-	"speed": 15,
-	"range": 1000,
-	"turn_weight": 0.06,
-	"hit_points": 20,
-	"armor": 7,
-	"hide": 10,
-	"visibility": 10,
-	"crew": 10,
-	"class": "Carrier",
-	"weapons": [LightGun.new(), LightGun.new()],
-	"max_planes": 12
-}
+var fletcher_turret_path = "res://art/Turrets/Light Gun 1/LightGunSprite.tres"
+
+var turret_list = [
+	{"weapon": LightGun.new(), "offset": [10,0], "barrels": 1, 
+	"sprite_path": fletcher_turret_path, "turn_weight":0.02},
+	{"weapon": LightGun.new(), "offset": [-10,0], "barrels": 1, 
+	"sprite_path": fletcher_turret_path, "turn_weight":0.02},
+]
 
 var hangar_hit_chance = 0.05
 var max_planes: int
 
 func _init():
 	
-	self.init(ship_stats["speed"], ship_stats["range"], ship_stats["turn_weight"], \
-	ship_stats["hit_points"], ship_stats["armor"], \
-	ship_stats["hide"], ship_stats["visibility"], \
-	ship_stats["crew"])
+	self.init("ship", "carrier")
 	
-	self.set_class(ship_stats["class"])
-	self.armament(ship_stats["weapons"])
-	self.set_max_planes(ship_stats["max_planes"])
+	self.armament(turret_list)
 	
 	module_hit_chances["hangar"] = hangar_hit_chance
 	
@@ -47,12 +37,9 @@ func _init():
 
 func _ready():
 	pass
-	
-func set_max_planes(new_max):
-	max_planes = new_max
-	
-func get_max_planes():
-	return max_planes
+
+func get_plane_numbers():
+	return self.entity_data["planes"]
 
 func subsystem_damage(accuracy_roll, total_accuracy, damage_result):
 	 #special conditions:

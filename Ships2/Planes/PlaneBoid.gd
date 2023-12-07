@@ -1,6 +1,8 @@
 extends KinematicBody2D
 
 const ScoutPlane = preload("res://Entities/Planes/ScoutPlane.gd")
+const TorpBomber = preload("res://Entities/Planes/TorpBomber.gd")
+const Fighter = preload("res://Entities/Planes/Fighter.gd")
 
 signal plane_recovered(PlaneBoid)
 signal plane_lost(PlaneBoid)
@@ -40,20 +42,37 @@ func init(plane_type, airbase_pos, strike_target):
 	# handles weaponry and such
 	self.plane_type = plane_type
 	
-	if plane_type == "scout":
-		self.plane_data = ScoutPlane.new()
-		plane_data._init()
-		
-		var frames = load("res://art/Plane Sprites/ScoutPlaneSprite.tres")
-		get_node("AnimatedSprite").set_sprite_frames(frames)
 	
-		get_node("AnimatedSprite").animation = "default"
-		
-		self.max_speed = self.plane_data.get_speed()
+	## Defines the plane characteristics here
+	initialize_plane_data(plane_type)
 	
 	get_node("FuelTimer").wait_time = fuel_time
 	get_node("FuelTimer").start()
+
+
+func initialize_plane_data(plane_type):
+	var frames: SpriteFrames
 	
+	if plane_type == "scout":
+		self.plane_data = ScoutPlane.new()
+		
+		frames = load("res://art/Plane Sprites/ScoutPlaneSprite.tres")
+		
+	elif plane_type == "strike":
+		self.plane_data = TorpBomber.new()
+		
+		frames = load("res://art/Plane Sprites/StrikePlaneSprite.tres")
+
+	elif plane_type == "fighter":
+		self.plane_data = Fighter.new()
+		
+		frames = load("res://art/Plane Sprites/FighterPlaneSprite.tres")
+		
+	plane_data._init()
+	get_node("AnimatedSprite").set_sprite_frames(frames)
+	get_node("AnimatedSprite").animation = "default"
+		
+	self.max_speed = self.plane_data.get_speed()
 
 func _ready():
 	randomize()
