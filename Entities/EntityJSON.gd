@@ -30,33 +30,48 @@ var max_armor: float
 var weapons_list: Array
 var aircraft_list = []
 
-# Need maxes for combat / damage / healing purposes
+# 
+var entity_data_path = "res://config_files/entity_stats.json"
+#var entity_data_path = "res://Weapons/weapon_stats.json"
 
-var roller = RandomNumberGenerator.new()
 
-func init(speed, max_range, turn_weight, hit_points, armor, 
-hide_range, visibility, crew):
-	self.speed = speed
-	self.max_speed = speed
+var entity_data: Dictionary
+
+func read_json_file(file_path):
+	# from the internets
+	var file = File.new()
+	file.open(file_path, File.READ)
 	
-	self.max_range = max_range
-	self.turn_weight = turn_weight
-	self.max_turn_weight = turn_weight
+	var content_as_text = file.get_as_text()
+
+	print(content_as_text)
 	
-	self.hit_points = hit_points
-	self.max_health = hit_points
+	var data_received = JSON.parse(content_as_text).result
 	
-	self.armor = armor
-	self.max_armor = armor
+	print(data_received)
 	
-	self.hide_range = hide_range
-	self.visibility_range = visibility
-	self.crew = crew
+	return data_received
+
+func init(entity_type, entity_name):
+	
+	print("reading entity data from file")
+	entity_data = read_json_file(entity_data_path)[entity_type][entity_name]
+
+	self.max_speed = entity_data["speed"]
+	
+	self.max_turn_weight = entity_data["turn_weight"]
+	
+	self.hit_points = entity_data["hit_points"]
+	self.max_health = entity_data["hit_points"]
+	
+	self.armor = entity_data["armor"]
+	self.max_armor = entity_data["armor"]
+	
+	self.crew = entity_data["crew"]
 	self.wind_resistance = 0.9
-
-func set_class(entity_class):
-	self.entity_class = entity_class
 	
+	self.entity_class = entity_data["class"]
+
 func get_wind_resist():
 	return wind_resistance
 
@@ -70,30 +85,30 @@ func armament(weapon_list):
 	self.weapons_list = weapon_list
 	
 func get_speed():
-	return self.speed
+	return self.entity_data["speed"]
 
 func get_turn_weight():
-	return self.turn_weight
+	return self.entity_data["turn_weight"]
 
 func get_visibility():
-	return self.visibility_range
+	return self.entity_data["visibility"]
 
 func get_hiding():
-	return self.hide_range
-	
-func weapons_to_string():
-	var string = ""
-	
-	for weapon in weapons_list:
-		string += weapon.to_string()
-		
-	return string
+	return self.entity_data["hide"]
+#
+#func weapons_to_string():
+#	var string = ""
+#
+#	for weapon in weapons_list:
+#		string += weapon.to_string()
+#
+#	return string
 
 func get_health():
 	return self.hit_points
 
 func get_max_health():
-	return self.max_health
+	return self.entity_data["hit_points"]
 
 func get_armor():
 	return self.armor
@@ -102,65 +117,25 @@ func get_weapons():
 	return self.weapons_list
 
 func get_range():
-	return self.max_range
-	
-func calculate_hit(weapon, distance, enemy_speed_mode, dict=false):
-	var accuracy_roll = roller.randf()
-	
-	var range_factor_accuracy
-	
-	if distance > 1:
-		range_factor_accuracy = 1 / (distance / GameState.get_rangeFactor())
-	else:
-		range_factor_accuracy = 2
-	
-	if distance > weapon.max_range:
-		range_factor_accuracy *= GameState.get_outOfRange()
-	
-	# cap this at a reasonable level
-	if range_factor_accuracy >= 2:
-		range_factor_accuracy = 2
-	
-	var speed_factor_accuracy = 1
-	
-	speed_factor_accuracy += GameState.get_speedFactor(enemy_speed_mode)
-	
-	var final_accuracy = weapon.base_accuracy * range_factor_accuracy * speed_factor_accuracy 
-	
-	var hit_dict = {
-		"hit": accuracy_roll < final_accuracy,
-		"roll": accuracy_roll,
-		"final": final_accuracy,
-		"base": weapon.base_accuracy,
-		"range": range_factor_accuracy,
-		"distance": distance,
-		"weapon_range": weapon.max_range
-	}
-	
-	#print(hit_dict)
-	
-	if dict:
-		return hit_dict
-	else:
-		return accuracy_roll < final_accuracy
+	return self.entity_data["range"]
 	
 # Combat function
 func damage(weapon: Weapon):
 	
 	self.hit_points -= weapon.get_damage()
-
-func _to_string():
-	var s = ""
-	s += "Speed: \t" + str(self.speed)
-	s += "Turn Weight: \t" + str(self.turn_weight)
-	s += "HP: \t" + str(self.hit_points)
-	s += "Armor: \t" + str(self.armor)
-	s += "Visibility Range: \t" + str(self.visibility_range)
-	s += "Crew: \t" + str(self.crew)
-	
-	s += "\nWEAPONS\n"
-	
-	s += self.weapons_to_string()
+#
+#func _to_string():
+#	var s = ""
+#	s += "Speed: \t" + str(self.speed)
+#	s += "Turn Weight: \t" + str(self.turn_weight)
+#	s += "HP: \t" + str(self.hit_points)
+#	s += "Armor: \t" + str(self.armor)
+#	s += "Visibility Range: \t" + str(self.visibility_range)
+#	s += "Crew: \t" + str(self.crew)
+#
+#	s += "\nWEAPONS\n"
+#
+#	s += self.weapons_to_string()
 
 func repair():
 	pass

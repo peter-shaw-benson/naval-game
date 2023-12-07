@@ -1,20 +1,17 @@
 class_name CombatPlane
-extends "../Entity.gd"
+extends "../EntityJSON.gd"
 
 var agility = 0.5
 var launch_time = 1
 
 func _ready():
 	pass
-	
-func set_agility(new_agility):
-	self.agility = new_agility
 
-func set_launch_time(new_time):
-	self.launch_time = new_time
+func get_agility():
+	return self.entity_data["agility"]
 
 func get_launch_time():
-	return self.launch_time
+	return self.entity_data["launch_time"]
 
 # taking out for now
 #func damage(weapon: Weapon, t_crossed, distance, enemy_stopped):

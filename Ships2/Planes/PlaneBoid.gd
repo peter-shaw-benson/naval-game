@@ -26,7 +26,7 @@ var current_target: Vector2
 
 # plane characteristics
 var plane_type: String
-var plane_data: Entity
+var plane_data: EntityJSON
 
 var fuel_time = 8
 

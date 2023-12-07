@@ -1,0 +1,71 @@
+{
+  "ship": {
+    "destroyer": {
+      "speed": 40,
+    	"range": 1000,
+    	"turn_weight": 0.1,
+    	"hit_points": 10,
+    	"armor": 5,
+    	"hide": 20,
+    	"visibility": 15,
+    	"crew": 5,
+    	"class": "Destroyer",
+    	"fuel_storage": 5,
+    	"fuel_consumption": 0.1
+    }
+  },
+  "plane": {
+    "scout": {
+    	"speed": 80,
+    	"range": 600,
+    	"turn_weight": 0.15,
+    	"hit_points": 40,
+    	"armor": 0,
+    	"hide": 20,
+    	"visibility": 25,
+    	"crew": 2,
+    	"class": "ScoutPlane",
+    	"agility": 0.3,
+    	"launch_time": 3,
+    },
+    "dive": {
+      "speed": 100,
+    	"range": 200,
+    	"turn_weight": 0.15,
+    	"hit_points": 8,
+    	"armor": 0,
+    	"hide": 20,
+    	"visibility": 15,
+    	"crew": 2,
+    	"class": "DiveBomber",
+    	"agility": 0.3,
+    	"launch_time": 1.5
+    },
+    "torp_bomber": {
+      "speed": 90,
+    	"range": 200,
+    	"turn_weight": 0.15,
+    	"hit_points": 10,
+    	"armor": 1,
+    	"hide": 20,
+    	"visibility": 10,
+    	"crew": 3,
+    	"class": "TorpedoBomber",
+    	"launch_time": 2,
+    	"agility": 0.15
+    },
+    "fighter": {
+      "speed": 120,
+    	"range": 150,
+    	"turn_weight": 0.15,
+    	"hit_points": 1.5,
+    	"armor": 0,
+    	"hide": 20,
+    	"visibility": 10,
+    	"crew": 1,
+    	"class": "Fighter",
+    	"agility": 0.2,
+    	"launch_time": 1
+    }
+  }
+}
