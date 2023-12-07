@@ -12,6 +12,33 @@
     	"class": "Destroyer",
     	"fuel_storage": 5,
     	"fuel_consumption": 0.1
+    },
+    "fletcher_class_destroyer": {
+      "speed": 42,
+    	"range": 1000,
+    	"turn_weight": 0.1,
+    	"hit_points": 12,
+    	"armor": 5.5,
+    	"hide": 20,
+    	"visibility": 30,
+    	"crew": 5,
+    	"class": "Destroyer"
+    },
+    "carrier": {
+    	"speed": 15,
+    	"range": 1000,
+    	"turn_weight": 0.06,
+    	"hit_points": 20,
+    	"armor": 7,
+    	"hide": 10,
+    	"visibility": 10,
+    	"crew": 10,
+    	"class": "Carrier",
+    	"planes": {
+        "scout": 0,
+        "strike": 40,
+        "fighter": 20
+      }
     }
   },
   "plane": {
