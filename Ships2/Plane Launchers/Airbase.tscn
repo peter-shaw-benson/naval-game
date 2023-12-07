@@ -11,9 +11,9 @@
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 65.466, 23.816 )
 
-[node name="AirbaseArea" type="Area2D"]
+[node name="AirbaseArea" type="KinematicBody2D"]
 pause_mode = 1
-position = Vector2( 0.5, 0.125 )
+position = Vector2( 553, 329 )
 collision_layer = 2
 collision_mask = 2
 script = ExtResource( 2 )
@@ -46,7 +46,6 @@ position = Vector2( -0.127563, -0.181458 )
 shape = SubResource( 1 )
 
 [node name="LaunchTimer" type="Timer" parent="."]
-one_shot = true
 
 [node name="LaunchBar" type="ProgressBar" parent="."]
 margin_left = 70.5
@@ -62,6 +61,11 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[connection signal="area_entered" from="." to="." method="_on_AirbaseArea_area_entered"]
-[connection signal="input_event" from="." to="." method="_on_AirbaseArea_input_event"]
+[node name="MouseClickHitbox" type="Area2D" parent="."]
+
+[node name="Hitbox" type="CollisionShape2D" parent="MouseClickHitbox"]
+position = Vector2( -0.127563, -0.181458 )
+shape = SubResource( 1 )
+
 [connection signal="timeout" from="LaunchTimer" to="." method="_on_LaunchTimer_timeout"]
+[connection signal="input_event" from="MouseClickHitbox" to="." method="_input_event"]

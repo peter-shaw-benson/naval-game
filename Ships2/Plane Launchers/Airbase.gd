@@ -21,7 +21,7 @@ var launch_type = "scout"
 
 var strike_target: Vector2
 
-var plane_numbers = {"scout": 5, "strike": 0, "bomber": 0, "fighter": 0}
+var plane_numbers = {"scout": 10, "strike": 0, "bomber": 0, "fighter": 0}
 
 func _ready():
 	self.deselect()
@@ -68,6 +68,9 @@ func init(plane_list, initial_pos, faction, type):
 	detector.connect("left_spotting_area", self, "on_detection_left")
 	
 	self.deselect()
+	
+	get_node("LaunchBar").hide()
+	get_node("LaunchTimer").stop()
 
 func get_visibility():
 	return 10
@@ -94,6 +97,7 @@ func stop_placing():
 
 
 func select():
+	#print("airbase selected")
 	if faction == GameState.get_playerFaction():
 		
 		self.selected = true
@@ -122,14 +126,21 @@ func organize_aircraft(plane_list):
 			plane_numbers["strike"] += 1
 
 
+
+func _unhandled_input(event):
+	if event is InputEventMouseButton \
+	and event.button_index == BUTTON_RIGHT \
+	and !event.pressed:
+		self.handle_right_click(event.position)
+
 # Press "S" for scouting, press Z for strike
 # for now, scouting force is 2 scout planes 
 # while strike force is 
 func handle_right_click(placement):
 	if selected:
-		#print("right clicked for course")
+		print("right clicked for course")
 		# Turn logic is here for now?
-		#print(plane_dict)
+		print(plane_numbers)
 		
 		if last_button == "scout" and plane_numbers["scout"] > 0:
 			# Send planes
@@ -164,6 +175,8 @@ func _input(event):
 			last_button = "CAP"
 		elif Input.is_action_pressed("cancel"):
 			last_button = ""
+		
+		print(last_button)
 
 # Combat stuff:
 func take_plane_damage(plane_squad):
@@ -187,7 +200,7 @@ func get_launch_time(plane_list):
 		return launch_time
 
 func send_out_planes(placement, strike_type, is_cap=false):
-	#print(type)
+	print(placement, strike_type)
 	
 	if not launching:
 		
@@ -195,6 +208,7 @@ func send_out_planes(placement, strike_type, is_cap=false):
 		strike_target = placement
 		launch_type = strike_type
 						
+		print("starting launch")
 		start_launch(placement, strike_type)
 		
 func start_launch(placement, strike_type):
@@ -203,6 +217,7 @@ func start_launch(placement, strike_type):
 	# hard-coding for now – this means that 2 planes should launch per second
 	var squad_launch_time = 0.5
 	get_node("LaunchTimer").wait_time = squad_launch_time
+	get_node("LaunchTimer").start()
 		
 	get_node("LaunchBar").show()
 	get_node("LaunchBar").max_value = squad_launch_time
@@ -232,15 +247,24 @@ func end_launch():
 func _on_LaunchTimer_timeout():
 	#end_launch()
 	# spawn new boid
+	print(launch_type, plane_numbers[launch_type])
+	
 	if plane_numbers[launch_type] > 0:
 		#spawn new boid
+		print("spawning new plane")
+		
 		var plane_squad = PlaneBoidScene.instance()
+		
+		add_child(plane_squad)
 		
 		plane_squad.init(launch_type, self.global_position, strike_target)
 				
 		plane_squad.connect("plane_recovered", self, "plane_recovered")
 		plane_squad.connect("plane_lost", self, "plane_death")
 		
+		plane_numbers[launch_type] -= 1
+		
 	else:
 		launching = false
 		get_node("LaunchBar").hide()
+		get_node("LaunchTimer").stop()

@@ -1,11 +1,5 @@
 extends Control
 
-var ScoutPlane = preload("res://Entities/Planes/ScoutPlane.gd")
-var DiveBomber = preload("res://Entities/Planes/DiveBomber.gd")
-var TorpBomber = preload("res://Entities/Planes/TorpBomber.gd")
-var LevelBomber = preload("res://Entities/Planes/LevelBomber.gd")
-var Fighter = preload("res://Entities/Planes/Fighter.gd")
-
 var LandFortEntity = preload("res://Entities/Other/LandFortEntity.gd")
 
 var player_carriers = 0
@@ -45,10 +39,10 @@ func _on_MakeFleets_pressed():
 	
 	if player_airbases == 1:
 		var player_airbase = {\
-							"planes": make_player_plane_list(),
+							"planes": make_player_plane_dict(),
 							"faction": GameState.get_playerFaction(),
 							"type": "airbase"}
-	
+							
 		GameState.add_unit(player_airbase)
 	
 	if enemy_airbases == 1:
@@ -74,25 +68,17 @@ func _on_MakeFleets_pressed():
 func _on_BackButton_pressed():
 	GameState.goto_scene("res://gui/MainMenu.tscn")
 
-func make_player_plane_list():
-	var plane_list = []
+func make_player_plane_dict():
 	
-	for i in range(player_scouts):
-		plane_list.append(ScoutPlane.new())
+	var plane_dict = {"scout": player_scouts, 
+		"strike": player_strikes, 
+		"bomber": player_bombers, 
+		# huh - we don't have player fighters here
+		"fighter": 0}
 	
-	for i in range(player_strikes*strike_multiplier):
-		plane_list.append(DiveBomber.new())
-		plane_list.append(TorpBomber.new())
+	return plane_dict
 	
-	for i in range(player_bombers):
-		plane_list.append(LevelBomber.new())
-	
-	# this is temporary
-	plane_list.append(Fighter.new())
-	
-	return plane_list
-	
-func make_enemy_plane_list():
+func make_enemy_plane_dict():
 	var plane_list = []
 	
 	for i in range(enemy_scouts):
