@@ -197,6 +197,7 @@ margin_top = 230.0
 margin_right = 424.0
 margin_bottom = 250.0
 text = "Back"
+
 [connection signal="pressed" from="VBoxContainer/MarginContainer/options/StartButton" to="." method="_on_StartButton_pressed"]
 [connection signal="value_changed" from="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2/SpinBox" to="." method="_on_SpinBox_value_changed"]
 [connection signal="value_changed" from="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2/x pos" to="." method="_on_x_pos_value_changed"]
