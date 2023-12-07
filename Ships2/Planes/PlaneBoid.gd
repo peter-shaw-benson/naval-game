@@ -1,5 +1,8 @@
 extends KinematicBody2D
 
+signal plane_recovered(PlaneBoid)
+signal plane_lost(PlaneBoid)
+
 export var max_speed: = 200.0
 export var mouse_follow_force: = 0.05
 export var cohesion_force: = 0.05
@@ -13,37 +16,64 @@ var _width = ProjectSettings.get_setting("display/window/size/width")
 var _height = ProjectSettings.get_setting("display/window/size/height")
 
 var _flock: Array = []
-var _mouse_target: Vector2
+var strike_target: Vector2
 var _velocity: Vector2
 
+var parent_airbase_pos: Vector2
+var current_target: Vector2
+
+# plane characteristics
+var plane_type: String
+
+func init(plane_type, airbase_pos, strike_target):
+	self.strike_target = strike_target
+	self.parent_airbase_pos = airbase_pos
+	
+	# the plane will always go towards its current target.
+	self.current_target = strike_target
+	
+	# implement later, this will handle the weaponry and sprites
+	self.plane_type = plane_type
+	
 
 func _ready():
 	randomize()
 	_velocity = Vector2(rand_range(-1, 1), rand_range(-1, 1)).normalized() * max_speed
-	_mouse_target = get_random_target()
+	#_mouse_target = get_random_target()
+	
+	add_to_group("planes")
 
 
 func _on_detection_radius_body_entered(body: PhysicsBody2D):
-	if self != body:
+	if self != body and body.is_in_group("planes"):
 		_flock.append(body)
 
 
 func _on_detection_radius_body_exited(body: PhysicsBody2D):
-	_flock.remove(_flock.find(body))
+	if body in _flock:
+		_flock.remove(_flock.find(body))
 
 
 func _input(event):
-	if event is InputEventMouseButton:
-		if event.get_button_index() == BUTTON_LEFT:
-			_mouse_target = event.position
-		elif event.get_button_index() == BUTTON_RIGHT:
-			_mouse_target = get_random_target()
+	pass
 
 
 func _physics_process(_delta):
+	# if it reaches the 
+	
 	var mouse_vector = Vector2.ZERO
-	if _mouse_target != Vector2.INF:
-		mouse_vector = global_position.direction_to(_mouse_target) * max_speed * mouse_follow_force
+	if current_target != Vector2.INF:
+		mouse_vector = global_position.direction_to(current_target) * max_speed * mouse_follow_force
+	
+	# check if we have reached the strike target – if so, turn around
+	# if we reach the airbase, start recovering?
+	if global_position.distance_to(current_target) <= 10:
+		if strike_target == current_target:
+			current_target = parent_airbase_pos
+		elif parent_airbase_pos == current_target:
+			# recover plane here
+			emit_signal("plane_recovered", self)
+			
 	
 	# get cohesion, alginment, and separation vectors
 	var vectors = get_flock_status(_flock)
@@ -91,3 +121,6 @@ func get_flock_status(flock: Array):
 func get_random_target():
 	randomize()
 	return Vector2(rand_range(0, _width), rand_range(0, _height))
+
+func get_plane_type():
+	return self.plane_type
