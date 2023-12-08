@@ -22,7 +22,7 @@ var squad_launch_time = 0.2
 
 var strike_target: Vector2
 
-var plane_numbers = {"scout": 10, "strike": 0, "bomber": 0, "fighter": 0}
+var plane_numbers = {"scout": 10, "strike": 20, "bomber": 0, "fighter": 30}
 
 func _ready():
 	self.deselect()

@@ -44,17 +44,17 @@ func read_json_file(file_path):
 	
 	var content_as_text = file.get_as_text()
 
-	print(content_as_text)
+	#print(content_as_text)
 	
 	var data_received = JSON.parse(content_as_text).result
 	
-	print(data_received)
+	#print(data_received)
 	
 	return data_received
 
 func init(entity_type, entity_name):
 	
-	print("reading entity data from file")
+	#print("reading entity data from file")
 	entity_data = read_json_file(entity_data_path)[entity_type][entity_name]
 
 	self.max_speed = entity_data["speed"]
