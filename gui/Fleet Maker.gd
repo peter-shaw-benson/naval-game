@@ -12,6 +12,8 @@ var position_x = 0
 var position_y = 0
 var num_islands = 0
 
+var num_airbases = 1
+
 var player_faction = 0
 var enemy_faction = -1
 

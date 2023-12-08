@@ -17,8 +17,17 @@ var airbase_armor = 100
 
 var launching = false
 var launching_squad
+var launch_type = "scout"
+var squad_launch_time = 0.2
 
-var plane_dict = {"scout": [], "strike": [], "bomber": [], "fighter": []}
+var strike_target: Vector2
+var scout_targets: Array
+var current_scout_plane_launch = 0
+
+var fighter_targets: Array
+var current_fighter_plane_launch = 0
+
+var plane_numbers = {"scout": 10, "strike": 20, "bomber": 0, "fighter": 30}
 
 func _ready():
 	self.deselect()
@@ -28,6 +37,16 @@ func _ready():
 	last_button = ""
 	
 	add_to_group("airbase")
+	
+	get_node("ScoutPlaneTriangle").visible = false
+	get_node("ScoutPlaneTriangle").color = Color(0.2, 0.5, 0.3, 0.3)
+	
+	scout_targets = get_node("ScoutPlaneTriangle").polygon
+	scout_targets.remove(0)
+	
+	# fighter plane CAP target
+	get_node("FighterPatrolCircle").visible = false
+	fighter_targets = get_node("FighterPatrolCircle").polygon
 
 func _process(delta):
 	if placing:
@@ -37,6 +56,13 @@ func _process(delta):
 	if launching:
 		get_node("LaunchBar").value = get_node("LaunchTimer").time_left
 	
+	get_node("ScoutPlaneTriangle").look_at(get_global_mouse_position())
+	get_node("ScoutPlaneTriangle").rotation += 3 * PI/4
+	
+	scout_targets = get_node("ScoutPlaneTriangle").polygon
+	scout_targets.remove(0)
+	
+	fighter_targets = get_node("FighterPatrolCircle").polygon
 
 func init(plane_list, initial_pos, faction, type):
 	global_position = initial_pos
@@ -65,6 +91,9 @@ func init(plane_list, initial_pos, faction, type):
 	detector.connect("left_spotting_area", self, "on_detection_left")
 	
 	self.deselect()
+	
+	get_node("LaunchBar").hide()
+	get_node("LaunchTimer").stop()
 
 func get_visibility():
 	return 10
@@ -91,6 +120,7 @@ func stop_placing():
 
 
 func select():
+	#print("airbase selected")
 	if faction == GameState.get_playerFaction():
 		
 		self.selected = true
@@ -106,21 +136,26 @@ func deselect():
 	emit_signal("airbase_deselected", self)
 	
 	get_node("ColorRect").hide()
+	get_node("ScoutPlaneTriangle").visible = false
 
 func organize_aircraft(plane_list):
 	for aircraft in plane_list:
 		if aircraft.get_class() == "ScoutPlane":
-			plane_dict["scout"].append(aircraft)
+			plane_numbers["scout"] += 1
 		elif aircraft.get_class() == "LevelBomber":
-			plane_dict["bomber"].append(aircraft)
+			plane_numbers["bomber"] += 1
 		elif aircraft.get_class() == "Fighter":
-			plane_dict["fighter"].append(aircraft)
+			plane_numbers["fighter"] += 1
 		else:
-			plane_dict["strike"].append(aircraft)
-	
-	#print(plane_dict)
-	#print(plane_dict["bomber"])
+			plane_numbers["strike"] += 1
 
+
+
+func _unhandled_input(event):
+	if event is InputEventMouseButton \
+	and event.button_index == BUTTON_RIGHT \
+	and !event.pressed:
+		self.handle_right_click(event.position)
 
 # Press "S" for scouting, press Z for strike
 # for now, scouting force is 2 scout planes 
@@ -129,25 +164,26 @@ func handle_right_click(placement):
 	if selected:
 		#print("right clicked for course")
 		# Turn logic is here for now?
-		#print(plane_dict)
+		#print(plane_numbers)
 		
-		if last_button == "scout" and len(plane_dict["scout"]) > 0:
+		if last_button == "scout" and plane_numbers["scout"] > 0:
 			# Send planes
 			send_out_planes(placement, "scout")
+			current_scout_plane_launch = 0
 			
 			last_button = ""
 			
-		elif last_button == "strike" and len(plane_dict["strike"]) > 0:
+		elif last_button == "strike" and plane_numbers["strike"] > 0:
 			send_out_planes(placement, "strike")
 			
 			last_button = ""
 		
-		elif last_button == "bomb" and len(plane_dict["bomber"]) > 0:
+		elif last_button == "bomb" and plane_numbers["bomber"] > 0:
 			send_out_planes(placement, "bomber")
 			
 			last_button = ""
 		
-		elif last_button == "CAP" and len(plane_dict["fighter"]) > 0:
+		elif last_button == "CAP" and plane_numbers["fighter"] > 0:
 			send_out_planes(placement, "fighter", true)
 			
 			last_button = ""
@@ -156,14 +192,26 @@ func _input(event):
 	if selected:
 		if Input.is_action_pressed("scout"):
 			last_button = "scout"
-		elif Input.is_action_pressed("strike"):
-			last_button = "strike"
-		elif Input.is_action_pressed("bomb"):
-			last_button = "bomb"
-		elif Input.is_action_pressed("fighter"):
-			last_button = "CAP"
-		elif Input.is_action_pressed("cancel"):
-			last_button = ""
+			
+			# show the Scouting Triangle
+			get_node("ScoutPlaneTriangle").visible = true
+			
+		else:
+			get_node("ScoutPlaneTriangle").visible = false
+			
+			if Input.is_action_pressed("strike"):
+				last_button = "strike"
+			elif Input.is_action_pressed("bomb"):
+				last_button = "bomb"
+			elif Input.is_action_pressed("fighter"):
+				last_button = "CAP"
+			elif Input.is_action_pressed("stop"):
+				stop_launching()
+				
+			elif Input.is_action_pressed("cancel"):
+				last_button = ""
+		
+		#print(last_button)
 
 # Combat stuff:
 func take_plane_damage(plane_squad):
@@ -187,94 +235,43 @@ func get_launch_time(plane_list):
 		return launch_time
 
 func send_out_planes(placement, strike_type, is_cap=false):
-	#print(type)
+	#print(placement, strike_type)
 	
 	if not launching:
-	
-		var plane_squad = PlaneSquadScene.instance()
-		
-		var plane_list = [] 
-		# make plane list a copy, not a reference
-		for i in range(len(plane_dict[strike_type])):
-			plane_list.append(plane_dict[strike_type][i])
 		
 		var initial_pos = global_position
-		var target = placement
-		var is_strike = false
-		
-		# Init plane scene
-		# initial posiiton is airbase position
-		# plane composition is the scout planes
-		# faction
-		if strike_type != "scout":
-			is_strike = true
-		
-		print(len(plane_list))
-		
-		var type_map = {"scout":"scoutPlane",
-						"strike":"torpBomber",
-						"fighter": "fighter",
-						"bomber": "levelBomber"}
+		strike_target = placement
+		launch_type = strike_type
 						
-		start_launch(plane_list)
+		#print("starting launch")
+		start_launch(placement, strike_type)
 		
-		if len(plane_list) > 0:
-			#print(len(plane_list))
-			plane_squad.init(plane_list, initial_pos, faction, type_map[strike_type])
-			plane_squad.set_animation(is_strike, type_map[strike_type])
-			plane_squad.set_target(target)
-			plane_squad.set_combat_air_patrol(is_cap)
-			
-			launching_squad = plane_squad
-			get_node("LaunchTimer").start()
-			
-			for i in range(len(plane_dict[strike_type])):
-				plane_dict[strike_type].remove(0)
-			
-			#print("sent planes to ", placement)
-
-func plane_squad_recovered(plane_squad):
-	#print("recovering at base")
-	#print(plane_squad)
-	#print(plane_squad.get_class())
-	#print(plane_squad.get_name())
-	var recovered_planes = plane_squad.get_units()
-	#print(recovered_planes)
+func start_launch(placement, strike_type):
+	launching = true
 	
-	for p in recovered_planes:
-		if plane_squad.get_sprite_type() == "fighter":
-			plane_dict["fighter"].append(p)
-		elif plane_squad.get_sprite_type() == "levelBomber":
-			plane_dict["bomber"].append(p)
-		elif plane_squad.get_sprite_type() == "torpBomber":
-			plane_dict["strike"].append(p)
-		else:
-			plane_dict["scout"].append(p)
-	
-	plane_squad.queue_free()
-		
-	emit_signal("planes_recovered", plane_squad)
-
-	#print(plane_dict)
-
-func plane_squad_death(plane_squad):
-	plane_squad.queue_free()
-
-func start_launch(plane_list):
-	var squad_launch_time = get_launch_time(plane_list)
+	# hard-coding for now – this means that 2 planes should launch per second
 	get_node("LaunchTimer").wait_time = squad_launch_time
+	get_node("LaunchTimer").start()
 		
 	get_node("LaunchBar").show()
 	get_node("LaunchBar").max_value = squad_launch_time
-		
-	launching = true
+
+func plane_recovered(plane):
+	var recovered_plane_type = plane.get_plane_type()
+	
+	self.plane_numbers[recovered_plane_type] += 1
+	
+	plane.queue_free()
+
+func plane_squad_death(plane_squad):
+	plane_squad.queue_free()
 
 func end_launch():
 	launching = false
 	
 	emit_signal("plane_launch", launching_squad)
 		
-	launching_squad.connect("planes_recovered", self, "plane_squad_recovered")
+	launching_squad.connect("plane_recovered", self, "plane_squad_recovered")
 	launching_squad.connect("plane_squad_lost", self, "plane_squad_death")
 	
 	launching_squad = null
@@ -282,4 +279,48 @@ func end_launch():
 	get_node("LaunchBar").hide()
 
 func _on_LaunchTimer_timeout():
-	end_launch()
+	#end_launch()
+	# spawn new boid
+	#print(launch_type, plane_numbers[launch_type])
+	
+	if plane_numbers[launch_type] > 0:
+		#spawn new boid
+		#print("spawning new plane")
+		
+		var plane_squad = PlaneBoidScene.instance()
+		
+		add_child(plane_squad)
+		
+		if launch_type != "scout" and launch_type != "fighter":
+			plane_squad.init(launch_type, self.global_position, strike_target)
+			
+		elif launch_type == "fighter":
+			var patrol_target_idx = current_fighter_plane_launch % len(fighter_targets)
+			var patrol_target = fighter_targets[patrol_target_idx]
+			
+			patrol_target = $FighterPatrolCircle.to_global(patrol_target)
+			
+			plane_squad.init(launch_type, self.global_position, patrol_target)
+			current_fighter_plane_launch += 1
+			
+		elif launch_type == "scout":
+			var scout_target_idx = current_scout_plane_launch % len(scout_targets)
+			var scout_target = scout_targets[scout_target_idx]
+			
+			scout_target = $ScoutPlaneTriangle.to_global(scout_target)
+			
+			plane_squad.init(launch_type, self.global_position, scout_target)
+			current_scout_plane_launch += 1
+			
+		plane_squad.connect("plane_recovered", self, "plane_recovered")
+		plane_squad.connect("plane_lost", self, "plane_death")
+		
+		plane_numbers[launch_type] -= 1
+		
+	else:
+		stop_launching()
+
+func stop_launching():
+	launching = false
+	get_node("LaunchBar").hide()
+	get_node("LaunchTimer").stop()

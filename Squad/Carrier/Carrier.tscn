@@ -83,9 +83,6 @@ custom_styles/bg = SubResource( 3 )
 max_value = 5.0
 value = 2.0
 percent_visible = false
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="FuelBar" type="ProgressBar" parent="."]
 anchor_left = 0.5
@@ -119,6 +116,7 @@ one_shot = true
 [node name="Condition Popup" type="Timer" parent="."]
 
 [node name="FuelConsumptionTimer" type="Timer" parent="."]
+
 [connection signal="area_entered" from="." to="." method="_on_Carrier_area_entered"]
 [connection signal="input_event" from="." to="." method="_on_AirbaseArea_input_event"]
 [connection signal="timeout" from="ShotTimer" to="." method="_on_ShotTimer_timeout"]

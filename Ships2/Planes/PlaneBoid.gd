@@ -1,10 +1,25 @@
 extends KinematicBody2D
 
-export var max_speed: = 200.0
+const ScoutPlane = preload("res://Entities/Planes/ScoutPlane.gd")
+const Fighter = preload("res://Entities/Planes/Fighter.gd")
+const TorpBomber = preload("res://Entities/Planes/TorpBomber.gd")
+
+signal plane_recovered(PlaneBoid)
+signal plane_lost(PlaneBoid)
+
+export var max_speed: = 100.0
 export var mouse_follow_force: = 0.05
+
+# Cohesion = how tight the groups are
+# alignment = ?
+# separation = how far apart for the groups
+# fighters should have high cohesion, high separation
+# strike aircraft should have medium cohesion, low separation
+# scouts should have low cohesion, high separation (but doesn't matter a ton)
 export var cohesion_force: = 0.05
 export var algin_force: = 0.05
 export var separation_force: = 0.05
+
 export(float) var view_distance: = 50.0
 export(float) var avoid_distance: = 20.0
 
@@ -13,51 +28,121 @@ var _width = ProjectSettings.get_setting("display/window/size/width")
 var _height = ProjectSettings.get_setting("display/window/size/height")
 
 var _flock: Array = []
-var _mouse_target: Vector2
+var strike_target: Vector2
 var _velocity: Vector2
 
+var parent_airbase_pos: Vector2
+var current_target: Vector2
+
+# plane characteristics
+var plane_type: String
+var plane_data: CombatPlane
+var frames: SpriteFrames
+
+var fuel_time = 8
+
+func init(plane_type, airbase_pos, strike_target):
+	self.strike_target = strike_target
+	self.parent_airbase_pos = airbase_pos
+	
+	# the plane will always go towards its current target.
+	self.current_target = strike_target
+	
+	# handles weaponry and such
+	self.plane_type = plane_type
+	
+	self.initialize_plane_type(plane_type)
+	
+	self.cohesion_force = self.plane_data.get_cohesion()
+	self.separation_force = self.plane_data.get_separation()
+	
+	self.fuel_time = self.plane_data.get_fuel()
+	
+	get_node("FuelTimer").wait_time = fuel_time
+	get_node("FuelTimer").start()
+	
+
+func initialize_plane_type(plane_type):
+	
+	if plane_type == "scout":
+		self.plane_data = ScoutPlane.new()
+		frames = load("res://art/Plane Sprites/ScoutPlaneSprite.tres")
+	
+	elif plane_type == "strike":
+		self.plane_data = TorpBomber.new()
+		frames = load("res://art/Plane Sprites/StrikePlaneSprite.tres")
+
+	elif plane_type == "fighter":	
+		self.plane_data = Fighter.new()
+		frames = load("res://art/Plane Sprites/FighterPlaneSprite.tres")
+	
+	plane_data._init()
+	
+	get_node("AnimatedSprite").set_sprite_frames(frames)
+	get_node("AnimatedSprite").animation = "default"
+	
+	self.max_speed = self.plane_data.get_speed()
 
 func _ready():
 	randomize()
 	_velocity = Vector2(rand_range(-1, 1), rand_range(-1, 1)).normalized() * max_speed
-	_mouse_target = get_random_target()
+	#_mouse_target = get_random_target()
+	
+	add_to_group("planes")
 
 
 func _on_detection_radius_body_entered(body: PhysicsBody2D):
-	if self != body:
+	if self != body and body.is_in_group("planes"):
 		_flock.append(body)
 
 
 func _on_detection_radius_body_exited(body: PhysicsBody2D):
-	_flock.remove(_flock.find(body))
+	if body in _flock:
+		_flock.remove(_flock.find(body))
 
 
 func _input(event):
-	if event is InputEventMouseButton:
-		if event.get_button_index() == BUTTON_LEFT:
-			_mouse_target = event.position
-		elif event.get_button_index() == BUTTON_RIGHT:
-			_mouse_target = get_random_target()
+	pass
 
 
 func _physics_process(_delta):
+	# if it reaches the 
+	
 	var mouse_vector = Vector2.ZERO
-	if _mouse_target != Vector2.INF:
-		mouse_vector = global_position.direction_to(_mouse_target) * max_speed * mouse_follow_force
+	if current_target != Vector2.INF:
+		mouse_vector = global_position.direction_to(current_target) * max_speed * mouse_follow_force
+	
+	# check if we have reached the strike target – if so, turn around
+	# if we reach the airbase, start recovering?
+	if global_position.distance_to(current_target) <= 25:
+		if strike_target == current_target:
+			current_target = parent_airbase_pos
+			
+			self.cohesion_force = 0.05
+			self.algin_force = 0.05
+			self.separation_force = 0.05
+			
+		elif parent_airbase_pos == current_target:
+			# recover plane here
+			emit_signal("plane_recovered", self)
+			
 	
 	# get cohesion, alginment, and separation vectors
 	var vectors = get_flock_status(_flock)
 	
 	# steer towards vectors
-	var cohesion_vector = vectors[0] * cohesion_force
-	var align_vector = vectors[1] * algin_force
-	var separation_vector = vectors[2] * separation_force
+	var cohesion_vector = vectors[0] * self.cohesion_force
+	var align_vector = vectors[1] * self.algin_force
+	var separation_vector = vectors[2] * self.separation_force
 
 	var acceleration = cohesion_vector + align_vector + separation_vector + mouse_vector
 	
 	_velocity = (_velocity + acceleration).clamped(max_speed)
 	
 	_velocity = move_and_slide(_velocity)
+	
+	# this looks in the same direction as its movement
+	global_rotation = _velocity.angle() + PI/2
 
 
 func get_flock_status(flock: Array):
@@ -91,3 +176,15 @@ func get_flock_status(flock: Array):
 func get_random_target():
 	randomize()
 	return Vector2(rand_range(0, _width), rand_range(0, _height))
+
+func get_plane_type():
+	return self.plane_type
+
+func _on_FuelTimer_timeout():
+	#print("plane out of fuel")
+	current_target = parent_airbase_pos
+	
+	self.cohesion_force = 0.05
+	self.algin_force = 0.05
+	self.separation_force = 0.05
+	

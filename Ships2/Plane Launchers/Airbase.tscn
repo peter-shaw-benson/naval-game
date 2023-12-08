@@ -5,15 +5,17 @@
 [ext_resource path="res://Squad/PlaneSquadron/PlaneSquadron.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Miscellaneous/Detection Area.tscn" type="PackedScene" id=4]
 [ext_resource path="res://art/themes/LaunchBar.tres" type="StyleBox" id=5]
-[ext_resource path="res://art/themes/BackgroundBar.tres" type="StyleBox" id=6]
 [ext_resource path="res://Ships2/Planes/Plane.tscn" type="PackedScene" id=7]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 65.466, 23.816 )
 
-[node name="AirbaseArea" type="Area2D"]
+[sub_resource type="StyleBoxFlat" id=2]
+bg_color = Color( 0.12549, 0.12549, 0.12549, 1 )
+
+[node name="AirbaseArea" type="KinematicBody2D"]
 pause_mode = 1
-position = Vector2( 0.5, 0.125 )
+position = Vector2( 553, 329 )
 collision_layer = 2
 collision_mask = 2
 script = ExtResource( 2 )
@@ -45,23 +47,40 @@ texture = ExtResource( 1 )
 position = Vector2( -0.127563, -0.181458 )
 shape = SubResource( 1 )
 
-[node name="LaunchTimer" type="Timer" parent="."]
-one_shot = true
-
 [node name="LaunchBar" type="ProgressBar" parent="."]
-margin_left = 70.5
-margin_top = 26.25
-margin_right = 122.5
-margin_bottom = 40.25
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = 69.0
+margin_top = 25.0
+margin_right = 117.0
+margin_bottom = 37.0
 rect_rotation = 270.0
 custom_styles/fg = ExtResource( 5 )
-custom_styles/bg = ExtResource( 6 )
-max_value = 4.0
+custom_styles/bg = SubResource( 2 )
+max_value = 5.0
+value = 2.0
 percent_visible = false
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
-[connection signal="area_entered" from="." to="." method="_on_AirbaseArea_area_entered"]
-[connection signal="input_event" from="." to="." method="_on_AirbaseArea_input_event"]
+[node name="LaunchTimer" type="Timer" parent="."]
+
+[node name="MouseClickHitbox" type="Area2D" parent="."]
+
+[node name="Hitbox" type="CollisionShape2D" parent="MouseClickHitbox"]
+position = Vector2( 4.76837e-07, -4.76837e-07 )
+shape = SubResource( 1 )
+
+[node name="ScoutPlaneTriangle" type="Polygon2D" parent="."]
+visible = false
+scale = Vector2( 2, 2 )
+color = Color( 0.670588, 0.113725, 0.65098, 1 )
+polygon = PoolVector2Array( 0, 0, 183, -225, 61, -251, -79, -222, -164, -120, -202, 8 )
+
+[node name="FighterPatrolCircle" type="Polygon2D" parent="."]
+position = Vector2( 16, 71 )
+scale = Vector2( 1.5, 1.5 )
+polygon = PoolVector2Array( 226.667, -94.6667, 163, -195, 69, -253, -94, -258, -188, -202, -238, -57.3333, -182, 70, -67.3333, 139.333, 106.667, 134, 182, 97.3333, 224, 13.3333 )
+
 [connection signal="timeout" from="LaunchTimer" to="." method="_on_LaunchTimer_timeout"]
+[connection signal="input_event" from="MouseClickHitbox" to="." method="_input_event"]
