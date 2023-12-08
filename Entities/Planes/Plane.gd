@@ -12,6 +12,12 @@ func get_agility():
 
 func get_launch_time():
 	return self.entity_data["launch_time"]
+	
+func get_cohesion():
+	return self.entity_data["cohesion"]
+	
+func get_separation():
+	return self.entity_data["separation"]
 
 # taking out for now
 #func damage(weapon: Weapon, t_crossed, distance, enemy_stopped):

@@ -67,5 +67,9 @@ __meta__ = {
 position = Vector2( -0.127563, -0.181458 )
 shape = SubResource( 1 )
 
+[node name="ScoutPlaneTriangle" type="Polygon2D" parent="."]
+color = Color( 0.670588, 0.113725, 0.65098, 1 )
+polygon = PoolVector2Array( 0, 0, 183, -225, 61, -251, -79, -222, -164, -120, -202, 8 )
+
 [connection signal="timeout" from="LaunchTimer" to="." method="_on_LaunchTimer_timeout"]
 [connection signal="input_event" from="MouseClickHitbox" to="." method="_input_event"]

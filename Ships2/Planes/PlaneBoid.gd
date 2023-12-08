@@ -9,9 +9,17 @@ signal plane_lost(PlaneBoid)
 
 export var max_speed: = 100.0
 export var mouse_follow_force: = 0.05
+
+# Cohesion = how tight the groups are
+# alignment = ?
+# separation = how far apart for the groups
+# fighters should have high cohesion, high separation
+# strike aircraft should have medium cohesion, low separation
+# scouts should have low cohesion, high separation (but doesn't matter a ton)
 export var cohesion_force: = 0.05
 export var algin_force: = 0.05
 export var separation_force: = 0.05
+
 export(float) var view_distance: = 50.0
 export(float) var avoid_distance: = 20.0
 
@@ -28,7 +36,7 @@ var current_target: Vector2
 
 # plane characteristics
 var plane_type: String
-var plane_data: EntityJSON
+var plane_data: CombatPlane
 var frames: SpriteFrames
 
 var fuel_time = 8
@@ -44,6 +52,9 @@ func init(plane_type, airbase_pos, strike_target):
 	self.plane_type = plane_type
 	
 	self.initialize_plane_type(plane_type)
+	
+	self.cohesion_force = self.plane_data.get_cohesion()
+	self.separation_force = self.plane_data.get_separation()
 		
 	get_node("FuelTimer").wait_time = fuel_time
 	get_node("FuelTimer").start()
@@ -101,9 +112,14 @@ func _physics_process(_delta):
 	
 	# check if we have reached the strike target – if so, turn around
 	# if we reach the airbase, start recovering?
-	if global_position.distance_to(current_target) <= 20:
+	if global_position.distance_to(current_target) <= 25:
 		if strike_target == current_target:
 			current_target = parent_airbase_pos
+			
+			self.cohesion_force = 0.05
+			self.algin_force = 0.05
+			self.separation_force = 0.05
+			
 		elif parent_airbase_pos == current_target:
 			# recover plane here
 			emit_signal("plane_recovered", self)
@@ -113,9 +129,9 @@ func _physics_process(_delta):
 	var vectors = get_flock_status(_flock)
 	
 	# steer towards vectors
-	var cohesion_vector = vectors[0] * cohesion_force
-	var align_vector = vectors[1] * algin_force
-	var separation_vector = vectors[2] * separation_force
+	var cohesion_vector = vectors[0] * self.cohesion_force
+	var align_vector = vectors[1] * self.algin_force
+	var separation_vector = vectors[2] * self.separation_force
 
 	var acceleration = cohesion_vector + align_vector + separation_vector + mouse_vector
 	
@@ -165,4 +181,8 @@ func get_plane_type():
 func _on_FuelTimer_timeout():
 	#print("plane out of fuel")
 	current_target = parent_airbase_pos
+	
+	self.cohesion_force = 0.05
+	self.algin_force = 0.05
+	self.separation_force = 0.05
 	

@@ -21,6 +21,8 @@ var launch_type = "scout"
 var squad_launch_time = 0.2
 
 var strike_target: Vector2
+var scout_targets: Array
+var current_scout_plane_launch = 0
 
 var plane_numbers = {"scout": 10, "strike": 20, "bomber": 0, "fighter": 30}
 
@@ -32,6 +34,12 @@ func _ready():
 	last_button = ""
 	
 	add_to_group("airbase")
+	
+	get_node("ScoutPlaneTriangle").visible = false
+	get_node("ScoutPlaneTriangle").color = Color(0.2, 0.5, 0.3, 0.3)
+	
+	scout_targets = get_node("ScoutPlaneTriangle").polygon
+	scout_targets.remove(0)
 
 func _process(delta):
 	if placing:
@@ -41,6 +49,11 @@ func _process(delta):
 	if launching:
 		get_node("LaunchBar").value = get_node("LaunchTimer").time_left
 	
+	get_node("ScoutPlaneTriangle").look_at(get_global_mouse_position())
+	get_node("ScoutPlaneTriangle").rotation += 3 * PI/4
+	
+	scout_targets = get_node("ScoutPlaneTriangle").polygon
+	scout_targets.remove(0)
 
 func init(plane_list, initial_pos, faction, type):
 	global_position = initial_pos
@@ -146,6 +159,7 @@ func handle_right_click(placement):
 		if last_button == "scout" and plane_numbers["scout"] > 0:
 			# Send planes
 			send_out_planes(placement, "scout")
+			current_scout_plane_launch = 0
 			
 			last_button = ""
 			
@@ -168,14 +182,21 @@ func _input(event):
 	if selected:
 		if Input.is_action_pressed("scout"):
 			last_button = "scout"
-		elif Input.is_action_pressed("strike"):
-			last_button = "strike"
-		elif Input.is_action_pressed("bomb"):
-			last_button = "bomb"
-		elif Input.is_action_pressed("fighter"):
-			last_button = "CAP"
-		elif Input.is_action_pressed("cancel"):
-			last_button = ""
+			
+			# show the Scouting Triangle
+			get_node("ScoutPlaneTriangle").visible = true
+			
+		else:
+			get_node("ScoutPlaneTriangle").visible = false
+			
+			if Input.is_action_pressed("strike"):
+				last_button = "strike"
+			elif Input.is_action_pressed("bomb"):
+				last_button = "bomb"
+			elif Input.is_action_pressed("fighter"):
+				last_button = "CAP"
+			elif Input.is_action_pressed("cancel"):
+				last_button = ""
 		
 		#print(last_button)
 
@@ -257,8 +278,24 @@ func _on_LaunchTimer_timeout():
 		
 		add_child(plane_squad)
 		
-		plane_squad.init(launch_type, self.global_position, strike_target)
-				
+		if launch_type != "scout":
+			plane_squad.init(launch_type, self.global_position, strike_target)
+		else:
+			# sends out scout planes in an arc
+			# if there are more scout planes:
+			# goes up through the number of scout planes
+			# each one gets a target
+			# it wraps around
+			# can't send anything to node 0. 
+			
+			var scout_target_idx = current_scout_plane_launch % len(scout_targets)
+			var scout_target = scout_targets[scout_target_idx]
+			
+			scout_target = $ScoutPlaneTriangle.to_global(scout_target)
+			
+			plane_squad.init(launch_type, self.global_position, scout_target)
+			current_scout_plane_launch += 1
+			
 		plane_squad.connect("plane_recovered", self, "plane_recovered")
 		plane_squad.connect("plane_lost", self, "plane_death")
 		
