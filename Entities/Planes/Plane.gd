@@ -13,6 +13,9 @@ func get_agility():
 func get_launch_time():
 	return self.entity_data["launch_time"]
 	
+func get_fuel():
+	return self.entity_data["fuel"]
+	
 func get_cohesion():
 	return self.entity_data["cohesion"]
 	

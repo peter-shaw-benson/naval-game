@@ -54,6 +54,7 @@
     	"class": "ScoutPlane",
     	"agility": 0.3,
     	"launch_time": 3,
+      "fuel": 10,
       "cohesion": 0.05,
       "separation": 0.05
     },
@@ -69,6 +70,7 @@
     	"class": "DiveBomber",
     	"agility": 0.3,
     	"launch_time": 1.5,
+      "fuel": 6,
       "cohesion": 0.6,
       "separation": 0.3
     },
@@ -84,6 +86,7 @@
     	"class": "TorpedoBomber",
     	"launch_time": 2,
     	"agility": 0.15,
+      "fuel": 7,
       "cohesion": 0.3,
       "separation": 0.05
     },
@@ -99,8 +102,9 @@
     	"class": "Fighter",
     	"agility": 0.2,
     	"launch_time": 1,
+      "fuel": 2,
       "cohesion": 0.9,
-      "separation": 0.2
+      "separation": 0.5
     }
   }
 }

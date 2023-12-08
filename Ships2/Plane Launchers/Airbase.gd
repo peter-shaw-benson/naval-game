@@ -24,6 +24,9 @@ var strike_target: Vector2
 var scout_targets: Array
 var current_scout_plane_launch = 0
 
+var fighter_targets: Array
+var current_fighter_plane_launch = 0
+
 var plane_numbers = {"scout": 10, "strike": 20, "bomber": 0, "fighter": 30}
 
 func _ready():
@@ -40,6 +43,10 @@ func _ready():
 	
 	scout_targets = get_node("ScoutPlaneTriangle").polygon
 	scout_targets.remove(0)
+	
+	# fighter plane CAP target
+	get_node("FighterPatrolCircle").visible = false
+	fighter_targets = get_node("FighterPatrolCircle").polygon
 
 func _process(delta):
 	if placing:
@@ -54,6 +61,8 @@ func _process(delta):
 	
 	scout_targets = get_node("ScoutPlaneTriangle").polygon
 	scout_targets.remove(0)
+	
+	fighter_targets = get_node("FighterPatrolCircle").polygon
 
 func init(plane_list, initial_pos, faction, type):
 	global_position = initial_pos
@@ -127,6 +136,7 @@ func deselect():
 	emit_signal("airbase_deselected", self)
 	
 	get_node("ColorRect").hide()
+	get_node("ScoutPlaneTriangle").visible = false
 
 func organize_aircraft(plane_list):
 	for aircraft in plane_list:
@@ -195,6 +205,9 @@ func _input(event):
 				last_button = "bomb"
 			elif Input.is_action_pressed("fighter"):
 				last_button = "CAP"
+			elif Input.is_action_pressed("stop"):
+				stop_launching()
+				
 			elif Input.is_action_pressed("cancel"):
 				last_button = ""
 		
@@ -222,7 +235,7 @@ func get_launch_time(plane_list):
 		return launch_time
 
 func send_out_planes(placement, strike_type, is_cap=false):
-	print(placement, strike_type)
+	#print(placement, strike_type)
 	
 	if not launching:
 		
@@ -230,7 +243,7 @@ func send_out_planes(placement, strike_type, is_cap=false):
 		strike_target = placement
 		launch_type = strike_type
 						
-		print("starting launch")
+		#print("starting launch")
 		start_launch(placement, strike_type)
 		
 func start_launch(placement, strike_type):
@@ -278,16 +291,19 @@ func _on_LaunchTimer_timeout():
 		
 		add_child(plane_squad)
 		
-		if launch_type != "scout":
+		if launch_type != "scout" and launch_type != "fighter":
 			plane_squad.init(launch_type, self.global_position, strike_target)
-		else:
-			# sends out scout planes in an arc
-			# if there are more scout planes:
-			# goes up through the number of scout planes
-			# each one gets a target
-			# it wraps around
-			# can't send anything to node 0. 
 			
+		elif launch_type == "fighter":
+			var patrol_target_idx = current_fighter_plane_launch % len(fighter_targets)
+			var patrol_target = fighter_targets[patrol_target_idx]
+			
+			patrol_target = $FighterPatrolCircle.to_global(patrol_target)
+			
+			plane_squad.init(launch_type, self.global_position, patrol_target)
+			current_fighter_plane_launch += 1
+			
+		elif launch_type == "scout":
 			var scout_target_idx = current_scout_plane_launch % len(scout_targets)
 			var scout_target = scout_targets[scout_target_idx]
 			
@@ -302,6 +318,9 @@ func _on_LaunchTimer_timeout():
 		plane_numbers[launch_type] -= 1
 		
 	else:
-		launching = false
-		get_node("LaunchBar").hide()
-		get_node("LaunchTimer").stop()
+		stop_launching()
+
+func stop_launching():
+	launching = false
+	get_node("LaunchBar").hide()
+	get_node("LaunchTimer").stop()

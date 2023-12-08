@@ -55,7 +55,9 @@ func init(plane_type, airbase_pos, strike_target):
 	
 	self.cohesion_force = self.plane_data.get_cohesion()
 	self.separation_force = self.plane_data.get_separation()
-		
+	
+	self.fuel_time = self.plane_data.get_fuel()
+	
 	get_node("FuelTimer").wait_time = fuel_time
 	get_node("FuelTimer").start()
 	
