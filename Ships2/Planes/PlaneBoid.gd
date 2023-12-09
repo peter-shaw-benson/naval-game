@@ -47,6 +47,7 @@ func init(plane_type, airbase_pos, strike_target):
 	
 	# the plane will always go towards its current target.
 	self.current_target = strike_target
+	#print(self.current_target)
 	
 	# handles weaponry and such
 	self.plane_type = plane_type
@@ -88,7 +89,11 @@ func _ready():
 	_velocity = Vector2(rand_range(-1, 1), rand_range(-1, 1)).normalized() * max_speed
 	#_mouse_target = get_random_target()
 	
+	print(_velocity)
+	
 	add_to_group("planes")
+	
+	self.scale = Vector2(0.8, 0.8)
 
 
 func _on_detection_radius_body_entered(body: PhysicsBody2D):

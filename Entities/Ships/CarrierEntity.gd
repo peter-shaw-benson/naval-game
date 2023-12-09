@@ -47,6 +47,9 @@ func _ready():
 func set_planes():
 	self.plane_numbers = self.entity_data["planes"]
 
+func get_planes():
+	return self.entity_data["planes"]
+
 func subsystem_damage(accuracy_roll, total_accuracy, damage_result):
 	 #special conditions:
 	if accuracy_roll <= (module_hit_chances["battery"] * total_accuracy):

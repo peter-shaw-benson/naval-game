@@ -35,9 +35,10 @@
     	"crew": 10,
     	"class": "Carrier",
     	"planes": {
-        "scout": 0,
-        "strike": 40,
-        "fighter": 20
+        "scout": 4,
+        "strike": 15,
+        "fighter": 30,
+        "bomber": 0
       }
     }
   },
