@@ -1,10 +1,6 @@
 extends CombatUnit
 class_name CarrierScene
 
-onready var AirbaseScene = preload("res://Ships2/Plane Launchers/Airbase.tscn")
-
-var airbase: Airbase
-
 # Ship Scene stuff
 func get_class(): return "Carrier"
 
@@ -46,6 +42,30 @@ var speed_mode_dict = {
 
 var current_speed_mode
 
+
+### Airbase Things:
+export var PlaneBoidScene: PackedScene
+
+const PlaneBoid = preload("res://Ships2/Planes/PlaneBoid.gd")
+
+signal plane_launch(plane_squad)
+signal planes_recovered(plane_squad)
+
+var launching = false
+var launching_squad
+var launch_type = "scout"
+var squad_launch_time = 0.2
+
+var strike_target: Vector2
+var scout_targets: Array
+var current_scout_plane_launch = 0
+
+var fighter_targets: Array
+var current_fighter_plane_launch = 0
+
+var plane_numbers: Dictionary
+
+
 func _ready():
 	
 	var carrier = CarrierEntity.new()
@@ -81,7 +101,7 @@ func _ready():
 	# Combat Variables:
 	get_node("ShotTimer").wait_time = GameState.get_combatPace()
 	
-	self.scale = Vector2(1.5, 1.5)
+	self.scale = Vector2(1.2, 1.2)
 	
 	screen_size = get_viewport_rect().size
 	
@@ -102,10 +122,21 @@ func _ready():
 		
 		turrets.append(turret)
 	
-	airbase = AirbaseScene.instance()
-	add_child(airbase)
-	airbase.init(unitData.get_planes(), self.global_position, 0, "airbase")
-	airbase.visible = false
+	print(self.unitData)
+	print(self.unitData.get_planes())
+	self.plane_numbers = self.unitData.get_planes()
+	print(self.plane_numbers)
+	
+	get_node("ScoutPlaneTriangle").visible = false
+	get_node("ScoutPlaneTriangle").color = Color(0.2, 0.5, 0.3, 0.3)
+	
+	scout_targets = get_node("ScoutPlaneTriangle").polygon
+	scout_targets.remove(0)
+	
+	# fighter plane CAP target
+	get_node("FighterPatrolCircle").visible = false
+	fighter_targets = get_node("FighterPatrolCircle").polygon
+	get_node("FighterPatrolCircle").scale = Vector2(0.8, 0.8)
 	
 func handle_right_click(placement):
 	#print("handling right click")
@@ -117,29 +148,27 @@ func handle_right_click(placement):
 		# Turn logic is here for now?
 		
 		# Airbase things:
-		if last_button == "scout" and airbase.get_plane_numbers()["scout"] > 0:
+		if last_button == "scout" and plane_numbers["scout"] > 0:
 			# Send planes
-			airbase.send_out_planes(placement, "scout")
-			
+			self.launch_planes(placement, "scout")
 			last_button = ""
 			
-		elif last_button == "strike" and  airbase.get_plane_numbers()["strike"] > 0:
-			airbase.send_out_planes(placement, "strike")
+		elif last_button == "strike" and plane_numbers["strike"] > 0:
+			self.launch_planes(placement, "strike")
+			last_button = ""
+		
+		elif last_button == "bomb" and  plane_numbers["bomber"] > 0:
+			self.launch_planes(placement, "bomber")
 			
 			last_button = ""
 		
-		elif last_button == "bomb" and  airbase.get_plane_numbers()["bomber"] > 0:
-			airbase.send_out_planes(placement, "bomber")
+		elif last_button == "CAP" and  plane_numbers["fighter"] > 0:
 			
-			last_button = ""
-		
-		elif last_button == "CAP" and  airbase.get_plane_numbers()["fighter"] > 0:
-			airbase.send_out_planes(placement, "fighter", true)
+			self.launch_planes(placement, "fighter")
 			
 			last_button = ""
 		
 		### Ship things:
-		
 		if Input.is_action_pressed("queue"):
 			target_array.append(placement)
 			
@@ -188,6 +217,12 @@ func handle_right_click(placement):
 			current_target = placement
 
 
+func launch_planes(placement, strike_type):
+	
+	self.send_out_planes(placement, strike_type, true)
+	
+	#self.stop_moving()
+
 func handle_final_turn(turn_point):
 	self.target_angle["turning"] = true
 	
@@ -203,10 +238,11 @@ func _input(event):
 			last_button = "scout"
 			
 			# show the Scouting Triangle
-			airbase.get_node("ScoutPlaneTriangle").visible = true
+			if plane_numbers["scout"] > 0:
+				get_node("ScoutPlaneTriangle").visible = true
 			
 		else:
-			airbase.get_node("ScoutPlaneTriangle").visible = false
+			get_node("ScoutPlaneTriangle").visible = false
 			
 			if Input.is_action_pressed("strike"):
 				last_button = "strike"
@@ -214,14 +250,9 @@ func _input(event):
 				last_button = "bomb"
 			elif Input.is_action_pressed("fighter"):
 				last_button = "CAP"
-			elif Input.is_action_pressed("stop"):
-				airbase.stop_launching()
-				
-			elif Input.is_action_pressed("cancel"):
-				last_button = ""
-		
 		
 		if Input.is_action_pressed("stop"):
+			self.stop_launching()
 			set_current_speed_mode("stopped")
 			calc_current_speed()
 			self.current_target = self.global_position
@@ -299,6 +330,8 @@ func deselect():
 	emit_signal("ship_deselected", self)
 	
 	hide_ghost_sprite()
+	
+	get_node("ScoutPlaneTriangle").visible = false
 
 # these are here for later, if we build ports n shit
 #func start_repairs():
@@ -410,6 +443,16 @@ func _process(delta):
 	
 	draw_ghost_sprite()
 	
+	
+	get_node("ScoutPlaneTriangle").look_at(get_global_mouse_position())
+	get_node("ScoutPlaneTriangle").rotation += 3 * PI/4
+	
+	scout_targets = get_node("ScoutPlaneTriangle").polygon
+	scout_targets.remove(0)
+	
+	fighter_targets = get_node("FighterPatrolCircle").polygon
+
+	
 func set_firing_target(firing_target):
 	
 	# idk how to do this one yet
@@ -500,3 +543,112 @@ func _unhandled_input(event):
 	and event.button_index == BUTTON_RIGHT \
 	and !event.pressed:
 		self.handle_right_click(event.position)
+
+func get_launch_time(plane_list):
+	if len(plane_list) == 0:
+		return 0
+	else:
+		var launch_time = plane_list[0].get_launch_time()
+		
+		for unit in plane_list:
+			if unit.get_launch_time() > launch_time:
+				launch_time = unit.get_launch_time()
+		
+		return launch_time
+
+func send_out_planes(placement, strike_type, is_cap=false):
+	print(placement, strike_type)
+	
+	if strike_type == "scout":
+		current_scout_plane_launch = 0
+	
+	if not launching:
+		
+		var initial_pos = global_position
+		strike_target = placement
+		print(initial_pos, strike_target)
+		launch_type = strike_type
+						
+		print("starting launch")
+		start_launch(placement, strike_type)
+
+func start_launch(placement, strike_type):
+	launching = true
+	
+	# hard-coding for now – this means that 2 planes should launch per second
+	get_node("LaunchTimer").wait_time = squad_launch_time
+	get_node("LaunchTimer").start()
+
+func plane_recovered(plane):
+	var recovered_plane_type = plane.get_plane_type()
+	
+	self.plane_numbers[recovered_plane_type] += 1
+	
+	plane.queue_free()
+
+func plane_squad_death(plane_squad):
+	plane_squad.queue_free()
+
+func end_launch():
+	launching = false
+	
+	emit_signal("plane_launch", launching_squad)
+		
+	launching_squad.connect("plane_recovered", self, "plane_squad_recovered")
+	launching_squad.connect("plane_squad_lost", self, "plane_squad_death")
+	
+	launching_squad = null
+	
+	get_node("LaunchBar").hide()
+
+func _on_LaunchTimer_timeout():
+	#end_launch()
+	# spawn new boid
+	#print(launch_type, plane_numbers[launch_type])
+	
+	if plane_numbers[launch_type] > 0:
+		#spawn new boid
+		#print("spawning new plane")
+		
+		var plane_squad = PlaneBoidScene.instance()
+		
+		get_tree().root.add_child(plane_squad)
+		
+		plane_squad.transform = self.global_transform
+		
+		if launch_type != "scout" and launch_type != "fighter":
+			plane_squad.init(launch_type, self.global_position, strike_target)
+			
+		elif launch_type == "fighter":
+			var patrol_target_idx = current_fighter_plane_launch % len(fighter_targets)
+			var patrol_target = fighter_targets[patrol_target_idx]
+			
+			patrol_target = $FighterPatrolCircle.to_global(patrol_target)
+			
+			plane_squad.init(launch_type, self.global_position, patrol_target)
+			current_fighter_plane_launch += 1
+			
+		elif launch_type == "scout":
+			var scout_target_idx = current_scout_plane_launch % len(scout_targets)
+			var scout_target = scout_targets[scout_target_idx]
+			
+			scout_target = $ScoutPlaneTriangle.to_global(scout_target)
+			
+			plane_squad.init(launch_type, self.global_position, scout_target)
+			current_scout_plane_launch += 1
+			
+		plane_squad.connect("plane_recovered", self, "plane_recovered")
+		plane_squad.connect("plane_lost", self, "plane_death")
+		
+		plane_numbers[launch_type] -= 1
+		
+	else:
+		stop_launching()
+
+func stop_launching():
+	launching = false
+
+	get_node("LaunchTimer").stop()
+
+func get_plane_numbers():
+	return self.plane_numbers

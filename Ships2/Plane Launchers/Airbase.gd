@@ -292,8 +292,9 @@ func _on_LaunchTimer_timeout():
 		
 		var plane_squad = PlaneBoidScene.instance()
 		
-		add_child(plane_squad)
+		get_tree().root.add_child(plane_squad)
 		
+		plane_squad.transform = self.global_transform
 		
 		if launch_type != "scout" and launch_type != "fighter":
 			plane_squad.init(launch_type, self.global_position, strike_target)
