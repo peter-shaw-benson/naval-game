@@ -235,7 +235,10 @@ func get_launch_time(plane_list):
 		return launch_time
 
 func send_out_planes(placement, strike_type, is_cap=false):
-	#print(placement, strike_type)
+	print(placement, strike_type)
+	
+	if strike_type == "scout":
+		current_scout_plane_launch = 0
 	
 	if not launching:
 		
@@ -243,7 +246,7 @@ func send_out_planes(placement, strike_type, is_cap=false):
 		strike_target = placement
 		launch_type = strike_type
 						
-		#print("starting launch")
+		print("starting launch")
 		start_launch(placement, strike_type)
 		
 func start_launch(placement, strike_type):
@@ -285,11 +288,12 @@ func _on_LaunchTimer_timeout():
 	
 	if plane_numbers[launch_type] > 0:
 		#spawn new boid
-		#print("spawning new plane")
+		print("spawning new plane")
 		
 		var plane_squad = PlaneBoidScene.instance()
 		
 		add_child(plane_squad)
+		
 		
 		if launch_type != "scout" and launch_type != "fighter":
 			plane_squad.init(launch_type, self.global_position, strike_target)
@@ -324,3 +328,6 @@ func stop_launching():
 	launching = false
 	get_node("LaunchBar").hide()
 	get_node("LaunchTimer").stop()
+
+func get_plane_numbers():
+	return self.plane_numbers

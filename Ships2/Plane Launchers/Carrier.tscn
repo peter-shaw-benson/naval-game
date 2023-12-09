@@ -1,0 +1,60 @@
+[gd_scene load_steps=13 format=2]
+
+[ext_resource path="res://art/carrier sprites/sprite_4.png" type="Texture" id=1]
+[ext_resource path="res://art/carrier sprites/sprite_1.png" type="Texture" id=2]
+[ext_resource path="res://art/carrier sprites/sprite_0.png" type="Texture" id=3]
+[ext_resource path="res://art/carrier sprites/sprite_2.png" type="Texture" id=4]
+[ext_resource path="res://art/carrier sprites/carrier_sprite-6.png" type="Texture" id=5]
+[ext_resource path="res://art/carrier sprites/sprite_3.png" type="Texture" id=6]
+[ext_resource path="res://Miscellaneous/Detection Area.tscn" type="PackedScene" id=7]
+[ext_resource path="res://art/Individual Ship Sprite/Gunboat/GunboatSprite.tres" type="SpriteFrames" id=8]
+[ext_resource path="res://Ships2/Plane Launchers/Carrier.gd" type="Script" id=9]
+[ext_resource path="res://Ships2/Turrets/Turret.tscn" type="PackedScene" id=10]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 3 ), ExtResource( 2 ), ExtResource( 4 ) ],
+"loop": true,
+"name": "carrier_basic",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 6 ), ExtResource( 1 ), ExtResource( 5 ) ],
+"loop": true,
+"name": "carrier_clicked",
+"speed": 5.0
+} ]
+
+[sub_resource type="CapsuleShape2D" id=2]
+radius = 11.6464
+height = 32.7071
+
+[node name="Carrier" type="KinematicBody2D"]
+position = Vector2( 205, 123 )
+script = ExtResource( 9 )
+detector_scene = ExtResource( 7 )
+Turret = ExtResource( 10 )
+
+[node name="CarrierSprite" type="AnimatedSprite" parent="."]
+position = Vector2( 0.176773, 0 )
+frames = SubResource( 1 )
+animation = "carrier_basic"
+
+[node name="GhostSprite" type="AnimatedSprite" parent="."]
+visible = false
+scale = Vector2( 2, 2 )
+frames = ExtResource( 8 )
+animation = "gunboat_basic"
+
+[node name="ShotTimer" type="Timer" parent="."]
+
+[node name="Hitbox" type="CollisionShape2D" parent="."]
+position = Vector2( 0.353561, 0 )
+shape = SubResource( 2 )
+
+[node name="MouseClickHitbox" type="Area2D" parent="."]
+
+[node name="Hitbox" type="CollisionShape2D" parent="MouseClickHitbox"]
+position = Vector2( 0.353561, 0 )
+shape = SubResource( 2 )
+
+[connection signal="input_event" from="MouseClickHitbox" to="." method="_input_event"]
