@@ -19,8 +19,10 @@ var game_vars = {
 	# global weapon accuracy scaling
 	"armorReduction": 5,
 	# how much armor reduces incoming weapon damage
-	"stoppedFactor": 0.5
+	"stoppedFactor": 0.5,
 	# How much being stopped increases accuracy
+	'visibilityScale': 5
+	# how much larger the visibility is compared to the ships' values
 }
 
 # bonuses to speed factor accuracy
@@ -191,3 +193,6 @@ func get_outOfRange():
 
 func get_speedFactor(speed_mode):
 	return speed_mode_accuracies[speed_mode]
+
+func get_visibility_scale():
+	return game_vars["visibilityScale"]

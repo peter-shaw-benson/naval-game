@@ -16,8 +16,7 @@ bg_color = Color( 0.12549, 0.12549, 0.12549, 1 )
 [node name="AirbaseArea" type="KinematicBody2D"]
 pause_mode = 1
 position = Vector2( 553, 329 )
-collision_layer = 2
-collision_mask = 2
+collision_layer = 5
 script = ExtResource( 2 )
 detector_scene = ExtResource( 4 )
 PlaneSquadScene = ExtResource( 3 )

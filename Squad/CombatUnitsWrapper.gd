@@ -145,7 +145,7 @@ func init(unit_array, initial_position, faction, type):
 	#var hiding_scale = hiding * 10
 	
 	detector = detector_scene.instance()
-	detector.init(visibility_scale)
+	detector.init(visibility_scale, faction)
 	
 	add_child(detector)
 	

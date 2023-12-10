@@ -4,6 +4,8 @@ const ScoutPlane = preload("res://Entities/Planes/ScoutPlane.gd")
 const Fighter = preload("res://Entities/Planes/Fighter.gd")
 const TorpBomber = preload("res://Entities/Planes/TorpBomber.gd")
 
+export var detector_scene: PackedScene
+
 signal plane_recovered(PlaneBoid)
 signal plane_lost(PlaneBoid)
 
@@ -39,9 +41,14 @@ var plane_type: String
 var plane_data: CombatPlane
 var frames: SpriteFrames
 
+var faction: int
+
 var fuel_time = 8
 
-func init(plane_type, airbase_pos, strike_target):
+var detector: DetectionArea
+var visibility
+
+func init(plane_type, airbase_pos, strike_target, faction):
 	self.strike_target = strike_target
 	self.parent_airbase_pos = airbase_pos
 	
@@ -52,6 +59,8 @@ func init(plane_type, airbase_pos, strike_target):
 	# handles weaponry and such
 	self.plane_type = plane_type
 	
+	self.faction = faction
+	
 	self.initialize_plane_type(plane_type)
 	
 	self.cohesion_force = self.plane_data.get_cohesion()
@@ -61,6 +70,19 @@ func init(plane_type, airbase_pos, strike_target):
 	
 	get_node("FuelTimer").wait_time = fuel_time
 	get_node("FuelTimer").start()
+	
+	
+	visibility = self.plane_data.get_visibility()
+	
+	# Set up Visibility Collider and Hiding Collider
+	var visibility_scale = visibility * GameState.get_visibility_scale()
+
+	
+	# set up detection
+	detector = detector_scene.instance()
+	detector.init(visibility_scale, self.faction)
+	
+	add_child(detector)
 	
 
 func initialize_plane_type(plane_type):
@@ -89,7 +111,7 @@ func _ready():
 	_velocity = Vector2(rand_range(-1, 1), rand_range(-1, 1)).normalized() * max_speed
 	#_mouse_target = get_random_target()
 	
-	print(_velocity)
+	#print(_velocity)
 	
 	add_to_group("planes")
 	

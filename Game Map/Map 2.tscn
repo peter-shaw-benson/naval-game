@@ -37,15 +37,13 @@ ship_scene = ExtResource( 19 )
 fog_scene = ExtResource( 15 )
 
 [node name="ColorRect" type="ColorRect" parent="."]
+light_mask = 16
 margin_right = 1024.0
 margin_bottom = 720.0
 mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-color = Color( 0.215686, 0.427451, 0.501961, 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+color = Color( 0.172549, 0.337255, 0.4, 1 )
 
 [node name="LineDrawer" type="Node2D" parent="."]
 script = ExtResource( 3 )

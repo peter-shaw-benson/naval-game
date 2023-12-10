@@ -83,7 +83,7 @@ func init(plane_list, initial_pos, faction, type):
 	#var hiding_scale = hiding * 10
 	
 	detector = detector_scene.instance()
-	detector.init(visibility_scale)
+	detector.init(visibility_scale, faction)
 	
 	add_child(detector)
 	
@@ -297,7 +297,7 @@ func _on_LaunchTimer_timeout():
 		plane_squad.transform = self.global_transform
 		
 		if launch_type != "scout" and launch_type != "fighter":
-			plane_squad.init(launch_type, self.global_position, strike_target)
+			plane_squad.init(launch_type, self.global_position, strike_target, self.faction)
 			
 		elif launch_type == "fighter":
 			var patrol_target_idx = current_fighter_plane_launch % len(fighter_targets)
@@ -305,7 +305,7 @@ func _on_LaunchTimer_timeout():
 			
 			patrol_target = $FighterPatrolCircle.to_global(patrol_target)
 			
-			plane_squad.init(launch_type, self.global_position, patrol_target)
+			plane_squad.init(launch_type, self.global_position, patrol_target, self.faction)
 			current_fighter_plane_launch += 1
 			
 		elif launch_type == "scout":
@@ -314,7 +314,7 @@ func _on_LaunchTimer_timeout():
 			
 			scout_target = $ScoutPlaneTriangle.to_global(scout_target)
 			
-			plane_squad.init(launch_type, self.global_position, scout_target)
+			plane_squad.init(launch_type, self.global_position, scout_target, self.faction)
 			current_scout_plane_launch += 1
 			
 		plane_squad.connect("plane_recovered", self, "plane_recovered")

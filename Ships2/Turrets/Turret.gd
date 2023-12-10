@@ -47,7 +47,7 @@ func _process(delta):
 		for enemy in all_enemy:
 			var gun2enemy_distance = self.global_position.distance_to(enemy.global_position)
 			#print(gun2enemy_distance)
-			if gun2enemy_distance < self.weaponData.get_range():
+			if gun2enemy_distance < self.weaponData.get_range() and enemy.visible:
 				
 				close_enemy = enemy  ## --->## after get the current close_enemy
 				
