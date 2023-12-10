@@ -13,6 +13,7 @@ var position_y = 0
 var num_islands = 0
 
 var num_airbases = 1
+var num_carriers = 1
 
 var player_faction = 0
 var enemy_faction = -1
@@ -21,16 +22,13 @@ func _ready():
 	pass
 
 func get_fleet():
-	# Create a new squadron here, reading from the number boxes
 	
-	var initial_pos = Vector2(position_x, position_y)
-	#var squad = Squadron.new()
-	var ship_list = make_destroyer_array(num_destroyers, initial_pos, player_faction)
+	var ship_list = make_destroyer_array(num_destroyers, player_faction)
 	#print(ship_list[0].speed)
 	
 	return ship_list
 
-func make_destroyer_array(length, initial_pos, faction):
+func make_destroyer_array(length, faction):
 	var destroyer_array = []
 	
 	for i in range(length):
@@ -40,17 +38,31 @@ func make_destroyer_array(length, initial_pos, faction):
 		#print(next_destroyer)
 		
 		destroyer_array.append({"ship": next_destroyer,
-			"position": initial_pos,
 			"type": "ship",
 			"unit_type": "gunboat",
 			"faction": faction})
 	
 	return destroyer_array
 
+func make_carrier_array(length, faction):
+	var carrier_array = []
+	
+	for i in range(length):
+		# testing fletcher-class:
+		var next_carrier = CarrierEntity.new()
+		#var next_destroyer = TorpDestroyer.new()
+		#print(next_destroyer)
+		
+		carrier_array.append({"ship": next_carrier,
+			"type": "carrier",
+			"unit_type": "carrier",
+			"faction": faction})
+	
+	return carrier_array
+
 func make_enemy_fleet():
-	var initial_pos = Vector2(400, 300)
 	#var squad = Squadron.new()
-	var ship_list = make_destroyer_array(2, initial_pos, enemy_faction)
+	var ship_list = make_destroyer_array(3, enemy_faction)
 	#print(ship_list[0].speed)
 	
 	return ship_list
@@ -59,10 +71,13 @@ func get_fleet_list():
 	var temp_list = []
 		
 	temp_list += get_fleet()
+	temp_list += make_carrier_array(num_carriers, player_faction)
 	
-	if enemy_faction >= 0:
+	if enemy_faction > 0:
 		temp_list += make_enemy_fleet()
-		
+	
+	print(temp_list)
+	
 	return temp_list
 
 func _on_BackButton_pressed():
@@ -93,3 +108,7 @@ func _on_Faction_value_changed(value):
 	#print(faction)
 func _on_Enemy_Faction_value_changed(value):
 	enemy_faction = value
+
+
+func _on_Num_Carriers_value_changed(value):
+	num_carriers = value

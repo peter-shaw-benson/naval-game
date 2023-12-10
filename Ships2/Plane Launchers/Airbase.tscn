@@ -16,8 +16,7 @@ bg_color = Color( 0.12549, 0.12549, 0.12549, 1 )
 [node name="AirbaseArea" type="KinematicBody2D"]
 pause_mode = 1
 position = Vector2( 553, 329 )
-collision_layer = 2
-collision_mask = 2
+collision_layer = 5
 script = ExtResource( 2 )
 detector_scene = ExtResource( 4 )
 PlaneSquadScene = ExtResource( 3 )
@@ -72,7 +71,6 @@ position = Vector2( 4.76837e-07, -4.76837e-07 )
 shape = SubResource( 1 )
 
 [node name="ScoutPlaneTriangle" type="Polygon2D" parent="."]
-visible = false
 scale = Vector2( 2, 2 )
 color = Color( 0.670588, 0.113725, 0.65098, 1 )
 polygon = PoolVector2Array( 0, 0, 183, -225, 61, -251, -79, -222, -164, -120, -202, 8 )

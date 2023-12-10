@@ -84,6 +84,8 @@ func _ready():
 		
 		turrets.append(turret)
 		
+	# configure light
+	get_node("DetectionLight")
 	
 func handle_right_click(placement):
 	#print("handling right click")

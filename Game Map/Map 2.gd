@@ -30,8 +30,8 @@ var game_time = 0
 var paused = false
 var ai_on = false
 
-onready var LineRenderer = get_node("LineDrawer")
-onready var IslandTexture = get_node("IslandTexture")
+onready var LineRenderer = get_node("CanvasLayer/LineDrawer")
+onready var IslandTexture = get_node("CanvasLayer/IslandTexture")
 
 var selected = []
 
@@ -42,7 +42,7 @@ func init(input_unit_list, num_islands):
 	var map_center = Vector2(screen_size.x / 2, screen_size.y /2)
 	
 	update_clock_display()
-	get_node("GameClock").start()
+	get_node("CanvasLayer/GameClock").start()
 	# Create the Island Instances
 	if num_islands > 0:
 		for i in range(num_islands):
@@ -60,7 +60,7 @@ func init(input_unit_list, num_islands):
 	place_list = range(len(unit_data))
 	place_next_unit(place_list)
 	
-	get_node("SelectionBox").clear_selections()
+	get_node("CanvasLayer/SelectionBox").clear_selections()
 
 func hide_enemies():
 	print("hiding enemies")
@@ -155,7 +155,7 @@ func place_airbase(airbase_data):
 func place_carrier(carrier_data):
 	var carrier = carrier_scene.instance()
 	
-	carrier.init([], get_viewport().get_mouse_position(), 
+	carrier.init(carrier_data["ship"], get_viewport().get_mouse_position(), 
 	carrier_data.faction, carrier_data.type)
 		
 	squad_list.append(carrier)
@@ -165,11 +165,9 @@ func place_carrier(carrier_data):
 	carrier.connect("hit", self, "_on_squad_crash")
 	carrier.connect("ship_lost", self, "_on_ship_lost")
 	carrier.connect("squadron_lost", self, "_on_squadron_lost")
-	carrier.connect("stopped_placing", self, "_on_squadron_stopped_placement")
 	
-	carrier.connect("squad_selected", self, "display_selected_squad")
-	carrier.connect("squad_deselected", self, "squad_deselected")
-	carrier.connect("update_squad_info", self, "update_squad_info")
+	carrier.connect("ship_selected", self, "add_ship_to_selected")
+	carrier.connect("ship_deselected", self, "remove_ship_from_selected")
 	
 	# Airbase Signals
 	carrier.connect("plane_launch", self, "launch_plane_squad")
@@ -222,16 +220,19 @@ func _on_squadron_stopped_placement():
 		enable_combat()
 		
 func raise_controls():
-	get_node("PauseMenu").raise()
-	get_node("ClockDisplay").raise()
-	get_node("Ship Funeral").raise()
-	get_node("SquadSelected").raise()
-	get_node("WindBox").raise()
+	get_node("CanvasLayer/PauseMenu").raise()
+	get_node("CanvasLayer/ClockDisplay").raise()
+	get_node("CanvasLayer/Ship Funeral").raise()
+	get_node("CanvasLayer/SquadSelected").raise()
+	get_node("CanvasLayer/WindBox").raise()
 
 func _input(event):
 			
 	if Input.is_action_pressed("pause_menu"):
 		if not paused:
+			# make sure the pause menu is above everything else
+			get_node("CanvasLayer/PauseMenu").raise()
+			
 			handle_pause()
 			
 	elif Input.is_action_pressed("pause_game"):
@@ -250,17 +251,17 @@ func handle_pause(pause_menu=true):
 	paused = true
 	
 	if pause_menu:
-		get_node("PauseMenu").show()
+		get_node("CanvasLayer/PauseMenu").show()
 
 func unpause():
 	get_tree().paused = false
 	paused = false
 
-# Handle collisions with Islands
+# Handle collisions wΩith Islands
 func _on_squad_crash(s):
 	print("squad crashed")
 	
-	get_node("PauseMenu").popup_centered()
+	get_node("CanvasLayer/PauseMenu").popup_centered()
 	squad_list.remove(squad_list.find(s, 0))
 	
 	s.queue_free()
@@ -276,26 +277,26 @@ func _on_CrashPopup_id_pressed(id):
 		# Quit Game
 		get_tree().quit()
 	elif id == 2:
-		get_node("PauseMenu").hide()
+		get_node("CanvasLayer/PauseMenu").hide()
 		unpause()
 
 func _on_ship_lost(ship: ShipScene):
 	
 	ship_list.remove(ship_list.find(ship, 0))
 	
-	get_node("SelectionBox").remove_ship(ship)
+	get_node("CanvasLayer/SelectionBox").remove_ship(ship)
 	
 	ship.queue_free()
 
 	var loss_text = ship.get_name() + " lost to Enemy Action!"
 
-	get_node("Ship Funeral/Ship Text").text = loss_text
+	get_node("CanvasLayer/Ship Funeral/Ship Text").text = loss_text
 
-	get_node("Ship Funeral").popup()
-	get_node("Ship Popup Timer").start()
+	get_node("CanvasLayer/Ship Funeral").popup()
+	get_node("CanvasLayer/Ship Popup Timer").start()
 
 func _on_squadron_lost(s, enemy_squad):
-	get_node("SquadSelected").hide()
+	get_node("CanvasLayer/SquadSelected").hide()
 	
 	squad_list.remove(squad_list.find(s, 0))
 	
@@ -306,8 +307,8 @@ func _on_squadron_lost(s, enemy_squad):
 
 func _on_Ship_Popup_Timer_timeout():
 	pass
-	#get_node("Ship Funeral").hide()
-	#get_node("Ship Popup Timer").stop()
+	#get_node("CanvasLayer/Ship Funeral").hide()
+	#get_node("CanvasLayer/Ship Popup Timer").stop()
 
 func get_squadron_at(location):
 	for s in squad_list:
@@ -324,31 +325,31 @@ func update_clock_display():
 	
 	var clock_text = "%02d:%02d" % [hours, minutes]
 	
-	get_node("ClockDisplay").text = clock_text
+	get_node("CanvasLayer/ClockDisplay").text = clock_text
 
 func update_weather():
-	get_node("Weather").calc_new_wind_direction()
-	get_node("Weather").calc_new_wind_speed()
+	get_node("CanvasLayer/Weather").calc_new_wind_direction()
+	get_node("CanvasLayer/Weather").calc_new_wind_speed()
 	
 	for unit in squad_list:
 		if unit:
-			unit.calc_new_wind_vector($Weather.get_wind_velocity_cartesian())
+			unit.calc_new_wind_vector(get_node("CanvasLayer/Weather").get_wind_velocity_cartesian())
 		
 	for unit in ship_list:
 		if unit:
-			unit.calc_new_wind_vector($Weather.get_wind_velocity_cartesian())
+			unit.calc_new_wind_vector(get_node("CanvasLayer/Weather").get_wind_velocity_cartesian())
 		
 		
-	if $Weather.get_fog_gen_flag():
+	if get_node("CanvasLayer/Weather").get_fog_gen_flag():
 		var new_fog = fog_scene.instance()
-		$Weather.register_fog(new_fog)
+		get_node("CanvasLayer/Weather").register_fog(new_fog)
 		add_child(new_fog)
 		
 		# when fog added, push GUI to front
 		raise_controls()
 		
-	$Weather.update_fog()
-	$WindBox.update_weather_display($Weather.get_wind_dir_angle(), $Weather.get_wind_speed_kt())
+	get_node("CanvasLayer/Weather").update_fog()
+	get_node("CanvasLayer/WindBox").update_weather_display(get_node("CanvasLayer/Weather").get_wind_dir_angle(), get_node("CanvasLayer/Weather").get_wind_speed_kt())
 
 func _on_GameClock_timeout():
 	game_time += 1
@@ -361,35 +362,35 @@ func _on_GameClock_timeout():
 
 # do this later ?
 #func display_selected_squad(squad):
-#	get_node("SquadSelected").show()
+#	get_node("CanvasLayer/SquadSelected").show()
 #
 #	var squad_status = squad.get_status(null)
 #	var squad_health = squad.get_total_health()
 #	var squad_max_health = squad.get_squadron_max_health()
 #
-#	get_node("SquadSelected").set_max_health(squad_max_health)
-#	get_node("SquadSelected").update_health(squad_health)
-#	get_node("SquadSelected").subsystem_status(squad_status)
+#	get_node("CanvasLayer/SquadSelected").set_max_health(squad_max_health)
+#	get_node("CanvasLayer/SquadSelected").update_health(squad_health)
+#	get_node("CanvasLayer/SquadSelected").subsystem_status(squad_status)
 #
-#	get_node("SquadSelected").set_max_fuel(squad.get_max_fuel())
-#	get_node("SquadSelected").update_fuel(squad.get_current_fuel())
+#	get_node("CanvasLayer/SquadSelected").set_max_fuel(squad.get_max_fuel())
+#	get_node("CanvasLayer/SquadSelected").update_fuel(squad.get_current_fuel())
 
 func squad_deselected(squad):
-	get_node("SquadSelected").hide()
+	get_node("CanvasLayer/SquadSelected").hide()
 
 func update_squad_info(new_health, new_fuel, ship_status, speed_mode):
-	if get_node("SquadSelected").visible == true:
-		get_node("SquadSelected").update_health(new_health)
-		get_node("SquadSelected").update_fuel(new_fuel)
+	if get_node("CanvasLayer/SquadSelected").visible == true:
+		get_node("CanvasLayer/SquadSelected").update_health(new_health)
+		get_node("CanvasLayer/SquadSelected").update_fuel(new_fuel)
 		
-		get_node("SquadSelected").subsystem_status(ship_status)
-		get_node("SquadSelected").speed_status(speed_mode)
+		get_node("CanvasLayer/SquadSelected").subsystem_status(ship_status)
+		get_node("CanvasLayer/SquadSelected").speed_status(speed_mode)
 
 # PLANE STUFF
 
 func launch_plane_squad(plane_squad):
 	add_child(plane_squad)
-	plane_squad.calc_new_wind_vector($Weather.get_wind_velocity_cartesian())
+	plane_squad.calc_new_wind_vector(get_node("CanvasLayer/Weather").get_wind_velocity_cartesian())
 	squad_list.append(plane_squad)
 
 func recover_plane_squad(plane_squad):
@@ -406,10 +407,10 @@ func enable_combat():
 
 ## Selection (calling the selection box)
 
-func add_ship_to_selected(ship: ShipScene):
+func add_ship_to_selected(ship: CombatUnit):
 	
-	get_node("SelectionBox").add_ship(ship)
+	get_node("CanvasLayer/SelectionBox").add_ship(ship)
 
-func remove_ship_from_selected(ship: ShipScene):
+func remove_ship_from_selected(ship: CombatUnit):
 	
-	get_node("SelectionBox").remove_ship(ship)
+	get_node("CanvasLayer/SelectionBox").remove_ship(ship)

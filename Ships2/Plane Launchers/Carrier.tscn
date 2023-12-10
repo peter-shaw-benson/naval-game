@@ -31,6 +31,7 @@ height = 32.7071
 
 [node name="Carrier" type="KinematicBody2D"]
 position = Vector2( 205, 123 )
+collision_layer = 5
 script = ExtResource( 9 )
 detector_scene = ExtResource( 7 )
 Turret = ExtResource( 10 )
@@ -62,10 +63,9 @@ position = Vector2( 0.353561, 0 )
 shape = SubResource( 2 )
 
 [node name="ScoutPlaneTriangle" type="Polygon2D" parent="."]
-visible = false
 scale = Vector2( 2, 2 )
 color = Color( 0.670588, 0.113725, 0.65098, 1 )
-polygon = PoolVector2Array( 0, 0, 183, -225, 61, -251, -79, -222, -164, -120, -202, 8 )
+polygon = PoolVector2Array( 0, 0, 107.5, -223.5, -13.5, -221.5, -107.5, -192, -175, -102, -202, 8 )
 
 [node name="FighterPatrolCircle" type="Polygon2D" parent="."]
 visible = false

@@ -10,6 +10,7 @@ radius = 14.6464
 height = 36.7071
 
 [node name="Ship" type="KinematicBody2D"]
+collision_layer = 5
 script = ExtResource( 2 )
 detector_scene = ExtResource( 3 )
 Turret = ExtResource( 5 )

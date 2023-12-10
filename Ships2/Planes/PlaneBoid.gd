@@ -4,6 +4,8 @@ const ScoutPlane = preload("res://Entities/Planes/ScoutPlane.gd")
 const Fighter = preload("res://Entities/Planes/Fighter.gd")
 const TorpBomber = preload("res://Entities/Planes/TorpBomber.gd")
 
+export var detector_scene: PackedScene
+
 signal plane_recovered(PlaneBoid)
 signal plane_lost(PlaneBoid)
 
@@ -31,19 +33,27 @@ var _flock: Array = []
 var strike_target: Vector2
 var _velocity: Vector2
 
-var parent_airbase_pos: Vector2
+var parent_airbase: CombatUnit
+
 var current_target: Vector2
+var returning = false
 
 # plane characteristics
 var plane_type: String
 var plane_data: CombatPlane
 var frames: SpriteFrames
 
+var faction: int
+
 var fuel_time = 8
 
-func init(plane_type, airbase_pos, strike_target):
+var detector: DetectionArea
+var visibility
+
+func init(plane_type, airbase, strike_target, faction):
 	self.strike_target = strike_target
-	self.parent_airbase_pos = airbase_pos
+	
+	self.parent_airbase = airbase
 	
 	# the plane will always go towards its current target.
 	self.current_target = strike_target
@@ -51,6 +61,8 @@ func init(plane_type, airbase_pos, strike_target):
 	
 	# handles weaponry and such
 	self.plane_type = plane_type
+	
+	self.faction = faction
 	
 	self.initialize_plane_type(plane_type)
 	
@@ -61,6 +73,20 @@ func init(plane_type, airbase_pos, strike_target):
 	
 	get_node("FuelTimer").wait_time = fuel_time
 	get_node("FuelTimer").start()
+	
+	
+	visibility = self.plane_data.get_visibility()
+	
+	# Set up Visibility Collider and Hiding Collider
+	var visibility_scale = visibility * GameState.get_visibility_scale()
+
+	
+	# set up detection
+	detector = detector_scene.instance()
+	detector.init(visibility_scale, self.faction)
+	
+	add_child(detector)
+	detector.enable_spotting()
 	
 
 func initialize_plane_type(plane_type):
@@ -83,17 +109,24 @@ func initialize_plane_type(plane_type):
 	get_node("AnimatedSprite").animation = "default"
 	
 	self.max_speed = self.plane_data.get_speed()
+	
+	self.scale = Vector2(0.6, 0.6)
 
 func _ready():
 	randomize()
 	_velocity = Vector2(rand_range(-1, 1), rand_range(-1, 1)).normalized() * max_speed
 	#_mouse_target = get_random_target()
 	
-	print(_velocity)
+	#print(_velocity)
 	
 	add_to_group("planes")
 	
-	self.scale = Vector2(0.8, 0.8)
+	if self.faction == 0:
+		add_to_group("faction_0")
+	elif self.faction == 1:
+		add_to_group("faction_1")
+	elif self.faction == 2:
+		add_to_group("faction_2")
 
 
 func _on_detection_radius_body_entered(body: PhysicsBody2D):
@@ -113,6 +146,9 @@ func _input(event):
 func _physics_process(_delta):
 	# if it reaches the 
 	
+	if returning:
+		current_target = self.parent_airbase.global_position
+	
 	var mouse_vector = Vector2.ZERO
 	if current_target != Vector2.INF:
 		mouse_vector = global_position.direction_to(current_target) * max_speed * mouse_follow_force
@@ -121,15 +157,16 @@ func _physics_process(_delta):
 	# if we reach the airbase, start recovering?
 	if global_position.distance_to(current_target) <= 25:
 		if strike_target == current_target:
-			current_target = parent_airbase_pos
+			current_target = self.parent_airbase.global_position
+			self.returning = true
 			
 			self.cohesion_force = 0.05
 			self.algin_force = 0.05
 			self.separation_force = 0.05
 			
-		elif parent_airbase_pos == current_target:
-			# recover plane here
+		elif self.returning:
 			emit_signal("plane_recovered", self)
+			
 			
 	
 	# get cohesion, alginment, and separation vectors
@@ -187,9 +224,17 @@ func get_plane_type():
 
 func _on_FuelTimer_timeout():
 	#print("plane out of fuel")
-	current_target = parent_airbase_pos
+	current_target = self.parent_airbase.global_position
+	
+	self.returning = true
 	
 	self.cohesion_force = 0.05
 	self.algin_force = 0.05
 	self.separation_force = 0.05
 	
+func detect():
+	self.show()
+	
+func un_detect():
+	if self.faction != GameState.get_playerFaction():
+		self.hide()

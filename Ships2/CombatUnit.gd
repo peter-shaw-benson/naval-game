@@ -91,16 +91,13 @@ func init(entity, initial_position, faction, type):
 	self.wind_resist = getWindResist()
 	
 	# Set up Visibility Collider and Hiding Collider
-	var visibility_scale = visibility * 5
+	var visibility_scale = visibility * GameState.get_visibility_scale()
 	#var hiding_scale = hiding * 10
 	
 	detector = detector_scene.instance()
-	detector.init(visibility_scale)
+	detector.init(visibility_scale, self.faction)
 	
 	add_child(detector)
-	
-	detector.connect("entered_spotting_area", self, "on_detection_entered")
-	detector.connect("left_spotting_area", self, "on_detection_left")
 	
 	self.current_speed = getSpeed()
 	self.velocity_vector = Vector2(0, 0)
@@ -226,22 +223,6 @@ func stop_placing():
 
 func enable_spotting():
 	detector.enable_spotting()
-	
-func on_detection_entered(other_thing):
-	
-	var other_type = other_thing.get_type()
-	
-	# this is where we would have done the enter combat loop
-	# instead, if it's an enemy, we shoot it with turrets.
-	
-	if self.faction != GameState.get_playerFaction():
-		show()
-	
-func on_detection_left():
-	
-	if self.faction != GameState.get_playerFaction():
-		
-		hide()
 		
 func get_health():
 	return self.unitData.get_health()
@@ -284,3 +265,13 @@ func enable_combat():
 
 func disable_combat():
 	self.combat_enabled = false
+
+
+# Detection:
+func detect():
+	self.show()
+	
+func un_detect():
+	if self.faction != GameState.get_playerFaction():
+		self.hide()
+

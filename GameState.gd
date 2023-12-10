@@ -19,8 +19,10 @@ var game_vars = {
 	# global weapon accuracy scaling
 	"armorReduction": 5,
 	# how much armor reduces incoming weapon damage
-	"stoppedFactor": 0.5
+	"stoppedFactor": 0.5,
 	# How much being stopped increases accuracy
+	'visibilityScale': 5
+	# how much larger the visibility is compared to the ships' values
 }
 
 # bonuses to speed factor accuracy
@@ -44,6 +46,8 @@ var unit_list = []
 var default_budgets = {"0": 200, "1": 200, "2": 200}
 var faction_budgets = {"0": 200, "1": 200, "2": 200}
 var strike_multiplier = 8
+
+var light_detector_scale = 0.005
 
 func _ready():
 	# Global variables
@@ -191,3 +195,6 @@ func get_outOfRange():
 
 func get_speedFactor(speed_mode):
 	return speed_mode_accuracies[speed_mode]
+
+func get_visibility_scale():
+	return game_vars["visibilityScale"]
