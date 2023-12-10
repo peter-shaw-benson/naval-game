@@ -42,7 +42,7 @@ __meta__ = {
 
 [node name="Title" type="RichTextLabel" parent="VBoxContainer"]
 margin_right = 1024.0
-margin_bottom = 296.0
+margin_bottom = 326.0
 rect_clip_content = false
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -52,7 +52,7 @@ bbcode_text = "[center]Fleet Creator[/center]"
 text = "Fleet Creator"
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
-margin_top = 300.0
+margin_top = 330.0
 margin_right = 1024.0
 margin_bottom = 600.0
 custom_constants/margin_right = 300
@@ -66,7 +66,7 @@ __meta__ = {
 [node name="options" type="VBoxContainer" parent="VBoxContainer/MarginContainer"]
 margin_left = 300.0
 margin_right = 724.0
-margin_bottom = 250.0
+margin_bottom = 220.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/separation = 20
@@ -80,12 +80,12 @@ text = "Start Game"
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer/options"]
 margin_top = 40.0
 margin_right = 424.0
-margin_bottom = 210.0
+margin_bottom = 180.0
 alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer/options/HBoxContainer"]
 margin_right = 210.0
-margin_bottom = 170.0
+margin_bottom = 140.0
 rect_min_size = Vector2( 200, 50 )
 size_flags_horizontal = 3
 custom_constants/separation = 10
@@ -100,46 +100,38 @@ custom_fonts/normal_font = SubResource( 2 )
 text = "Num. Destroyers"
 scroll_active = false
 
-[node name="RichTextLabel2" type="RichTextLabel" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer"]
+[node name="Carriers" type="RichTextLabel" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer"]
 margin_top = 30.0
 margin_right = 210.0
 margin_bottom = 50.0
 rect_min_size = Vector2( 0, 20 )
 size_flags_horizontal = 3
 custom_fonts/normal_font = SubResource( 2 )
-text = "X Position"
+text = "Num. Carriers"
+scroll_active = false
 
-[node name="RichTextLabel3" type="RichTextLabel" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer"]
+[node name="Num Islands" type="RichTextLabel" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer"]
 margin_top = 60.0
 margin_right = 210.0
 margin_bottom = 80.0
 rect_min_size = Vector2( 0, 20 )
 size_flags_horizontal = 3
 custom_fonts/normal_font = SubResource( 2 )
-text = "Y Position"
+text = "Num. Islands"
 
-[node name="Num Islands" type="RichTextLabel" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer"]
+[node name="Faction" type="RichTextLabel" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer"]
 margin_top = 90.0
 margin_right = 210.0
 margin_bottom = 110.0
 rect_min_size = Vector2( 0, 20 )
 size_flags_horizontal = 3
 custom_fonts/normal_font = SubResource( 2 )
-text = "Num. Islands"
-
-[node name="Faction" type="RichTextLabel" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer"]
-margin_top = 120.0
-margin_right = 210.0
-margin_bottom = 140.0
-rect_min_size = Vector2( 0, 20 )
-size_flags_horizontal = 3
-custom_fonts/normal_font = SubResource( 2 )
 text = "Faction"
 
 [node name="Enemy Fleet\?" type="RichTextLabel" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer"]
-margin_top = 150.0
+margin_top = 120.0
 margin_right = 210.0
-margin_bottom = 170.0
+margin_bottom = 140.0
 rect_min_size = Vector2( 0, 20 )
 size_flags_horizontal = 3
 custom_fonts/normal_font = SubResource( 2 )
@@ -148,60 +140,56 @@ text = "Enemy Fleet Faction"
 [node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/MarginContainer/options/HBoxContainer"]
 margin_left = 214.0
 margin_right = 424.0
-margin_bottom = 170.0
+margin_bottom = 140.0
 size_flags_horizontal = 3
 alignment = 1
 
 [node name="SpinBox" type="SpinBox" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2"]
-margin_top = 3.0
+margin_top = 2.0
 margin_right = 210.0
-margin_bottom = 27.0
+margin_bottom = 26.0
 rect_min_size = Vector2( 20, 0 )
 min_value = 1.0
 value = 1.0
 
-[node name="x pos" type="SpinBox" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2"]
-margin_top = 31.0
+[node name="Num Carriers" type="SpinBox" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2"]
+margin_top = 30.0
 margin_right = 210.0
-margin_bottom = 55.0
+margin_bottom = 54.0
 rect_min_size = Vector2( 20, 0 )
-
-[node name="y pos" type="SpinBox" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2"]
-margin_top = 59.0
-margin_right = 210.0
-margin_bottom = 83.0
-rect_min_size = Vector2( 0, 20 )
+max_value = 4.0
+value = 1.0
 
 [node name="Islands" type="SpinBox" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2"]
-margin_top = 87.0
+margin_top = 58.0
 margin_right = 210.0
-margin_bottom = 111.0
+margin_bottom = 82.0
 max_value = 10.0
 
 [node name="Faction" type="SpinBox" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2"]
-margin_top = 115.0
+margin_top = 86.0
 margin_right = 210.0
-margin_bottom = 139.0
+margin_bottom = 110.0
 max_value = 2.0
 
 [node name="Enemy Faction" type="SpinBox" parent="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2"]
-margin_top = 143.0
+margin_top = 114.0
 margin_right = 210.0
-margin_bottom = 167.0
+margin_bottom = 138.0
 min_value = -1.0
 max_value = 2.0
 value = -1.0
 
 [node name="BackButton" type="Button" parent="VBoxContainer/MarginContainer/options"]
-margin_top = 230.0
+margin_top = 200.0
 margin_right = 424.0
-margin_bottom = 250.0
+margin_bottom = 220.0
 text = "Back"
 
 [connection signal="pressed" from="VBoxContainer/MarginContainer/options/StartButton" to="." method="_on_StartButton_pressed"]
 [connection signal="value_changed" from="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2/SpinBox" to="." method="_on_SpinBox_value_changed"]
-[connection signal="value_changed" from="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2/x pos" to="." method="_on_x_pos_value_changed"]
-[connection signal="value_changed" from="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2/y pos" to="." method="_on_y_pos_value_changed"]
+[connection signal="value_changed" from="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2/Num Carriers" to="." method="_on_Num_Carriers_value_changed"]
+[connection signal="value_changed" from="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2/Num Carriers" to="." method="_on_SpinBox_value_changed"]
 [connection signal="value_changed" from="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2/Islands" to="." method="_on_Islands_value_changed"]
 [connection signal="value_changed" from="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2/Faction" to="." method="_on_Faction_value_changed"]
 [connection signal="value_changed" from="VBoxContainer/MarginContainer/options/HBoxContainer/VBoxContainer2/Enemy Faction" to="." method="_on_Enemy_Faction_value_changed"]

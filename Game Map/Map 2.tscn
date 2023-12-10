@@ -12,7 +12,7 @@
 [ext_resource path="res://art/map_assets/wind_arrow.png" type="Texture" id=10]
 [ext_resource path="res://Game Map/WindSpeed.gd" type="Script" id=11]
 [ext_resource path="res://Game Map/WindBox.gd" type="Script" id=12]
-[ext_resource path="res://Squad/Carrier/Carrier.tscn" type="PackedScene" id=13]
+[ext_resource path="res://Ships2/Plane Launchers/Carrier.tscn" type="PackedScene" id=13]
 [ext_resource path="res://fonts/basic_font2.tres" type="DynamicFont" id=14]
 [ext_resource path="res://Game Map/Weather/Fog.tscn" type="PackedScene" id=15]
 [ext_resource path="res://Game Map/Calvinatron/Calvinatron.gd" type="Script" id=16]
@@ -45,13 +45,26 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 color = Color( 0.172549, 0.337255, 0.4, 1 )
 
-[node name="LineDrawer" type="Node2D" parent="."]
+[node name="Calvinatron" type="Node" parent="."]
+script = ExtResource( 16 )
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = 12
+
+[node name="PauseMenu" parent="CanvasLayer" instance=ExtResource( 5 )]
+pause_mode = 2
+visible = false
+margin_bottom = 60.0
+custom_fonts/font = ExtResource( 7 )
+items = [ "Main Menu", null, 0, false, false, 0, 0, null, "", false, "Quit", null, 0, false, false, 1, 0, null, "", false, "Resume Game", null, 0, false, false, 2, 0, null, "", false ]
+
+[node name="LineDrawer" type="Node2D" parent="CanvasLayer"]
 script = ExtResource( 3 )
 
-[node name="SelectionBox" type="Node2D" parent="."]
+[node name="SelectionBox" type="Node2D" parent="CanvasLayer"]
 script = ExtResource( 20 )
 
-[node name="ClockDisplay" type="RichTextLabel" parent="."]
+[node name="ClockDisplay" type="RichTextLabel" parent="CanvasLayer"]
 anchor_left = 0.999309
 anchor_top = 0.00117851
 anchor_right = 0.999309
@@ -66,7 +79,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Ship Funeral" type="PopupPanel" parent="."]
+[node name="Ship Funeral" type="PopupPanel" parent="CanvasLayer"]
 anchor_top = 1.0
 anchor_bottom = 1.0
 margin_top = -23.0
@@ -75,7 +88,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Ship Text" type="RichTextLabel" parent="Ship Funeral"]
+[node name="Ship Text" type="RichTextLabel" parent="CanvasLayer/Ship Funeral"]
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -91,19 +104,19 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="SquadSelected" parent="." instance=ExtResource( 18 )]
+[node name="SquadSelected" parent="CanvasLayer" instance=ExtResource( 18 )]
 visible = false
 
-[node name="Ship Popup Timer" type="Timer" parent="."]
+[node name="Ship Popup Timer" type="Timer" parent="CanvasLayer"]
 wait_time = 2.0
 one_shot = true
 
-[node name="GameClock" type="Timer" parent="."]
+[node name="GameClock" type="Timer" parent="CanvasLayer"]
 
-[node name="Weather" type="Node" parent="."]
+[node name="Weather" type="Node" parent="CanvasLayer"]
 script = ExtResource( 9 )
 
-[node name="WindBox" type="Control" parent="."]
+[node name="WindBox" type="Control" parent="CanvasLayer"]
 margin_right = 168.0
 margin_bottom = 184.0
 script = ExtResource( 12 )
@@ -111,13 +124,13 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ArrowSprite" type="Sprite" parent="WindBox"]
+[node name="ArrowSprite" type="Sprite" parent="CanvasLayer/WindBox"]
 position = Vector2( 80, 80 )
 rotation = -1.5708
 scale = Vector2( 4, 4 )
 texture = ExtResource( 10 )
 
-[node name="WindSpeedText" type="RichTextLabel" parent="WindBox"]
+[node name="WindSpeedText" type="RichTextLabel" parent="CanvasLayer/WindBox"]
 anchor_left = 1.00352
 anchor_top = 0.00117849
 anchor_right = 1.00352
@@ -134,16 +147,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="PauseMenu" parent="." instance=ExtResource( 5 )]
-pause_mode = 2
-visible = false
-margin_bottom = 60.0
-custom_fonts/font = ExtResource( 7 )
-items = [ "Main Menu", null, 0, false, false, 0, 0, null, "", false, "Quit", null, 0, false, false, 1, 0, null, "", false, "Resume Game", null, 0, false, false, 2, 0, null, "", false ]
-
-[node name="Calvinatron" type="Node" parent="."]
-script = ExtResource( 16 )
-
-[connection signal="timeout" from="Ship Popup Timer" to="." method="_on_Ship_Popup_Timer_timeout"]
-[connection signal="timeout" from="GameClock" to="." method="_on_GameClock_timeout"]
-[connection signal="id_pressed" from="PauseMenu" to="." method="_on_CrashPopup_id_pressed"]
+[connection signal="id_pressed" from="CanvasLayer/PauseMenu" to="." method="_on_CrashPopup_id_pressed"]
+[connection signal="timeout" from="CanvasLayer/Ship Popup Timer" to="." method="_on_Ship_Popup_Timer_timeout"]
+[connection signal="timeout" from="CanvasLayer/GameClock" to="." method="_on_GameClock_timeout"]

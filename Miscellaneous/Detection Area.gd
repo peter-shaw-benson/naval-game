@@ -15,6 +15,10 @@ func init(visibility, faction):
 	
 	if self.faction != GameState.get_playerFaction():
 		get_node("DetectionLight").visible = false
+		
+	var light_scale = visibility * GameState.light_detector_scale
+	
+	get_node("DetectionLight").scale = Vector2(light_scale, light_scale)
 	
 	#print(get_node("CollisionShape2D").shape.radius)
 	
@@ -34,6 +38,7 @@ func _on_DetectionArea_body_entered(body):
 	var fact_string = "faction_" + str(self.faction)
 	
 	if not body.is_in_group(fact_string):
+		print(body)
 		body.detect()
 
 func _on_DetectionArea_body_exited(body):

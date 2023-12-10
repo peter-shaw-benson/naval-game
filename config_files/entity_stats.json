@@ -36,8 +36,8 @@
     	"class": "Carrier",
     	"planes": {
         "scout": 4,
-        "strike": 15,
-        "fighter": 30,
+        "strike": 10,
+        "fighter": 15,
         "bomber": 0
       }
     }

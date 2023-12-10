@@ -62,24 +62,13 @@ var current_scout_plane_launch = 0
 
 var fighter_targets: Array
 var current_fighter_plane_launch = 0
+var combat_air_patrol = false
 
 var plane_numbers: Dictionary
 
 
 func _ready():
-	
-	var carrier = CarrierEntity.new()
-		#var next_destroyer = TorpDestroyer.new()
-		#print(next_destroyer)
-		
-	var carrier_dict = {"ship": carrier,
-			"position": Vector2(300, 300),
-			"type": "ship",
-			"unit_type": "carrier",
-			"faction": 0}
-	
-	self.init(carrier_dict["ship"], carrier_dict["position"], 0, "carrier")
-	
+
 	add_to_group("ship")
 	add_to_group("carrier")
 	
@@ -129,6 +118,7 @@ func _ready():
 	
 	get_node("ScoutPlaneTriangle").visible = false
 	get_node("ScoutPlaneTriangle").color = Color(0.2, 0.5, 0.3, 0.3)
+	get_node("ScoutPlaneTriangle").scale = Vector2(0.7, 0.7)
 	
 	scout_targets = get_node("ScoutPlaneTriangle").polygon
 	scout_targets.remove(0)
@@ -139,7 +129,7 @@ func _ready():
 	get_node("FighterPatrolCircle").scale = Vector2(0.8, 0.8)
 	
 func handle_right_click(placement):
-	#print("handling right click")
+	print("handling right click")
 	
 	if selected and GameState.get_playerFaction() == get_faction():
 		# this works properly for patrols:
@@ -166,9 +156,18 @@ func handle_right_click(placement):
 			
 			self.launch_planes(placement, "fighter")
 			
+			self.combat_air_patrol = true
+			
 			last_button = ""
 		
-		### Ship things:
+		else:
+			self.handle_right_mouse_movement(placement)
+		
+		if last_button != "CAP":
+			self.combat_air_patrol = false
+
+func handle_right_mouse_movement(placement):
+### Ship things:
 		if Input.is_action_pressed("queue"):
 			target_array.append(placement)
 			
@@ -216,7 +215,6 @@ func handle_right_click(placement):
 			
 			current_target = placement
 
-
 func launch_planes(placement, strike_type):
 	
 	self.send_out_planes(placement, strike_type, true)
@@ -252,11 +250,14 @@ func _input(event):
 				last_button = "CAP"
 		
 		if Input.is_action_pressed("stop"):
-			self.stop_launching()
+
 			set_current_speed_mode("stopped")
 			calc_current_speed()
 			self.current_target = self.global_position
 			self.target_array = []
+		
+		if Input.is_action_pressed("stop_launch"):
+			self.stop_launching()
 		
 		elif Input.is_action_pressed("patrol"):
 			last_button = "patrol"
@@ -538,11 +539,11 @@ func get_temp_target():
 
 ## PLANE thingS:
 
-func _unhandled_input(event):
-	if event is InputEventMouseButton \
-	and event.button_index == BUTTON_RIGHT \
-	and !event.pressed:
-		self.handle_right_click(event.position)
+#func _unhandled_input(event):
+#	if event is InputEventMouseButton \
+#	and event.button_index == BUTTON_RIGHT \
+#	and !event.pressed:
+#		self.handle_right_click(event.position)
 
 func get_launch_time(plane_list):
 	if len(plane_list) == 0:
@@ -557,7 +558,7 @@ func get_launch_time(plane_list):
 		return launch_time
 
 func send_out_planes(placement, strike_type, is_cap=false):
-	print(placement, strike_type)
+	#print(placement, strike_type)
 	
 	if strike_type == "scout":
 		current_scout_plane_launch = 0
@@ -566,10 +567,10 @@ func send_out_planes(placement, strike_type, is_cap=false):
 		
 		var initial_pos = global_position
 		strike_target = placement
-		print(initial_pos, strike_target)
+		#print(initial_pos, strike_target)
 		launch_type = strike_type
 						
-		print("starting launch")
+		#print("starting launch")
 		start_launch(placement, strike_type)
 
 func start_launch(placement, strike_type):
@@ -617,7 +618,7 @@ func _on_LaunchTimer_timeout():
 		plane_squad.transform = self.global_transform
 		
 		if launch_type != "scout" and launch_type != "fighter":
-			plane_squad.init(launch_type, self.global_position, strike_target, self.faction)
+			plane_squad.init(launch_type, self, strike_target, self.faction)
 			
 		elif launch_type == "fighter":
 			var patrol_target_idx = current_fighter_plane_launch % len(fighter_targets)
@@ -625,16 +626,19 @@ func _on_LaunchTimer_timeout():
 			
 			patrol_target = $FighterPatrolCircle.to_global(patrol_target)
 			
-			plane_squad.init(launch_type, self.global_position, patrol_target, self.faction)
+			plane_squad.init(launch_type, self, patrol_target, self.faction)
 			current_fighter_plane_launch += 1
 			
 		elif launch_type == "scout":
+			
 			var scout_target_idx = current_scout_plane_launch % len(scout_targets)
 			var scout_target = scout_targets[scout_target_idx]
 			
-			scout_target = $ScoutPlaneTriangle.to_global(scout_target)
+			scout_target = get_node("ScoutPlaneTriangle").to_global(scout_target)
 			
-			plane_squad.init(launch_type, self.global_position, scout_target, self.faction)
+			print(scout_target)
+			
+			plane_squad.init(launch_type, self, scout_target, self.faction)
 			current_scout_plane_launch += 1
 			
 		plane_squad.connect("plane_recovered", self, "plane_recovered")
@@ -642,11 +646,13 @@ func _on_LaunchTimer_timeout():
 		
 		plane_numbers[launch_type] -= 1
 		
-	else:
+	elif plane_numbers[launch_type] and combat_air_patrol == false:
 		stop_launching()
 
 func stop_launching():
 	launching = false
+	
+	combat_air_patrol = false
 
 	get_node("LaunchTimer").stop()
 

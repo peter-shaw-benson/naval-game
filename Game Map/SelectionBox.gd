@@ -27,7 +27,9 @@ func _ready():
 	
 func _input(event):
 			#print("Left button was clicked at ", event.position)
+	# this handles right mouse buttons
 	if event is InputEventMouseButton and event.button_index == 2:
+		# this detects right mosue dragging – for angling later
 		if event.pressed:
 			dragging_right = true
 			initial_right_mouse_pos = event.position
@@ -36,6 +38,7 @@ func _input(event):
 			#get_parent().get_node("LineDrawer").set_temp_target(event.position)
 			
 			if len(selected_ships) == 1:
+				#print(selected_ships)
 				selected_ships[0].set_temp_target(event.position)
 				
 			elif len(selected_ships) > 1:
@@ -50,7 +53,7 @@ func _input(event):
 			
 			
 			if len(selected_ships) == 1:
-				var selected_ship: ShipScene = selected_ships[0]
+				var selected_ship: CombatUnit = selected_ships[0]
 				
 				if selected_ship.is_in_group("player") and selected_ship.is_in_group("ship"):
 					selected_ship.handle_right_click(initial_right_mouse_pos)
@@ -60,7 +63,7 @@ func _input(event):
 				move_in_formation(initial_right_mouse_pos)
 			
 			if len(selected_ships) == 1:
-				var selected_ship: ShipScene = selected_ships[0]
+				var selected_ship: CombatUnit = selected_ships[0]
 				
 				if selected_ship.is_in_group("player") and selected_ship.is_in_group("ship"):
 					selected_ship.handle_final_turn(final_right_mouse_pos)
@@ -205,6 +208,7 @@ func remove_ship(ship):
 	
 	ship_index = selected_ships.find(ship)
 	
+	# this line here is not good at all lmao
 	self.selected.remove(ship_index)
 	self.selected_ships.remove(ship_index)
 	
