@@ -157,8 +157,8 @@ func place_carrier(carrier_data):
 	
 	carrier.init(carrier_data["ship"], get_viewport().get_mouse_position(), 
 	carrier_data.faction, carrier_data.type)
-		
-	squad_list.append(carrier)
+	
+	ship_list.append(carrier)
 		
 	add_child(carrier)
 	
@@ -280,7 +280,7 @@ func _on_CrashPopup_id_pressed(id):
 		get_node("CanvasLayer/PauseMenu").hide()
 		unpause()
 
-func _on_ship_lost(ship: ShipScene):
+func _on_ship_lost(ship: CombatUnit):
 	
 	ship_list.remove(ship_list.find(ship, 0))
 	

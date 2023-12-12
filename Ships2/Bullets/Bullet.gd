@@ -18,11 +18,29 @@ func init(weaponData, turret_pos):
 	initial_pos = turret_pos
 	
 	# set sprite frames here
+	var frames
+	
 	if self.weaponData.get_name() == "torpedo":
 		# we use preload because it would be way faster than doing this for all bullets at runtime with "load"
-		var frames = preload("res://art/Bullets/Torpedo/TorpedoFrames.tres")
+		frames = preload("res://art/Bullets/Torpedo/TorpedoFrames.tres")
 		get_node("AnimatedSprite").set_sprite_frames(frames)
-	
+		
+		self.set_collision_mask_bit(4, true)
+		self.set_collision_mask_bit(2, false)
+		
+	if self.weaponData.get_name() == "machinegun":
+		frames = preload("res://art/Bullets/MG/MGSprite.tres")
+		get_node("AnimatedSprite").set_sprite_frames(frames)
+		
+		# make it so these only collide with planes
+		self.set_collision_mask_bit(3, true)
+		self.set_collision_mask_bit(1, true)
+
+	elif self.weaponData.get_name() == "lightgun":
+		
+		self.set_collision_mask_bit(3, true)
+		self.set_collision_mask_bit(1, false)
+
 	get_node("AnimatedSprite").animation = "shell"
 
 func _physics_process(delta):
@@ -43,14 +61,21 @@ func _on_AnimatedSprite_animation_finished():
 
 
 func _on_Bullet_body_entered(body):
+	
 	if self.global_position.distance_to(self.initial_pos) >= 30:
 	
+		#print(body)
+			
 		get_node("AnimatedSprite").animation = "explosion"
 		get_node("AnimatedSprite").play()
 		
 		self.speed = 0
 	
 		if body.is_in_group("ship"):
-			var ship: ShipScene = body
+			var ship: CombatUnit = body
 			
 			ship.take_damage(self.weaponData)
+		
+		elif body.is_in_group("planes"):
+			
+			body.take_damage(self.weaponData)

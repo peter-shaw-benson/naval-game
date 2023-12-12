@@ -1,7 +1,7 @@
 extends "res://Entities/Planes/Plane.gd"
 
 var LevelBomb = preload("res://Weapons/PlaneWeapons/LevelBomb.gd")
-var MG = preload("res://Weapons/PlaneWeapons/Machinegun.gd")
+var MG = preload("res://Weapons/MachineGun.gd")
 
 var plane_stats = {
 	"speed": 50,

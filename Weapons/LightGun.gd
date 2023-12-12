@@ -1,17 +1,5 @@
 extends "res://Weapons/WeaponJSON.gd"
 
-var weapon_stats = {
-	"speed": 450,
-	"max_range": 100,
-	"fire_rate": 1,
-	"damage": 0.5,
-	"piercing": 2,
-	"armor_damage": 0.2,
-	"anti_air": 1,
-	"base_accuracy": 0.3,
-	"accuracy_gain": 0.03
-}
-
 func _init():
 	
 	self.init("LightGun")

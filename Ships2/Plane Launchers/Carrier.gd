@@ -129,7 +129,7 @@ func _ready():
 	get_node("FighterPatrolCircle").scale = Vector2(0.8, 0.8)
 	
 func handle_right_click(placement):
-	print("handling right click")
+	#print("handling right click")
 	
 	if selected and GameState.get_playerFaction() == get_faction():
 		# this works properly for patrols:
@@ -142,15 +142,18 @@ func handle_right_click(placement):
 			# Send planes
 			self.launch_planes(placement, "scout")
 			last_button = ""
+			self.combat_air_patrol = false
 			
 		elif last_button == "strike" and plane_numbers["strike"] > 0:
 			self.launch_planes(placement, "strike")
 			last_button = ""
+			self.combat_air_patrol = false
 		
 		elif last_button == "bomb" and  plane_numbers["bomber"] > 0:
 			self.launch_planes(placement, "bomber")
 			
 			last_button = ""
+			self.combat_air_patrol = false
 		
 		elif last_button == "CAP" and  plane_numbers["fighter"] > 0:
 			
@@ -162,8 +165,6 @@ func handle_right_click(placement):
 		
 		else:
 			self.handle_right_mouse_movement(placement)
-		
-		if last_button != "CAP":
 			self.combat_air_patrol = false
 
 func handle_right_mouse_movement(placement):
@@ -307,7 +308,7 @@ func select():
 		
 		#print(get_node("Sprite").animation)
 		
-		print("carrier selected")
+		#print("carrier selected")
 		# yikes this might not hold up
 		emit_signal("ship_selected", self)
 		
@@ -326,7 +327,7 @@ func deselect():
 	lock_turrets()
 	
 	#print(get_node("Sprite").animation)
-	print("carrier deselected")
+	#print("carrier deselected")
 	
 	emit_signal("ship_deselected", self)
 	
@@ -579,6 +580,11 @@ func start_launch(placement, strike_type):
 	# hard-coding for now – this means that 2 planes should launch per second
 	get_node("LaunchTimer").wait_time = squad_launch_time
 	get_node("LaunchTimer").start()
+	
+	if strike_type != "fighter" and combat_air_patrol == true:
+		combat_air_patrol = false
+		
+	print(combat_air_patrol, strike_type)
 
 func plane_recovered(plane):
 	var recovered_plane_type = plane.get_plane_type()
@@ -606,6 +612,7 @@ func _on_LaunchTimer_timeout():
 	#end_launch()
 	# spawn new boid
 	#print(launch_type, plane_numbers[launch_type])
+	#print(combat_air_patrol, launch_type)
 	
 	if plane_numbers[launch_type] > 0:
 		#spawn new boid
@@ -646,7 +653,7 @@ func _on_LaunchTimer_timeout():
 		
 		plane_numbers[launch_type] -= 1
 		
-	elif plane_numbers[launch_type] and combat_air_patrol == false:
+	elif plane_numbers[launch_type] <= 0 and combat_air_patrol == false:
 		stop_launching()
 
 func stop_launching():

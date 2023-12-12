@@ -31,7 +31,8 @@ height = 32.7071
 
 [node name="Carrier" type="KinematicBody2D"]
 position = Vector2( 205, 123 )
-collision_layer = 5
+collision_layer = 12
+collision_mask = 8
 script = ExtResource( 9 )
 detector_scene = ExtResource( 7 )
 Turret = ExtResource( 10 )
