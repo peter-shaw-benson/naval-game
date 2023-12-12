@@ -5,7 +5,7 @@
 [ext_resource path="res://art/Individual Ship Sprite/Gunboat/gunboat_shell_explosion.png" type="Texture" id=3]
 
 [sub_resource type="CircleShape2D" id=2]
-radius = 6.02508
+radius = 40.0
 
 [sub_resource type="AtlasTexture" id=3]
 flags = 4
@@ -51,6 +51,7 @@ animations = [ {
 } ]
 
 [node name="Bullet" type="Area2D"]
+collision_layer = 0
 collision_mask = 0
 script = ExtResource( 2 )
 

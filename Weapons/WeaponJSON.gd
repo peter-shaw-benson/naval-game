@@ -30,6 +30,9 @@ func read_json_file(file_path):
 	#print(content_as_text)
 	
 	var data_received = JSON.parse(content_as_text).result
+	
+	if data_received == null:
+		print("ERROR IN JSON READING!!")
 		
 	#print(data_received)
 	
@@ -37,7 +40,7 @@ func read_json_file(file_path):
 
 func init(weapon_name):
 	
-	print("reading weapons from file")
+	#print("reading weapons from file")
 	weapon_data = read_json_file(weapon_data_path)[weapon_name]
 
 func get_fire_rate():

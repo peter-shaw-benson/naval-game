@@ -1,7 +1,7 @@
 {
   "Torpedo": {
     "name": "torpedo",
-    "speed": 40,
+    "speed": 42,
     "max_range": 500,
   	"fire_rate": 10,
   	"damage": 10,
@@ -25,7 +25,7 @@
   },
   "HeavyGun": {
     "name": "heavygun",
-    "speed": 300,
+    "speed": 380,
   	"max_range": 150,
   	"fire_rate": 4,
   	"damage": 5,
@@ -45,5 +45,14 @@
   	"anti_air": 0.2,
   	"base_accuracy": 0.4,
   	"accuracy_gain": 0.03
+  },
+  "MachineGun": {
+    "name": "machinegun",
+    "speed": 400,
+  	"max_range": 50,
+  	"fire_rate": 20,
+  	"damage": 1.5,
+  	"piercing": 1,
+  	"armor_damage": 0,
   }
 }

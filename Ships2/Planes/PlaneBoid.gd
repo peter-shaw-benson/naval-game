@@ -145,9 +145,7 @@ func _input(event):
 
 func _physics_process(_delta):
 	# if it reaches the 
-	
-	if returning:
-		current_target = self.parent_airbase.global_position
+	check_parent_airbase()
 	
 	var mouse_vector = Vector2.ZERO
 	if current_target != Vector2.INF:
@@ -157,7 +155,9 @@ func _physics_process(_delta):
 	# if we reach the airbase, start recovering?
 	if global_position.distance_to(current_target) <= 25:
 		if strike_target == current_target:
-			current_target = self.parent_airbase.global_position
+			
+			check_parent_airbase()
+				
 			self.returning = true
 			
 			self.cohesion_force = 0.05
@@ -224,7 +224,7 @@ func get_plane_type():
 
 func _on_FuelTimer_timeout():
 	#print("plane out of fuel")
-	current_target = self.parent_airbase.global_position
+	check_parent_airbase()
 	
 	self.returning = true
 	
@@ -238,3 +238,26 @@ func detect():
 func un_detect():
 	if self.faction != GameState.get_playerFaction():
 		self.hide()
+		
+
+func check_parent_airbase():
+	if returning:
+		if is_instance_valid(self.parent_airbase):
+			current_target = self.parent_airbase.global_position
+		else:
+			queue_free()
+
+
+## COMBAT!!!
+func take_damage(weapon):
+	#print("damaged plane")
+	
+	self.plane_data.damage(weapon)
+	print(weapon.get_name())
+	
+	if self.get_health() <= 0:
+		print("plane lost")
+		queue_free()
+
+func get_health():
+	return self.plane_data.get_health()

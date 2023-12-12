@@ -1,7 +1,7 @@
 extends "res://Entities/Planes/Plane.gd"
 
 var DiveBomb = preload("res://Weapons/PlaneWeapons/DiveBomb.gd")
-var MG = preload("res://Weapons/PlaneWeapons/Machinegun.gd")
+var MG = preload("res://Weapons/MachineGun.gd")
 
 var weapon_list = [DiveBomb.new(), MG.new()]
 

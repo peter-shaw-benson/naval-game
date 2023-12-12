@@ -1,0 +1,26 @@
+[gd_resource type="SpriteFrames" load_steps=4 format=2]
+
+[ext_resource path="res://art/Turrets/MG/mg_bullet.png" type="Texture" id=2]
+
+[sub_resource type="AtlasTexture" id=3]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 0, 16, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=2]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 4, 0, 8, 16 )
+
+[resource]
+animations = [ {
+"frames": [ SubResource( 3 ) ],
+"loop": true,
+"name": "explosion",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 2 ) ],
+"loop": true,
+"name": "shell",
+"speed": 5.0
+} ]

@@ -19,8 +19,13 @@ func init(weapon):
 	# here, weapon is a dict of weapon data, y offset, and number of barrels
 	self.weaponData = weapon["weapon"]
 	
+	#print(self.weaponData.get_name())
+	
 	self.y_offset = weapon["offset"][1]
 	self.x_offset = weapon["offset"][0]
+	
+	print(self.x_offset, self.y_offset)
+	
 	self.num_barrels = weapon["barrels"]
 	self.turn_weight = weapon["turn_weight"]
 	
@@ -33,6 +38,7 @@ func init(weapon):
 	#get_node("AnimatedSprite").speed_scale = 1
 	
 	self.position.y += self.y_offset
+	self.position.x += self.x_offset
 	
 func _ready():
 	pass
