@@ -4,6 +4,8 @@ class_name Bullet
 var speed: int
 var max_range: int
 
+var lifetime: float
+
 var weaponData: Weapon
 
 var initial_pos = Vector2(0,0)
@@ -25,19 +27,19 @@ func init(weaponData, turret_pos):
 		frames = preload("res://art/Bullets/Torpedo/TorpedoFrames.tres")
 		get_node("AnimatedSprite").set_sprite_frames(frames)
 		
-		self.set_collision_mask_bit(4, true)
-		self.set_collision_mask_bit(2, false)
+		self.set_collision_mask_bit(3, true)
+		self.set_collision_mask_bit(1, false)
 		
 	if self.weaponData.get_name() == "machinegun":
 		frames = preload("res://art/Bullets/MG/MGSprite.tres")
 		get_node("AnimatedSprite").set_sprite_frames(frames)
 		
 		# make it so these only collide with planes
-		self.set_collision_mask_bit(3, true)
+		self.set_collision_mask_bit(3, false)
 		self.set_collision_mask_bit(1, true)
 
 	elif self.weaponData.get_name() == "lightgun":
-		
+		# can hit boats, but not planes
 		self.set_collision_mask_bit(3, true)
 		self.set_collision_mask_bit(1, false)
 
@@ -79,3 +81,11 @@ func _on_Bullet_body_entered(body):
 		elif body.is_in_group("planes"):
 			
 			body.take_damage(self.weaponData)
+
+
+
+func _on_fuseTimer_timeout():
+	if self.weaponData.get_name() == "flak":
+		# explode into multiple sub-bullets
+		pass 
+	queue_free()

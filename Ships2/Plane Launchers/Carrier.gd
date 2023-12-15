@@ -584,7 +584,7 @@ func start_launch(placement, strike_type):
 	if strike_type != "fighter" and combat_air_patrol == true:
 		combat_air_patrol = false
 		
-	print(combat_air_patrol, strike_type)
+	#print(combat_air_patrol, strike_type)
 
 func plane_recovered(plane):
 	var recovered_plane_type = plane.get_plane_type()
@@ -643,7 +643,7 @@ func _on_LaunchTimer_timeout():
 			
 			scout_target = get_node("ScoutPlaneTriangle").to_global(scout_target)
 			
-			print(scout_target)
+			#print(scout_target)
 			
 			plane_squad.init(launch_type, self, scout_target, self.faction)
 			current_scout_plane_launch += 1

@@ -20,12 +20,14 @@ var fletcher_turret_path = "res://art/Turrets/Light Gun 1/LightGunSprite.tres"
 # while this seems excessive for a simple ship, if we want to add MG's or something later, 
 # this will become much more complex (with multiple sprite paths, multiple offsets, etc).
 
-var turret_list = [
-	{"weapon": LightGun.new(), "offset": [10,0], "barrels": 1, 
-	"sprite_path": fletcher_turret_path, "turn_weight":0.02},
-	{"weapon": LightGun.new(), "offset": [-10,0], "barrels": 1, 
-	"sprite_path": fletcher_turret_path, "turn_weight":0.02},
-]
+#var turret_list = [
+#	{"weapon": LightGun.new(), "offset": [10,0], "barrels": 1, 
+#	"sprite_path": fletcher_turret_path, "turn_weight":0.02},
+#	{"weapon": LightGun.new(), "offset": [-10,0], "barrels": 1, 
+#	"sprite_path": fletcher_turret_path, "turn_weight":0.02},
+#]
+
+var turret_list = []
 
 
 func _init():

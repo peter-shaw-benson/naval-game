@@ -2,9 +2,21 @@
   "Torpedo": {
     "name": "torpedo",
     "speed": 42,
-    "max_range": 500,
+    "max_range": 200,
   	"fire_rate": 10,
   	"damage": 10,
+  	"piercing": 12,
+  	"armor_damage": 1,
+  	"anti_air": 0,
+  	"base_accuracy": 0.5,
+  	"accuracy_gain": 0.03
+  },
+  "AirTorpedo": {
+    "name": "torpedo",
+    "speed": 40,
+    "max_range": 60,
+  	"fire_rate": 10,
+  	"damage": 8,
   	"piercing": 12,
   	"armor_damage": 1,
   	"anti_air": 0,

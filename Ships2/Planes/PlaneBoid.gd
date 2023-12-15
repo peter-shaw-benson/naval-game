@@ -5,6 +5,7 @@ const Fighter = preload("res://Entities/Planes/Fighter.gd")
 const TorpBomber = preload("res://Entities/Planes/TorpBomber.gd")
 
 export var detector_scene: PackedScene
+export var Turret: PackedScene
 
 signal plane_recovered(PlaneBoid)
 signal plane_lost(PlaneBoid)
@@ -49,6 +50,18 @@ var fuel_time = 8
 
 var detector: DetectionArea
 var visibility
+
+## COMBAT:
+var turrets: Array
+# all turrets face forward
+var close_enemy
+var combat_target
+var target_lock = false
+
+# planes have one main weapon
+var main_weapon
+var main_weapon_ammo: int
+var main_weapon_range: int
 
 func init(plane_type, airbase, strike_target, faction):
 	self.strike_target = strike_target
@@ -111,6 +124,28 @@ func initialize_plane_type(plane_type):
 	self.max_speed = self.plane_data.get_speed()
 	
 	self.scale = Vector2(0.6, 0.6)
+	
+	# make turrets
+	for w in self.plane_data.get_weapons():
+		var turret = Turret.instance()
+		
+		turret.init(w)
+		
+		add_child(turret)
+		
+		turrets.append(turret)
+		
+		turret.rotation = -1 * PI/2
+		turret.lock()
+		
+		if turret.get_name() != "machinegun":
+			main_weapon = turret
+			
+			main_weapon_ammo = w["ammo"]
+			
+			main_weapon_range = main_weapon.get_range()
+		
+		#turret.visible = false
 
 func _ready():
 	randomize()
@@ -146,6 +181,11 @@ func _input(event):
 func _physics_process(_delta):
 	# if it reaches the 
 	check_parent_airbase()
+	check_enemy_pos()
+	
+	if self.main_weapon_ammo > 0:
+		# this is AWFUL for performance. move into a flock next? or have a timer to check?
+		find_enemy_ship()
 	
 	var mouse_vector = Vector2.ZERO
 	if current_target != Vector2.INF:
@@ -154,15 +194,11 @@ func _physics_process(_delta):
 	# check if we have reached the strike target – if so, turn around
 	# if we reach the airbase, start recovering?
 	if global_position.distance_to(current_target) <= 25:
-		if strike_target == current_target:
+		if strike_target == current_target and target_lock:
+			self.shoot()
 			
-			check_parent_airbase()
-				
-			self.returning = true
-			
-			self.cohesion_force = 0.05
-			self.algin_force = 0.05
-			self.separation_force = 0.05
+		elif strike_target == current_target:
+			self.go_home()
 			
 		elif self.returning:
 			emit_signal("plane_recovered", self)
@@ -238,7 +274,17 @@ func detect():
 func un_detect():
 	if self.faction != GameState.get_playerFaction():
 		self.hide()
+
+func go_home():
+	check_parent_airbase()
 		
+	self.returning = true
+	
+	self.cohesion_force = 0.05
+	self.algin_force = 0.05
+	self.separation_force = 0.05
+	
+	target_lock = false
 
 func check_parent_airbase():
 	if returning:
@@ -247,13 +293,22 @@ func check_parent_airbase():
 		else:
 			queue_free()
 
+func check_enemy_pos():
+	if target_lock:
+		if is_instance_valid(close_enemy):
+			strike_target = close_enemy.global_position
+			current_target = strike_target
+		else:
+			target_lock = false
+			close_enemy = null
+
 
 ## COMBAT!!!
 func take_damage(weapon):
 	#print("damaged plane")
 	
 	self.plane_data.damage(weapon)
-	print(weapon.get_name())
+	#print(weapon.get_name())
 	
 	if self.get_health() <= 0:
 		print("plane lost")
@@ -261,3 +316,41 @@ func take_damage(weapon):
 
 func get_health():
 	return self.plane_data.get_health()
+
+
+## Shooting logic:
+func shoot():
+	if main_weapon_ammo > 0 and target_lock:
+		main_weapon.shoot()
+		main_weapon_ammo -= 1
+		
+	if main_weapon_ammo <= 0:
+		self.go_home()
+		
+
+func find_enemy_ship():
+	var all_enemy = get_tree().get_nodes_in_group("enemy")
+	
+	var closest_distance = 10000
+	
+	
+	for enemy in all_enemy:
+		var enemy_distance = self.global_position.distance_to(enemy.global_position)
+		#print(gun2enemy_distance)
+		
+		if enemy.visible and enemy_distance < closest_distance:
+			
+			close_enemy = enemy
+			
+			strike_target = close_enemy.global_position
+			current_target = strike_target
+			
+			target_lock = true
+			# find the closest visible enemy
+			# set the new strike target to them
+			# if they're in main weapon range, fire the main weapon
+			
+			if enemy_distance < main_weapon_range:
+				self.shoot()
+			
+	pass

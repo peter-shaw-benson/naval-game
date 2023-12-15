@@ -24,7 +24,7 @@ func init(weapon):
 	self.y_offset = weapon["offset"][1]
 	self.x_offset = weapon["offset"][0]
 	
-	print(self.x_offset, self.y_offset)
+	#print(self.x_offset, self.y_offset)
 	
 	self.num_barrels = weapon["barrels"]
 	self.turn_weight = weapon["turn_weight"]
@@ -104,3 +104,9 @@ func set_target(new_target):
 
 func point_to(position):
 	self.look_at(position)
+
+func get_name():
+	return self.weaponData.get_name()
+	
+func get_range():
+	return self.weaponData.get_range()

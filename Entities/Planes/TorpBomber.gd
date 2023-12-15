@@ -1,12 +1,22 @@
 extends "res://Entities/Planes/Plane.gd"
 
-var AirTorpedo = preload("res://Weapons/PlaneWeapons/AirTorpedo.gd")
+var AirTorpedo = preload("res://Weapons/AirTorpedo.gd")
 var MG = preload("res://Weapons/MachineGun.gd")
 
-var weapon_list = [AirTorpedo.new(), MG.new()]
+var mg_turret_path = "res://art/Turrets/MG/MGTurret.tres"
+
+var turret_list = [
+	{"weapon": MG.new(), "offset": [0,0], "barrels": 1, 
+	"sprite_path": mg_turret_path, "turn_weight":0},
+	
+	{"weapon": AirTorpedo.new(), "offset": [0,0], "barrels": 1, 
+	# sprite path doesn't matter here
+	"sprite_path": mg_turret_path, "turn_weight":0, "ammo": 1}
+]
+
 
 func _init():
 	
 	self.init("plane", "torp_bomber")
 	
-	self.armament(weapon_list)
+	self.armament(turret_list)
