@@ -38,4 +38,5 @@ shape = SubResource( 8 )
 position = Vector2( 0.353561, 0 )
 shape = SubResource( 8 )
 
+[connection signal="timeout" from="ShotTimer" to="." method="_on_ShotTimer_timeout"]
 [connection signal="input_event" from="MouseClickHitbox" to="." method="_input_event"]

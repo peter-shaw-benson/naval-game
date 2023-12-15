@@ -5,7 +5,7 @@ var current_scene = null
 var playerFaction: int
 
 var game_vars = {
-	"combatPace": 1,
+	"combatPace": 0.1,
 	# how fast the shot timer runs
 	"rangeFactor": 30,
 	# how much range influences accuracy / damage

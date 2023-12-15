@@ -266,6 +266,8 @@ func enable_combat():
 func disable_combat():
 	self.combat_enabled = false
 
+func is_plane():
+	return false
 
 # Detection:
 func detect():

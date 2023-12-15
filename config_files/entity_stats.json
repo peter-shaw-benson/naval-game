@@ -44,7 +44,7 @@
   },
   "plane": {
     "scout": {
-    	"speed": 50,
+    	"speed": 30,
     	"range": 600,
     	"turn_weight": 0.15,
     	"hit_points": 40,
@@ -60,7 +60,7 @@
       "separation": 0.05
     },
     "dive": {
-      "speed": 150,
+      "speed": 90,
     	"range": 200,
     	"turn_weight": 0.15,
     	"hit_points": 8,
@@ -76,7 +76,7 @@
       "separation": 0.3
     },
     "torp_bomber": {
-      "speed": 120,
+      "speed": 80,
     	"range": 200,
     	"turn_weight": 0.15,
     	"hit_points": 10,
@@ -92,7 +92,7 @@
       "separation": 0.05
     },
     "fighter": {
-      "speed": 200,
+      "speed": 100,
     	"range": 150,
     	"turn_weight": 0.15,
     	"hit_points": 1.5,

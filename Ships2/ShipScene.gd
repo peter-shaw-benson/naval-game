@@ -19,6 +19,13 @@ var patrolling = false
 var target_array = []
 var target_angle = {"turning": false, "turn_point": Vector2(0,0)}
 
+# Combat stuff
+var combat_entity
+var combat_target
+var faction_visibility_group = "visible_to_"
+var in_combat = false
+var combat_ticks = 0
+
 # this is for placing the ghost sprite
 var temp_target = Vector2(0,0)
 
@@ -53,6 +60,8 @@ func _ready():
 	elif self.faction == 2:
 		add_to_group("faction_2")
 		
+	self.faction_visibility_group += str(faction)
+		
 	if self.faction != GameState.get_playerFaction():
 		add_to_group("enemy")
 	else:
@@ -78,12 +87,15 @@ func _ready():
 	for w in self.get_weapon_list():
 		var turret = Turret.instance()
 		
-		turret.init(w)
+		turret.init(w, self.faction)
 		
 		add_child(turret)
 		
 		turrets.append(turret)
-		
+	
+	unlock_turrets()
+	get_node("ShotTimer").start()
+	
 	# configure light
 	get_node("DetectionLight")
 	
@@ -211,8 +223,6 @@ func select():
 		
 		last_button = ""
 		
-		unlock_turrets()
-		
 		show_ghost_sprite()
 		
 func deselect():
@@ -220,8 +230,6 @@ func deselect():
 	
 	get_node("Sprite").animation = type + "_basic"
 	get_node("Sprite").set_frame(faction)
-	
-	lock_turrets()
 	
 	#print(get_node("Sprite").animation)
 	
@@ -365,6 +373,8 @@ func _process(delta):
 	
 	draw_ghost_sprite()
 	
+	align_turrets()
+	
 func set_firing_target(firing_target):
 	
 	# idk how to do this one yet
@@ -372,8 +382,21 @@ func set_firing_target(firing_target):
 
 # update this later, once turrets are added
 func _on_ShotTimer_timeout():
+	if is_instance_valid(combat_entity):
+		self.shoot_ship_turrets(combat_ticks)
+		
+		self.combat_ticks += 1
+		
+func shoot_ship_turrets(combat_ticks):
 	
-	pass
+	for t in turrets:
+
+		if int(combat_ticks) % int(t.get_fire_rate()) == 0:
+			
+			if t.is_aa_gun() and combat_entity.is_plane():
+				t.shoot()
+			elif not t.is_aa_gun() and not combat_entity.is_plane():
+				t.shoot()
 	
 # TODO: make a bullet deal damage.
 func take_damage(weapon: Weapon):
@@ -407,13 +430,29 @@ func calc_current_speed():
 ## COMBAT
 # this is unique to the ships – different for planes
 # bugged for now 
-#func align_turrets():
-#	## TODO
-#	var mouse_position = get_global_mouse_position()
-#
-#	for t in turrets:
-#		t.point_to(mouse_position)
-
+func align_turrets():
+	
+	for t in turrets:
+		var all_enemy = get_tree().get_nodes_in_group(faction_visibility_group)
+		
+		for enemy in all_enemy:
+			var gun2enemy_distance = self.global_position.distance_to(enemy.global_position)
+			#print(gun2enemy_distance)
+			if gun2enemy_distance < t.weaponData.get_range() and enemy.get_faction() != self.faction:
+				if enemy.is_plane() and not t.is_aa_gun():
+					pass
+					
+				else:
+					combat_entity = enemy  ## --->## after get the current close_enemy
+					
+					# lerped (slowed down rotation)
+					# need to use global rotation otherwise things get bad
+					combat_target = combat_entity.global_position
+					
+					t.global_rotation = lerp_angle(t.global_rotation, 
+						(combat_target - t.global_position).normalized().angle(), 
+						t.turn_weight)
+						
 
 func draw_ghost_sprite():
 	# here, we put the position of the ghost sprite over the mouse

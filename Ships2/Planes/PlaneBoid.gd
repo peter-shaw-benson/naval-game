@@ -129,7 +129,7 @@ func initialize_plane_type(plane_type):
 	for w in self.plane_data.get_weapons():
 		var turret = Turret.instance()
 		
-		turret.init(w)
+		turret.init(w, faction)
 		
 		add_child(turret)
 		
@@ -354,3 +354,9 @@ func find_enemy_ship():
 				self.shoot()
 			
 	pass
+
+func is_plane():
+	return true
+
+func get_faction():
+	return self.faction

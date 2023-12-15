@@ -14,8 +14,13 @@ var locked = true
 
 var target = Vector2(0,0)
 var close_enemy
+var faction: int
+var fact_string = "faction_"
+var faction_visibility_group = "visible_to_"
 
-func init(weapon):
+var aa_gun = false
+
+func init(weapon, faction):
 	# here, weapon is a dict of weapon data, y offset, and number of barrels
 	self.weaponData = weapon["weapon"]
 	
@@ -28,6 +33,7 @@ func init(weapon):
 	
 	self.num_barrels = weapon["barrels"]
 	self.turn_weight = weapon["turn_weight"]
+	self.aa_gun = weaponData.is_aa_gun()
 	
 	# set sprite from the sprite path given in the weapon dict
 	var frames = load(weapon["sprite_path"])
@@ -40,31 +46,34 @@ func init(weapon):
 	self.position.y += self.y_offset
 	self.position.x += self.x_offset
 	
+	self.faction = faction
+	self.fact_string += str(faction)
+	self.faction_visibility_group += str(faction)
+	
 func _ready():
 	pass
 
 func _process(delta):
 	# fuck. we have to handle the turret alignment here:
-	
-	if not locked:
-		
-		var all_enemy = get_tree().get_nodes_in_group("enemy")
-		
-		for enemy in all_enemy:
-			var gun2enemy_distance = self.global_position.distance_to(enemy.global_position)
-			#print(gun2enemy_distance)
-			if gun2enemy_distance < self.weaponData.get_range() and enemy.visible:
-				
-				close_enemy = enemy  ## --->## after get the current close_enemy
-				
-				# lerped (slowed down rotation)
-				# need to use global rotation otherwise things get bad
-				target = close_enemy.global_position
-				
-				self.global_rotation = lerp_angle(self.global_rotation, 
-					(target - self.global_position).normalized().angle(), 
-					self.turn_weight)
-					
+	pass
+#	if not locked:
+#
+#		var all_enemy = get_tree().get_nodes_in_group(faction_visibility_group)
+#
+#		for enemy in all_enemy:
+#			var gun2enemy_distance = self.global_position.distance_to(enemy.global_position)
+#			#print(gun2enemy_distance)
+#			if gun2enemy_distance < self.weaponData.get_range() and enemy.get_faction() != self.faction:
+#
+#				close_enemy = enemy  ## --->## after get the current close_enemy
+#
+#				# lerped (slowed down rotation)
+#				# need to use global rotation otherwise things get bad
+#				target = close_enemy.global_position
+#
+#				self.global_rotation = lerp_angle(self.global_rotation, 
+#					(target - self.global_position).normalized().angle(), 
+#					self.turn_weight)
 
 func shoot():
 	
@@ -110,3 +119,9 @@ func get_name():
 	
 func get_range():
 	return self.weaponData.get_range()
+
+func is_aa_gun():
+	return self.aa_gun
+
+func get_fire_rate():
+	return self.weaponData.get_fire_rate()

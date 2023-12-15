@@ -57,3 +57,6 @@ func get_damage():
 
 func get_name():
 	return self.weapon_data["name"]
+
+func is_aa_gun():
+	return self.weapon_data["aa_gun"]
