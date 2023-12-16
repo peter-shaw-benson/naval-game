@@ -35,6 +35,10 @@ onready var IslandTexture = get_node("CanvasLayer/IslandTexture")
 
 var selected = []
 
+
+## MAP VARS:
+export var map_size = Vector2(1024, 720)
+
 func init(input_unit_list, num_islands):
 	# Display stuff
 	var screen_size = get_viewport().size

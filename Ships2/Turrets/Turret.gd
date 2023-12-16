@@ -9,6 +9,7 @@ var y_offset = 0
 var x_offset = 0
 var num_barrels = 1
 var turn_weight = 0
+var firing_arc = [0,0]
 
 var locked = true
 
@@ -35,6 +36,9 @@ func init(weapon, faction):
 	self.turn_weight = weapon["turn_weight"]
 	self.aa_gun = weaponData.is_aa_gun()
 	
+	self.firing_arc[0] = deg2rad(weapon["firing_arc"][0])
+	self.firing_arc[1] = deg2rad(weapon["firing_arc"][1])
+	
 	# set sprite from the sprite path given in the weapon dict
 	var frames = load(weapon["sprite_path"])
 	get_node("AnimatedSprite").set_sprite_frames(frames)
@@ -55,6 +59,10 @@ func _ready():
 
 func _process(delta):
 	# fuck. we have to handle the turret alignment here:
+	
+	self.point_to(get_global_mouse_position())
+#
+#	self.rotation = clamp(self.rotation, firing_arc[0], firing_arc[1])
 	pass
 #	if not locked:
 #

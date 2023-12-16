@@ -24,9 +24,9 @@ func _draw():
 				if ship.is_patrolling() == false:
 					if Input.is_action_pressed("right_click") and ship.selected:
 						# kinda a hacky way to do it, but works with the new released logic
-						draw_line(ship.global_position, ship.get_temp_target(), Color.green, 1.5)
+						draw_line(ship.position, ship.get_temp_target(), Color.green, 1.5)
 					else:
-						draw_line(ship.global_position, ship.current_target, Color.green, 1.5)
+						draw_line(ship.position, ship.current_target, Color.green, 1.5)
 				
 				if !("PlaneSquad" in ship.get_name()) and len(ship.target_array) >= 1:
 					draw_line(ship.current_target, ship.target_array[0], Color.green, 1.5)

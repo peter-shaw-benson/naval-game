@@ -20,10 +20,17 @@ var formations = [
 # we should ONLY use this one
 var selected_ships = []
 
+var camera: ZoomCamera
+var camera_offset: Vector2
+
 ### SELECTION
 func _ready():
 	selected = [] 
 	selected_ships = []
+	
+func add_camera(camera):
+	camera = camera
+	camera_offset = camera.get_camera_offset()
 	
 func _input(event):
 			#print("Left button was clicked at ", event.position)
@@ -124,11 +131,11 @@ func _unhandled_input(event):
 
 func _draw():
 	if dragging:
-		draw_rect(Rect2(drag_start, get_global_mouse_position() - drag_start),
+		draw_rect(Rect2(drag_start, get_local_mouse_position() - drag_start),
 				Color(.9, .9, .9, 0.15), true)
 				
 	if dragging_right:
-		draw_line(initial_right_mouse_pos, get_global_mouse_position(), Color.purple, 1.0)
+		draw_line(initial_right_mouse_pos, get_local_mouse_position(), Color.purple, 1.0)
 
 func _process(delta):
 	update()
