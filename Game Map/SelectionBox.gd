@@ -28,14 +28,17 @@ func _ready():
 	selected = [] 
 	selected_ships = []
 	
-func add_camera(camera):
-	camera = camera
+func add_camera(new_camera):
+	#print(camera)
+	camera = new_camera
 	camera_offset = camera.get_camera_offset()
 	
 func _input(event):
 			#print("Left button was clicked at ", event.position)
 	# this handles right mouse buttons
 	if event is InputEventMouseButton and event.button_index == 2:
+		event.position += camera.get_camera_offset()
+		
 		# this detects right mosue dragging – for angling later
 		if event.pressed:
 			dragging_right = true
@@ -82,6 +85,7 @@ func _input(event):
 
 func _unhandled_input(event):
 	if event is InputEventMouseButton and event.button_index == BUTTON_LEFT:
+		event.position += camera.get_camera_offset()
 		
 		#print(" left mouse event in selection box")
 		if event.pressed:
