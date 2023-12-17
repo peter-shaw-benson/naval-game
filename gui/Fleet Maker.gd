@@ -62,7 +62,7 @@ func make_carrier_array(length, faction):
 
 func make_enemy_fleet():
 	#var squad = Squadron.new()
-	var ship_list = make_destroyer_array(3, enemy_faction)
+	var ship_list = make_destroyer_array(1, enemy_faction)
 	#print(ship_list[0].speed)
 	
 	return ship_list

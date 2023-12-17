@@ -382,7 +382,7 @@ func set_firing_target(firing_target):
 
 # update this later, once turrets are added
 func _on_ShotTimer_timeout():
-	if is_instance_valid(combat_entity):
+	if is_instance_valid(combat_entity) and in_combat:
 		self.shoot_ship_turrets(combat_ticks)
 		
 		self.combat_ticks += 1
@@ -432,13 +432,20 @@ func calc_current_speed():
 # bugged for now 
 func align_turrets():
 	
+	# we do this for each turret so they can independently target things.
+	# change later?
+	var valid_enemies = 0
+	
 	for t in turrets:
 		var all_enemy = get_tree().get_nodes_in_group(faction_visibility_group)
 		
 		for enemy in all_enemy:
 			var gun2enemy_distance = self.global_position.distance_to(enemy.global_position)
+			
 			#print(gun2enemy_distance)
-			if gun2enemy_distance < t.weaponData.get_range() and enemy.get_faction() != self.faction:
+			if gun2enemy_distance < t.weaponData.get_range() and \
+				enemy.get_faction() != self.faction:
+				# this is basically an XOR: the aa gun and plane have to match up
 				if enemy.is_plane() and not t.is_aa_gun():
 					pass
 					
@@ -449,11 +456,28 @@ func align_turrets():
 					# need to use global rotation otherwise things get bad
 					combat_target = combat_entity.global_position
 					
+					# t here is turret
 					t.global_rotation = lerp_angle(t.global_rotation, 
 						(combat_target - t.global_position).normalized().angle(), 
 						t.turn_weight)
 						
+					valid_enemies += 1
+				
+	if self.in_combat == false and valid_enemies > 0:
+		self.enter_combat()
+	
+	if valid_enemies == 0:
+		self.exit_combat()
+				
 
+func enter_combat():
+	self.in_combat = true
+	
+func exit_combat():
+	self.in_combat = false
+
+
+## Movement stuff
 func draw_ghost_sprite():
 	# here, we put the position of the ghost sprite over the mouse
 	# then, if the right mouse is already being held down, 
@@ -464,13 +488,13 @@ func draw_ghost_sprite():
 	# sets the alpha value to be very low
 	ghost_sprite.self_modulate.a = 0.2
 	
-	ghost_sprite.global_position = get_local_mouse_position()
+	ghost_sprite.global_position = get_global_mouse_position()
 	
 	if Input.is_action_pressed("right_click"):
 		#print("rotating ghost sprite")
 		# ideally, this should stick on the temp target
 		ghost_sprite.global_position = self.temp_target
-		ghost_sprite.look_at(get_local_mouse_position())
+		ghost_sprite.look_at(get_global_mouse_position())
 		ghost_sprite.rotation += PI/2
 	
 func hide_ghost_sprite():

@@ -67,7 +67,10 @@ func _on_Bullet_body_entered(body):
 	if self.global_position.distance_to(self.initial_pos) >= 30:
 	
 		#print(body)
-			
+		
+		if self.weaponData.get_name() == "torpedo":
+			self.scale = Vector2(2, 2)
+		
 		get_node("AnimatedSprite").animation = "explosion"
 		get_node("AnimatedSprite").play()
 		

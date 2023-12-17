@@ -27,7 +27,7 @@ func _draw():
 	
 	if ship_list != null:
 		camera_offset = camera.get_camera_offset()
-		print(camera_offset)
+		#print(camera_offset)
 			
 		for ship in ship_list:
 			#draw_circle(ship.global_position, ship.get_visibility()*7, Color8(195, 155, 211, 50))

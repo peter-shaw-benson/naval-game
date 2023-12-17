@@ -68,7 +68,7 @@
     "speed": 400,
   	"max_range": 50,
   	"fire_rate": 1,
-  	"damage": 1.5,
+  	"damage": 0.5,
   	"piercing": 1,
   	"armor_damage": 0,
     "aa_gun": true

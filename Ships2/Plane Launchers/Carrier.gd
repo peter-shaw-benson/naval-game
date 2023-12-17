@@ -446,7 +446,7 @@ func _process(delta):
 	draw_ghost_sprite()
 	
 	
-	get_node("ScoutPlaneTriangle").look_at(get_local_mouse_position())
+	get_node("ScoutPlaneTriangle").look_at(get_global_mouse_position())
 	get_node("ScoutPlaneTriangle").rotation += 3 * PI/4
 	
 	scout_targets = get_node("ScoutPlaneTriangle").polygon
@@ -515,13 +515,13 @@ func draw_ghost_sprite():
 	# sets the alpha value to be very low
 	ghost_sprite.self_modulate.a = 0.2
 	
-	ghost_sprite.global_position = get_local_mouse_position()
+	ghost_sprite.global_position = get_global_mouse_position()
 	
 	if Input.is_action_pressed("right_click"):
 		#print("rotating ghost sprite")
 		# ideally, this should stick on the temp target
 		ghost_sprite.global_position = self.temp_target
-		ghost_sprite.look_at(get_local_mouse_position())
+		ghost_sprite.look_at(get_global_mouse_position())
 		ghost_sprite.rotation += PI/2
 	
 func hide_ghost_sprite():

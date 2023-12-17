@@ -60,7 +60,7 @@ func _ready():
 func _process(delta):
 	# fuck. we have to handle the turret alignment here:
 	
-	self.point_to(get_global_mouse_position())
+	#self.point_to(get_global_mouse_position())
 #
 #	self.rotation = clamp(self.rotation, firing_arc[0], firing_arc[1])
 	pass
