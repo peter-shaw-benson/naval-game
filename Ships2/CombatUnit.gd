@@ -38,7 +38,6 @@ var speed_array = [0, speed / 2, speed, int(speed * 1.2)]
 
 var visibility: float
 var visibility_scaled: float
-var num_detections = 0
 var hiding: float
 var detector: DetectionArea
 var wind_resist: float
@@ -275,13 +274,8 @@ func is_plane():
 func detect():
 	self.show()
 	
-	self.num_detections += 1
-	
 func un_detect():
-	self.num_detections -= 1
 	
-	if self.faction != GameState.get_playerFaction() and \
-		self.num_detections <= 0:
-			
+	if self.faction != GameState.get_playerFaction():
 		self.hide()
 

@@ -373,7 +373,16 @@ func _process(delta):
 	
 	draw_ghost_sprite()
 	
+	## find overlapping bodies to spot
+	scan_detection_radius()
+	
 	align_turrets()
+	
+func scan_detection_radius():
+	
+	for body in detector.get_overlapping_bodies():
+		if body != self:
+			body.call("detect")
 	
 func set_firing_target(firing_target):
 	
