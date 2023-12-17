@@ -36,14 +36,18 @@ func _on_DetectionArea_body_entered(body):
 	# test if it's from another faction – if so, show it
 	
 	var fact_string = "faction_" + str(self.faction)
+	var visible_string = "visible_to_" + str(self.faction)
 	
 	if not body.is_in_group(fact_string):
-		print(body)
 		body.detect()
+		body.add_to_group(visible_string)
 
 func _on_DetectionArea_body_exited(body):
 	# hide it (if it's from another faction)
 	var fact_string = "faction_" + str(self.faction)
+	var visible_string = "visible_to_" + str(self.faction)
+
 	
 	if not body.is_in_group(fact_string):
 		body.un_detect()
+		body.remove_from_group(visible_string)

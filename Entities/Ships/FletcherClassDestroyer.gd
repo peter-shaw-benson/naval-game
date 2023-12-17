@@ -26,35 +26,35 @@ var mg_turret_path = "res://art/Turrets/MG/MGTurret.tres"
 
 var turret_list = [
 	{"weapon": LightGun.new(), "offset": [0,30], "barrels": 1, 
-	"sprite_path": fletcher_turret_path, "turn_weight":0.02},
+	"sprite_path": fletcher_turret_path, "turn_weight":0.02, "firing_arc": [210, 210]},
 
 	{"weapon": LightGun.new(), "offset": [0,20], "barrels": 1, 
-	"sprite_path": fletcher_turret_path, "turn_weight":0.02},
+	"sprite_path": fletcher_turret_path, "turn_weight":0.02,"firing_arc": [180, 180]},
 
 	{"weapon": LightGun.new(), "offset": [0,10], "barrels": 1, 
-	"sprite_path": fletcher_turret_path, "turn_weight":0.02},
+	"sprite_path": fletcher_turret_path, "turn_weight":0.02, "firing_arc": [360, 360]},
 
 
 	# these two are the forward guns
 	{"weapon": LightGun.new(), "offset": [0,-10], "barrels": 1, 
-	"sprite_path": fletcher_turret_path, "turn_weight":0.02},
+	"sprite_path": fletcher_turret_path, "turn_weight":0.02, "firing_arc": [0, 180]},
 
 	{"weapon": LightGun.new(), "offset": [0,-20], "barrels": 1, 
-	"sprite_path": fletcher_turret_path, "turn_weight":0.02},
+	"sprite_path": fletcher_turret_path, "turn_weight":0.02, "firing_arc": [0, 180]},
 
 	## MG's:
 	# two on each side.
 	# Back MGs
 	{"weapon": MachineGun.new(), "offset": [10,30], "barrels": 1, 
-	"sprite_path": mg_turret_path, "turn_weight":0.1},
+	"sprite_path": mg_turret_path, "turn_weight":0.1, "firing_arc": [90, 270]},
 	{"weapon": MachineGun.new(), "offset": [-10,30], "barrels": 1, 
-	"sprite_path": mg_turret_path, "turn_weight":0.1},
+	"sprite_path": mg_turret_path, "turn_weight":0.1, "firing_arc": [270, 90]},
 	
 	# front MGs
 	{"weapon": MachineGun.new(), "offset": [10,-20], "barrels": 1, 
-	"sprite_path": mg_turret_path, "turn_weight":0.1},
+	"sprite_path": mg_turret_path, "turn_weight":0.1, "firing_arc": [90, 270]},
 	{"weapon": MachineGun.new(), "offset": [-10,-20], "barrels": 1, 
-	"sprite_path": mg_turret_path, "turn_weight":0.1}
+	"sprite_path": mg_turret_path, "turn_weight":0.1, "firing_arc": [270, 90]}
 ]
 
 

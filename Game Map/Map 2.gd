@@ -35,6 +35,10 @@ onready var IslandTexture = get_node("CanvasLayer/IslandTexture")
 
 var selected = []
 
+
+## MAP VARS:
+export var map_size = Vector2(1024, 720)
+
 func init(input_unit_list, num_islands):
 	# Display stuff
 	var screen_size = get_viewport().size
@@ -61,6 +65,9 @@ func init(input_unit_list, num_islands):
 	place_next_unit(place_list)
 	
 	get_node("CanvasLayer/SelectionBox").clear_selections()
+	get_node("CanvasLayer/SelectionBox").add_camera(get_node("ZoomCamera"))
+
+	get_node("CanvasLayer/LineDrawer").add_camera(get_node("ZoomCamera"))
 
 func hide_enemies():
 	print("hiding enemies")

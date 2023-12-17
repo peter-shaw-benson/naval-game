@@ -5,7 +5,7 @@
 [ext_resource path="res://art/Individual Ship Sprite/Gunboat/gunboat_shell_explosion.png" type="Texture" id=3]
 
 [sub_resource type="CircleShape2D" id=2]
-radius = 40.0
+radius = 7.07107
 
 [sub_resource type="AtlasTexture" id=3]
 flags = 4
@@ -56,6 +56,7 @@ collision_mask = 0
 script = ExtResource( 2 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+rotation = -0.0463151
 shape = SubResource( 2 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
@@ -66,7 +67,9 @@ animation = "explosion"
 
 [node name="fuseTimer" type="Timer" parent="."]
 wait_time = 0.1
+one_shot = true
 
 [connection signal="area_entered" from="." to="." method="_on_Bullet_area_entered"]
 [connection signal="body_entered" from="." to="." method="_on_Bullet_body_entered"]
 [connection signal="animation_finished" from="AnimatedSprite" to="." method="_on_AnimatedSprite_animation_finished"]
+[connection signal="timeout" from="fuseTimer" to="." method="_on_fuseTimer_timeout"]

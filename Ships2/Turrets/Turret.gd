@@ -9,13 +9,19 @@ var y_offset = 0
 var x_offset = 0
 var num_barrels = 1
 var turn_weight = 0
+var firing_arc = [0,0]
 
 var locked = true
 
 var target = Vector2(0,0)
 var close_enemy
+var faction: int
+var fact_string = "faction_"
+var faction_visibility_group = "visible_to_"
 
-func init(weapon):
+var aa_gun = false
+
+func init(weapon, faction):
 	# here, weapon is a dict of weapon data, y offset, and number of barrels
 	self.weaponData = weapon["weapon"]
 	
@@ -24,10 +30,14 @@ func init(weapon):
 	self.y_offset = weapon["offset"][1]
 	self.x_offset = weapon["offset"][0]
 	
-	print(self.x_offset, self.y_offset)
+	#print(self.x_offset, self.y_offset)
 	
 	self.num_barrels = weapon["barrels"]
 	self.turn_weight = weapon["turn_weight"]
+	self.aa_gun = weaponData.is_aa_gun()
+	
+	self.firing_arc[0] = deg2rad(weapon["firing_arc"][0])
+	self.firing_arc[1] = deg2rad(weapon["firing_arc"][1])
 	
 	# set sprite from the sprite path given in the weapon dict
 	var frames = load(weapon["sprite_path"])
@@ -40,31 +50,38 @@ func init(weapon):
 	self.position.y += self.y_offset
 	self.position.x += self.x_offset
 	
+	self.faction = faction
+	self.fact_string += str(faction)
+	self.faction_visibility_group += str(faction)
+	
 func _ready():
 	pass
 
 func _process(delta):
 	# fuck. we have to handle the turret alignment here:
 	
-	if not locked:
-		
-		var all_enemy = get_tree().get_nodes_in_group("enemy")
-		
-		for enemy in all_enemy:
-			var gun2enemy_distance = self.global_position.distance_to(enemy.global_position)
-			#print(gun2enemy_distance)
-			if gun2enemy_distance < self.weaponData.get_range() and enemy.visible:
-				
-				close_enemy = enemy  ## --->## after get the current close_enemy
-				
-				# lerped (slowed down rotation)
-				# need to use global rotation otherwise things get bad
-				target = close_enemy.global_position
-				
-				self.global_rotation = lerp_angle(self.global_rotation, 
-					(target - self.global_position).normalized().angle(), 
-					self.turn_weight)
-					
+	#self.point_to(get_global_mouse_position())
+#
+#	self.rotation = clamp(self.rotation, firing_arc[0], firing_arc[1])
+	pass
+#	if not locked:
+#
+#		var all_enemy = get_tree().get_nodes_in_group(faction_visibility_group)
+#
+#		for enemy in all_enemy:
+#			var gun2enemy_distance = self.global_position.distance_to(enemy.global_position)
+#			#print(gun2enemy_distance)
+#			if gun2enemy_distance < self.weaponData.get_range() and enemy.get_faction() != self.faction:
+#
+#				close_enemy = enemy  ## --->## after get the current close_enemy
+#
+#				# lerped (slowed down rotation)
+#				# need to use global rotation otherwise things get bad
+#				target = close_enemy.global_position
+#
+#				self.global_rotation = lerp_angle(self.global_rotation, 
+#					(target - self.global_position).normalized().angle(), 
+#					self.turn_weight)
 
 func shoot():
 	
@@ -104,3 +121,15 @@ func set_target(new_target):
 
 func point_to(position):
 	self.look_at(position)
+
+func get_name():
+	return self.weaponData.get_name()
+	
+func get_range():
+	return self.weaponData.get_range()
+
+func is_aa_gun():
+	return self.aa_gun
+
+func get_fire_rate():
+	return self.weaponData.get_fire_rate()

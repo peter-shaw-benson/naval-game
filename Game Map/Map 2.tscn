@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=2]
+[gd_scene load_steps=24 format=2]
 
 [ext_resource path="res://Game Map/Map 2.gd" type="Script" id=1]
 [ext_resource path="res://Squad/Squadron.tscn" type="PackedScene" id=2]
@@ -20,6 +20,8 @@
 [ext_resource path="res://gui/SquadSelected.tscn" type="PackedScene" id=18]
 [ext_resource path="res://Ships2/ShipScene.tscn" type="PackedScene" id=19]
 [ext_resource path="res://Game Map/SelectionBox.gd" type="Script" id=20]
+[ext_resource path="res://Miscellaneous/ZoomCamera.tscn" type="PackedScene" id=21]
+[ext_resource path="res://Miscellaneous/ZoomCamera.gd" type="Script" id=22]
 
 [sub_resource type="DynamicFont" id=1]
 size = 36
@@ -38,8 +40,9 @@ fog_scene = ExtResource( 15 )
 
 [node name="ColorRect" type="ColorRect" parent="."]
 light_mask = 16
-margin_right = 1024.0
-margin_bottom = 720.0
+margin_right = 2048.0
+margin_bottom = 1440.0
+rect_rotation = -0.0276448
 mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -146,6 +149,11 @@ script = ExtResource( 11 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="ZoomCamera" parent="." instance=ExtResource( 21 )]
+anchor_mode = 0
+script = ExtResource( 22 )
+movement_factor = 5
 
 [connection signal="id_pressed" from="CanvasLayer/PauseMenu" to="." method="_on_CrashPopup_id_pressed"]
 [connection signal="timeout" from="CanvasLayer/Ship Popup Timer" to="." method="_on_Ship_Popup_Timer_timeout"]
