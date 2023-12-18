@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://art/Individual Ship Sprite/Gunboat/GunboatSprite.tres" type="SpriteFrames" id=1]
 [ext_resource path="res://Ships2/ShipScene.gd" type="Script" id=2]
 [ext_resource path="res://Miscellaneous/Detection Area.tscn" type="PackedScene" id=3]
+[ext_resource path="res://gui/ShipGUI/Healthbar.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Ships2/Turrets/Turret.tscn" type="PackedScene" id=5]
 
 [sub_resource type="CapsuleShape2D" id=8]
@@ -14,6 +15,7 @@ collision_layer = 12
 collision_mask = 8
 script = ExtResource( 2 )
 detector_scene = ExtResource( 3 )
+Healthbar = ExtResource( 4 )
 Turret = ExtResource( 5 )
 
 [node name="Sprite" type="AnimatedSprite" parent="."]

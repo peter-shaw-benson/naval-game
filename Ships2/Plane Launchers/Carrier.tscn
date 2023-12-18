@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://art/carrier sprites/sprite_4.png" type="Texture" id=1]
 [ext_resource path="res://art/carrier sprites/sprite_1.png" type="Texture" id=2]
@@ -11,6 +11,7 @@
 [ext_resource path="res://Ships2/Plane Launchers/Carrier.gd" type="Script" id=9]
 [ext_resource path="res://Ships2/Turrets/Turret.tscn" type="PackedScene" id=10]
 [ext_resource path="res://Ships2/Planes/Plane.tscn" type="PackedScene" id=11]
+[ext_resource path="res://gui/ShipGUI/Healthbar.tscn" type="PackedScene" id=12]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -35,10 +36,11 @@ collision_layer = 12
 collision_mask = 8
 script = ExtResource( 9 )
 detector_scene = ExtResource( 7 )
+Healthbar = ExtResource( 12 )
 Turret = ExtResource( 10 )
 PlaneBoidScene = ExtResource( 11 )
 
-[node name="CarrierSprite" type="AnimatedSprite" parent="."]
+[node name="Sprite" type="AnimatedSprite" parent="."]
 position = Vector2( 0.176773, 0 )
 frames = SubResource( 1 )
 animation = "carrier_basic"
@@ -64,6 +66,7 @@ position = Vector2( 0.353561, 0 )
 shape = SubResource( 2 )
 
 [node name="ScoutPlaneTriangle" type="Polygon2D" parent="."]
+visible = false
 scale = Vector2( 2, 2 )
 color = Color( 0.670588, 0.113725, 0.65098, 1 )
 polygon = PoolVector2Array( 0, 0, 107.5, -223.5, -13.5, -221.5, -107.5, -192, -175, -102, -202, 8 )
