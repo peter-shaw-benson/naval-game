@@ -35,6 +35,20 @@ onready var IslandTexture = get_node("CanvasLayer/IslandTexture")
 
 var selected = []
 
+var selection_groups = {
+	1: [],
+	2: [],
+	3: [],
+	4: [],
+	5: [],
+	6: [],
+	7: [],
+	8: [],
+	9: [],
+	10: []
+}
+
+var creating_new_group = false
 
 ## MAP VARS:
 export var map_size = Vector2(1024, 720)
@@ -248,7 +262,38 @@ func _input(event):
 			handle_pause(false)
 		else:
 			unpause()
-
+			
+	# Selection Groups
+	if Input.is_action_pressed("command"):
+		creating_new_group = true
+		
+	elif Input.is_action_just_released("command"):
+		creating_new_group = false
+	
+	if event is InputEventKey and event.pressed:
+		var number_key = keypress_to_numeric(event)
+		
+		if number_key > 0:
+			if creating_new_group:
+				selection_groups[number_key] = [] + selected
+				#print(selection_groups)
+			else: 
+				#print(number_key)
+				#print(selection_groups[number_key])
+				for s in selection_groups[number_key]:
+					#print("selecting ship at index ", number_key)
+					s.select()
+		
+func keypress_to_numeric(event):
+	
+	var final_event_index = event.scancode - 48
+	
+	if final_event_index > 0 and final_event_index < 10:
+		return final_event_index
+	elif final_event_index == 0:
+		return 10
+	else:
+		return -1
 
 func update():
 	pass
@@ -417,7 +462,20 @@ func enable_combat():
 func add_ship_to_selected(ship: CombatUnit):
 	
 	get_node("CanvasLayer/SelectionBox").add_ship(ship)
+	selected.append(ship)
 
 func remove_ship_from_selected(ship: CombatUnit):
 	
 	get_node("CanvasLayer/SelectionBox").remove_ship(ship)
+	
+	#print(self.selected)
+	var ship_index = 0
+	
+	ship_index = selected.find(ship)
+	
+	# this line here is not good at all lmao
+	self.selected.remove(ship_index)
+	#print(self.selected)
+
+
+## Selection Groups

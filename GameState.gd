@@ -49,6 +49,7 @@ var strike_multiplier = 8
 
 var light_detector_scale = 0.005
 
+
 func _ready():
 	# Global variables
 	combatPace = game_vars["combatPace"]

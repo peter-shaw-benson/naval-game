@@ -67,7 +67,7 @@ func setup_specific_unit():
 	get_node("FighterPatrolCircle").scale = Vector2(0.8, 0.8)
 	
 	# setup healthbar
-	healthbar_offset = Vector2(-15, 50)
+	healthbar_offset = Vector2(-15, 35)
 
 func handle_right_click(placement):
 	#print("handling right click")
