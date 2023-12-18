@@ -5,6 +5,7 @@ func get_class(): return "ShipScene"
 
 export var Turret: PackedScene
 export var TorpedoTube: PackedScene
+export var Healthbar: PackedScene
 
 signal new_course_change(current_target, placement)
 signal reached_target()
@@ -25,6 +26,9 @@ var combat_target
 var faction_visibility_group = "visible_to_"
 var in_combat = false
 var combat_ticks = 0
+
+var healthbar
+var healthbar_offset = Vector2(-15, 30)
 
 # this is for placing the ghost sprite
 var temp_target = Vector2(0,0)
@@ -61,6 +65,7 @@ func _ready():
 		add_to_group("faction_2")
 		
 	self.faction_visibility_group += str(faction)
+	add_to_group(faction_visibility_group)
 		
 	if self.faction != GameState.get_playerFaction():
 		add_to_group("enemy")
@@ -96,8 +101,11 @@ func _ready():
 	unlock_turrets()
 	get_node("ShotTimer").start()
 	
-	# configure light
-	get_node("DetectionLight")
+	# Healthbar
+	healthbar = Healthbar.instance()
+	get_tree().root.add_child(healthbar)
+	healthbar.value = self.get_health()
+	healthbar.max_value = self.get_health()
 	
 func handle_right_click(placement):
 	#print("handling right click")
@@ -368,6 +376,13 @@ func _physics_process(delta):
 	
 	#position.x = clamp(position.x, 0, screen_size.x)
 	#position.y = clamp(position.y, 0, screen_size.y)
+	
+	if self.is_in_group("visible_to_" + str(GameState.get_playerFaction())):
+		healthbar.visible = true
+		healthbar.set_global_position(self.global_position + healthbar_offset)
+		healthbar.set_rotation(0)
+	else:
+		healthbar.visible = false
 
 func _process(delta):
 	
@@ -412,9 +427,13 @@ func take_damage(weapon: Weapon):
 	
 	self.unitData.damage(weapon)
 	
+	healthbar.value = self.get_health()
+	
 	if self.get_health() <= 0:
 		print("ship lost")
 		emit_signal("ship_lost", self)
+		
+		healthbar.queue_free()
 
 # if / when we add back fuel, we can use the prototypes in the Ship Squadron class.
 

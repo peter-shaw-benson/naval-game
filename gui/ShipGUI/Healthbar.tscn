@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://art/themes/healthbar.tres" type="StyleBox" id=1]
+[ext_resource path="res://gui/ShipGUI/Healthbar.gd" type="Script" id=2]
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 0, 0, 0, 1 )
+
+[node name="Healthbar" type="ProgressBar"]
+margin_top = 30.0
+margin_right = 30.0
+margin_bottom = 34.0
+custom_styles/fg = ExtResource( 1 )
+custom_styles/bg = SubResource( 1 )
+value = 50.0
+percent_visible = false
+script = ExtResource( 2 )
