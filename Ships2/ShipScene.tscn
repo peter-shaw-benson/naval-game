@@ -15,8 +15,8 @@ collision_layer = 12
 collision_mask = 8
 script = ExtResource( 2 )
 detector_scene = ExtResource( 3 )
-Turret = ExtResource( 5 )
 Healthbar = ExtResource( 4 )
+Turret = ExtResource( 5 )
 
 [node name="Sprite" type="AnimatedSprite" parent="."]
 scale = Vector2( 2, 2 )
