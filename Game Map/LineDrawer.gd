@@ -39,11 +39,24 @@ func _draw():
 					
 					if Input.is_action_pressed("right_click") and ship.selected:
 						# kinda a hacky way to do it, but works with the new released logic
-						draw_line(ship_screen_coords, ship.get_viewport_transform() * (ship.get_temp_target()), Color.green, 1.5)
+						if !(Input.is_action_pressed("queue")):
+							draw_line(ship_screen_coords, ship.get_viewport_transform() * (ship.get_temp_target()), Color.green, 1.5)
+						
+						elif Input.is_action_pressed("queue") and len(ship.target_array) == 0:
+							draw_line(ship_screen_coords, ship.get_viewport_transform() * (ship.current_target), Color.green, 1.5)
+							
+							draw_line(ship.get_viewport_transform() * (ship.current_target), ship.get_viewport_transform() * (ship.get_temp_target()), Color.green, 1.5)
+						
+						elif Input.is_action_pressed("queue") and len(ship.target_array) >= 1:
+							draw_line(ship_screen_coords, ship.get_viewport_transform() * (ship.current_target), Color.green, 1.5)
+							
+							draw_line(ship.get_viewport_transform() * ship.target_array[-1], ship.get_viewport_transform() * (ship.get_temp_target()), Color.green, 1.5)
+						
 					else:
 						draw_line(ship_screen_coords, ship.get_viewport_transform() * (ship.current_target), Color.green, 1.5)
 				
-				if !("PlaneSquad" in ship.get_name()) and len(ship.target_array) >= 1:
+				if !("PlaneSquad" in ship.get_name()) and len(ship.target_array) >= 1 \
+				and !((Input.is_action_pressed("right_click"))):
 					draw_line(ship.get_viewport_transform() * ship.current_target, ship.get_viewport_transform() * ship.target_array[0], Color.green, 1.5)
 					
 					if len(ship.target_array) >= 2:
