@@ -257,6 +257,7 @@ func _input(event):
 			handle_pause()
 			
 	elif Input.is_action_pressed("pause_game"):
+		print("spacebar pressed")
 		# Spacebar
 		if not paused:
 			handle_pause(false)
@@ -299,6 +300,7 @@ func update():
 	pass
 		
 func handle_pause(pause_menu=true):
+	#print("paused game")
 	get_tree().paused = true
 	paused = true
 	
