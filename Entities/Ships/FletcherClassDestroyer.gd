@@ -49,7 +49,7 @@ var turret_list = [
 	"sprite_path": mg_turret_path, "turn_weight":0.1, "firing_arc": [90, 270]},
 	{"weapon": MachineGun.new(), "offset": [-10,30], "barrels": 1, 
 	"sprite_path": mg_turret_path, "turn_weight":0.1, "firing_arc": [270, 90]},
-	
+
 	# front MGs
 	{"weapon": MachineGun.new(), "offset": [10,-20], "barrels": 1, 
 	"sprite_path": mg_turret_path, "turn_weight":0.1, "firing_arc": [90, 270]},

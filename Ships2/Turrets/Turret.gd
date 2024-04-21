@@ -45,6 +45,9 @@ func init(weapon, faction):
 	
 	get_node("AnimatedSprite").animation = "default"
 	
+	#print(frames)
+	#print(weapon["sprite_path"])
+	
 	#get_node("AnimatedSprite").speed_scale = 1
 	
 	self.position.y += self.y_offset
@@ -95,11 +98,13 @@ func shoot():
 		get_tree().root.add_child(bullet)
 		
 		bullet.transform = $Barrel.global_transform
-		
+	
+	print("shooting")
+	
 	get_node("AnimatedSprite").animation = "shoot"
 	get_node("AnimatedSprite").play()
 	
-	get_node("AnimatedSprite").animation = "default"
+	#get_node("AnimatedSprite").animation = "default"
 	
 	#if get_node("AnimatedSprite").animation == "default":
 	#play_shoot_animation()
@@ -108,7 +113,6 @@ func play_shoot_animation():
 	get_node("AnimatedSprite").animation = "shoot"
 	get_node("AnimatedSprite").play()
 	
-	get_node("AnimatedSprite").animation = "default"
 
 func unlock():
 	self.locked = false
@@ -133,3 +137,7 @@ func is_aa_gun():
 
 func get_fire_rate():
 	return self.weaponData.get_fire_rate()
+
+
+func _on_AnimatedSprite_animation_finished():
+	get_node("AnimatedSprite").animation = "default"
