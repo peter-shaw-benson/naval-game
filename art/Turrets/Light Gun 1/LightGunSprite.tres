@@ -2,6 +2,11 @@
 
 [ext_resource path="res://art/Turrets/Light Gun 1/LightGun.png" type="Texture" id=1]
 
+[sub_resource type="AtlasTexture" id=5]
+flags = 4
+atlas = ExtResource( 1 )
+region = Rect2( 0, 0, 48, 48 )
+
 [sub_resource type="AtlasTexture" id=1]
 flags = 4
 atlas = ExtResource( 1 )
@@ -22,20 +27,15 @@ flags = 4
 atlas = ExtResource( 1 )
 region = Rect2( 0, 96, 48, 48 )
 
-[sub_resource type="AtlasTexture" id=5]
-flags = 4
-atlas = ExtResource( 1 )
-region = Rect2( 0, 0, 48, 48 )
-
 [resource]
 animations = [ {
-"frames": [ SubResource( 1 ), SubResource( 2 ), SubResource( 3 ), SubResource( 4 ) ],
-"loop": true,
-"name": "shoot",
-"speed": 5.0
-}, {
 "frames": [ SubResource( 5 ) ],
 "loop": true,
 "name": "default",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 1 ), SubResource( 2 ), SubResource( 3 ), SubResource( 4 ) ],
+"loop": true,
+"name": "shoot",
 "speed": 5.0
 } ]

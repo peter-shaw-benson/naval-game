@@ -10,6 +10,7 @@ var select_rect = RectangleShape2D.new()  # Collision shape for drag box.
 var dragging_right = false
 var initial_right_mouse_pos = Vector2.ZERO
 var final_right_mouse_pos = Vector2.ZERO
+var raw_initial_right_mouse_pos = Vector2.ZERO
 
 # implement this later lmao
 var formations = [
@@ -22,22 +23,45 @@ var selected_ships = []
 
 var camera: ZoomCamera
 var camera_offset: Vector2
+var camera_zoom: Vector2
 
 ### SELECTION
 func _ready():
 	selected = [] 
 	selected_ships = []
 	
+	
 func add_camera(new_camera):
 	#print(camera)
 	camera = new_camera
 	camera_offset = camera.get_camera_offset()
+	camera_zoom = camera.zoom
+	
+	#print(camera)
+	#print(camera_zoom)
+	
+func get_zoomed_offset(event_pos):
+	var actual_position = event_pos + camera.get_camera_offset() 
+	camera_zoom = camera.zoom
+	
+	# the zoom is the scaling factor
+	# multiply the two vectors and we should get it?
+	
+	#print(camera_offset)
+	#print(event_pos)
+	#print(actual_position)
+	#print(camera_zoom)
+	#print(actual_position * camera_zoom)
+	
+	return actual_position * camera_zoom
+	
 	
 func _input(event):
 			#print("Left button was clicked at ", event.position)
 	# this handles right mouse buttons
 	if event is InputEventMouseButton and event.button_index == 2:
-		event.position += camera.get_camera_offset()
+		raw_initial_right_mouse_pos = event.position
+		event.position = get_zoomed_offset(event.position)
 		
 		# this detects right mosue dragging – for angling later
 		if event.pressed:
@@ -61,25 +85,17 @@ func _input(event):
 			dragging_right = false
 			final_right_mouse_pos = event.position
 			
-			
 			if len(selected_ships) == 1:
 				var selected_ship: CombatUnit = selected_ships[0]
 				
 				if selected_ship.is_in_group("player") and selected_ship.is_in_group("ship"):
 					selected_ship.handle_right_click(initial_right_mouse_pos)
+					selected_ship.handle_final_turn(final_right_mouse_pos)
 					
 			# if there's multiple ships
 			else:
 				move_in_formation(initial_right_mouse_pos)
-			
-			if len(selected_ships) == 1:
-				var selected_ship: CombatUnit = selected_ships[0]
-				
-				if selected_ship.is_in_group("player") and selected_ship.is_in_group("ship"):
-					selected_ship.handle_final_turn(final_right_mouse_pos)
-			else:
 				self.handle_squadron_turn(final_right_mouse_pos)
-				
 			
 			
 
@@ -139,7 +155,7 @@ func _draw():
 				Color(.9, .9, .9, 0.15), true)
 				
 	if dragging_right:
-		draw_line(initial_right_mouse_pos, get_local_mouse_position(), Color.purple, 1.0)
+		draw_line(raw_initial_right_mouse_pos, get_local_mouse_position(), Color.purple, 1.0)
 
 func _process(delta):
 	update()

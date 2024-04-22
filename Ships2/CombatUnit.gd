@@ -11,6 +11,7 @@ var faction_visibility_group = "visible_to_"
 
 var healthbar
 var healthbar_offset = Vector2(-15, 30)
+var healthbar_offset_scaling_factor = 0.1
 
 # turret type
 var turrets = []
@@ -463,7 +464,14 @@ func take_damage(weapon: Weapon):
 func update_healthbar():
 	if self.is_in_group("visible_to_" + str(GameState.get_playerFaction())):
 		healthbar.visible = true
+#
+#		# dynamic healthbar offset
+#		var scaled_rotation = abs((int(self.rotation_degrees) % 180) - 90)
+#		var base_offset = Vector2(-15, 30)
+#		healthbar_offset = base_offset - Vector2(0, healthbar_offset_scaling_factor * scaled_rotation)
+#
 		healthbar.set_global_position(self.global_position + healthbar_offset)
+		
 		healthbar.set_rotation(0)
 	else:
 		healthbar.visible = false

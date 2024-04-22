@@ -78,9 +78,6 @@ margin_right = -0.292847
 margin_bottom = 53.636
 custom_fonts/normal_font = ExtResource( 14 )
 text = "12:20"
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Ship Funeral" type="PopupPanel" parent="CanvasLayer"]
 anchor_top = 1.0
@@ -123,9 +120,6 @@ script = ExtResource( 9 )
 margin_right = 168.0
 margin_bottom = 184.0
 script = ExtResource( 12 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="ArrowSprite" type="Sprite" parent="CanvasLayer/WindBox"]
 position = Vector2( 80, 80 )
