@@ -11,6 +11,9 @@ var dragging_right = false
 var initial_right_mouse_pos = Vector2.ZERO
 var final_right_mouse_pos = Vector2.ZERO
 var raw_initial_right_mouse_pos = Vector2.ZERO
+var transformed_pos = Vector2.ZERO
+var screen_offset_pos = Vector2.ZERO
+
 
 # implement this later lmao
 var formations = [
@@ -41,19 +44,30 @@ func add_camera(new_camera):
 	#print(camera_zoom)
 	
 func get_zoomed_offset(event_pos):
-	var actual_position = event_pos + camera.get_camera_offset() 
+	camera_offset = camera.get_camera_offset()
 	camera_zoom = camera.zoom
+	
+	var actual_position = event_pos * camera_zoom + camera.get_camera_offset()
+	
+	# we also need to offset by the screen dimensions
+	var screen_dims = get_viewport().size
+	var screen_scale_factor = screen_dims * camera_zoom
+	var screen_offset = screen_scale_factor - screen_dims
+	
+	# screen_offset_pos = actual_position + (1-camera_zoom.x) * screen_offset
 	
 	# the zoom is the scaling factor
 	# multiply the two vectors and we should get it?
-	
-	#print(camera_offset)
-	#print(event_pos)
+
+	print(camera_offset)
+	print(event_pos)
+	print(actual_position)
+	print(actual_position * camera_zoom)
+	#print(actual_position +  screen_offset)
+	print(camera_zoom)
 	#print(actual_position)
-	#print(camera_zoom)
-	#print(actual_position * camera_zoom)
 	
-	return actual_position * camera_zoom
+	return actual_position# * camera_zoom
 	
 	
 func _input(event):
@@ -61,22 +75,32 @@ func _input(event):
 	# this handles right mouse buttons
 	if event is InputEventMouseButton and event.button_index == 2:
 		raw_initial_right_mouse_pos = event.position
-		event.position = get_zoomed_offset(event.position)
+		#transformed_pos = get_canvas_transform().basis_xform(event.position)
+		
+		var local_event = make_input_local(event)
 		
 		# this detects right mosue dragging – for angling later
 		if event.pressed:
 			dragging_right = true
-			initial_right_mouse_pos = event.position
 			
+			initial_right_mouse_pos = get_zoomed_offset(event.position)
+
+			#initial_right_mouse_pos = get_canvas_transform().basis_xform(event.position)
+			#initial_right_mouse_pos = local_event.position
+			print("raw mouse pos: ", raw_initial_right_mouse_pos)
+			print("transformed event pos: ", initial_right_mouse_pos)
+			# print("screen offset pos: ", screen_offset_pos)
+			#print(transformed_pos)
 			#print("right mouse clicked")
 			#get_parent().get_node("LineDrawer").set_temp_target(event.position)
 			
 			if len(selected_ships) == 1:
 				#print(selected_ships)
-				selected_ships[0].set_temp_target(event.position)
+				selected_ships[0].set_temp_target(initial_right_mouse_pos)
+				print("ship temp target:", selected_ships[0].get_temp_target())
 				
 			elif len(selected_ships) > 1:
-				set_temp_squadron_targets(event.position)
+				set_temp_squadron_targets(initial_right_mouse_pos)
 				
 			
 		# if the right mouse is released 
@@ -84,6 +108,8 @@ func _input(event):
 		else:
 			dragging_right = false
 			final_right_mouse_pos = event.position
+			
+			#print("final mouse pos: ", final_right_mouse_pos)
 			
 			if len(selected_ships) == 1:
 				var selected_ship: CombatUnit = selected_ships[0]
@@ -156,6 +182,11 @@ func _draw():
 				
 	if dragging_right:
 		draw_line(raw_initial_right_mouse_pos, get_local_mouse_position(), Color.purple, 1.0)
+	
+	draw_circle(raw_initial_right_mouse_pos, 4, Color.green)
+	draw_circle(initial_right_mouse_pos + Vector2(50, 0), 4, Color.black)
+	draw_circle(final_right_mouse_pos, 4, Color.purple)
+	#draw_circle(screen_offset_pos, 4, Color.yellow)
 
 func _process(delta):
 	update()
