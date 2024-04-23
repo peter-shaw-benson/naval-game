@@ -61,22 +61,22 @@ func _input(event):
 	# this handles right mouse buttons
 	if event is InputEventMouseButton and event.button_index == 2:
 		raw_initial_right_mouse_pos = event.position
-		event.position = get_zoomed_offset(event.position)
 		
 		# this detects right mosue dragging – for angling later
 		if event.pressed:
 			dragging_right = true
-			initial_right_mouse_pos = event.position
+			
+			initial_right_mouse_pos = get_zoomed_offset(event.position)
 			
 			#print("right mouse clicked")
 			#get_parent().get_node("LineDrawer").set_temp_target(event.position)
 			
 			if len(selected_ships) == 1:
 				#print(selected_ships)
-				selected_ships[0].set_temp_target(event.position)
+				selected_ships[0].set_temp_target(initial_right_mouse_pos)
 				
 			elif len(selected_ships) > 1:
-				set_temp_squadron_targets(event.position)
+				set_temp_squadron_targets(initial_right_mouse_pos)
 				
 			
 		# if the right mouse is released 
@@ -94,7 +94,7 @@ func _input(event):
 					
 			# if there's multiple ships
 			else:
-				move_in_formation(initial_right_mouse_pos)
+				move_in_formation(raw_initial_right_mouse_pos)
 				self.handle_squadron_turn(final_right_mouse_pos)
 			
 			
