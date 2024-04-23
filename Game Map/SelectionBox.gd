@@ -110,7 +110,7 @@ func _input(event):
 
 func _unhandled_input(event):
 	if event is InputEventMouseButton and event.button_index == BUTTON_LEFT:
-		event.position += camera.get_camera_offset()
+		var new_position = get_zoomed_offset(event.position)
 		
 		#print(" left mouse event in selection box")
 		if event.pressed:
@@ -133,20 +133,26 @@ func _unhandled_input(event):
 			update()
 			
 			var drag_end = event.position
-			select_rect.extents = (drag_end - drag_start) / 2
+			select_rect.extents = (get_zoomed_offset(drag_end) - get_zoomed_offset(drag_start)) / 2
 			
 			var space = get_world_2d().direct_space_state
 			# this gets the boundaries of the rectangle, which we can then check what's in it
 			var query = Physics2DShapeQueryParameters.new()
 			query.set_shape(select_rect)
-			query.transform = Transform2D(0, (drag_end + drag_start) / 2)
+			query.transform = Transform2D(0, (get_zoomed_offset(drag_end) + get_zoomed_offset(drag_start)) / 2)
 			# this is what actually finds what's selected
 			selected = space.intersect_shape(query)
 			
+			print("select extents:", select_rect.extents)
+			print(drag_end, drag_start)
+			print("drag end - start (unzoomed)", drag_end - drag_start)
+			print("drag offset - drag start (zoomed)", get_zoomed_offset(drag_end) - get_zoomed_offset(drag_start))
+			print("transform:", query.transform)
 			#print(selected)
 			
 			# selected is an array of dicts
 			for item in selected:
+				
 				# need to check if it's in the right group
 				
 				if item.collider.is_in_group("ship") and not item.collider in selected_ships:
