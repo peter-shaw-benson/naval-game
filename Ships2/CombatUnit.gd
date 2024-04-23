@@ -363,6 +363,7 @@ func handle_right_mouse_movement(placement):
 			
 			current_target = placement
 			
+			#print("ship current target: ", current_target)
 
 func handle_ship_inputs():
 	if Input.is_action_pressed("patrol"):
