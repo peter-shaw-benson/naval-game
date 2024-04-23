@@ -49,24 +49,6 @@ func get_zoomed_offset(event_pos):
 	
 	var actual_position = event_pos * camera_zoom + camera.get_camera_offset()
 	
-	# we also need to offset by the screen dimensions
-	var screen_dims = get_viewport().size
-	var screen_scale_factor = screen_dims * camera_zoom
-	var screen_offset = screen_scale_factor - screen_dims
-	
-	# screen_offset_pos = actual_position + (1-camera_zoom.x) * screen_offset
-	
-	# the zoom is the scaling factor
-	# multiply the two vectors and we should get it?
-
-	print(camera_offset)
-	print(event_pos)
-	print(actual_position)
-	print(actual_position * camera_zoom)
-	#print(actual_position +  screen_offset)
-	print(camera_zoom)
-	#print(actual_position)
-	
 	return actual_position# * camera_zoom
 	
 	
@@ -87,8 +69,8 @@ func _input(event):
 
 			#initial_right_mouse_pos = get_canvas_transform().basis_xform(event.position)
 			#initial_right_mouse_pos = local_event.position
-			print("raw mouse pos: ", raw_initial_right_mouse_pos)
-			print("transformed event pos: ", initial_right_mouse_pos)
+			#print("raw mouse pos: ", raw_initial_right_mouse_pos)
+			#print("transformed event pos: ", initial_right_mouse_pos)
 			# print("screen offset pos: ", screen_offset_pos)
 			#print(transformed_pos)
 			#print("right mouse clicked")
@@ -97,7 +79,8 @@ func _input(event):
 			if len(selected_ships) == 1:
 				#print(selected_ships)
 				selected_ships[0].set_temp_target(initial_right_mouse_pos)
-				print("ship temp target:", selected_ships[0].get_temp_target())
+				
+				#print("ship temp target:", selected_ships[0].get_temp_target())
 				
 			elif len(selected_ships) > 1:
 				set_temp_squadron_targets(initial_right_mouse_pos)
@@ -107,7 +90,7 @@ func _input(event):
 		# need to add a "final angle" to the ship targeting
 		else:
 			dragging_right = false
-			final_right_mouse_pos = event.position
+			final_right_mouse_pos = get_zoomed_offset(event.position)
 			
 			#print("final mouse pos: ", final_right_mouse_pos)
 			
