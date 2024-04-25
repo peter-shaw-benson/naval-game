@@ -63,10 +63,6 @@ func _ready():
 	pass
 
 func _process(delta):
-	# fuck. we have to handle the turret alignment here:
-	
-	#self.point_to(get_global_mouse_position())
-	
 	if not locked:
 
 		var all_enemy = get_tree().get_nodes_in_group(faction_visibility_group)
@@ -85,6 +81,8 @@ func _process(delta):
 				self.global_rotation = lerp_angle(self.global_rotation, 
 					(target - self.global_position).normalized().angle(), 
 					self.turn_weight)
+	# fuck. we have to handle the turret alignment here:
+	
 					
 #	if not locked:
 #		self.point_to(target)
@@ -94,33 +92,8 @@ func _process(delta):
 	pass
 
 func align():
-	if not locked:
-
-		var all_enemy = get_tree().get_nodes_in_group(faction_visibility_group)
-
-		for enemy in all_enemy:
-			var gun2enemy_distance = self.global_position.distance_to(enemy.global_position)
-			#print(gun2enemy_distance)
-			if gun2enemy_distance < self.weaponData.get_range() and enemy.get_faction() != self.faction:
-				
-				if enemy.is_plane() and not self.is_aa_gun():
-					pass
+	return 0
 					
-				else:
-
-					close_enemy = enemy  ## --->## after get the current close_enemy
-
-					# lerped (slowed down rotation)
-					# need to use global rotation otherwise things get bad
-					target = close_enemy.global_position
-
-					self.global_rotation = lerp_angle(self.global_rotation, 
-						(target - self.global_position).normalized().angle(), 
-						self.turn_weight)
-					
-				return 1
-			
-			return 0
 
 func shoot():
 	
