@@ -10,6 +10,7 @@ var x_offset = 0
 var num_barrels = 1
 var turn_weight = 0
 var firing_arc = [0,0]
+var default_rotation = 0
 
 var locked = true
 
@@ -57,6 +58,10 @@ func init(weapon, faction):
 	self.fact_string += str(faction)
 	self.faction_visibility_group += str(faction)
 	
+	# set initial rotation
+	self.default_rotation = (self.firing_arc[0] + self.firing_arc[1]) / 2
+	self.rotation = default_rotation
+	
 	#print(self.faction_visibility_group)
 	
 func _ready():
@@ -86,17 +91,27 @@ func _process(delta):
 					# need to use global rotation otherwise things get bad
 					target = close_enemy.global_position
 
-					self.global_rotation = lerp_angle(self.global_rotation, 
-						(target - self.global_position).normalized().angle(), 
-						self.turn_weight)
+#					self.global_rotation = lerp_angle(self.global_rotation, 
+#						(target - self.global_position).normalized().angle(), 
+#						self.turn_weight)
+
+					self.global_rotation = (target - self.global_position).normalized().angle()
+			
+			else:
+				self.rotation = default_rotation
 					
 	# fuck. we have to handle the turret alignment here:
 	
 					
 #	if not locked:
-#		self.point_to(target)
+#		self.point_to(get_global_mouse_position())
 
-#	self.rotation = clamp(self.rotation, firing_arc[0], firing_arc[1])
+# this almost works
+	#print(self.global_rotation, "\t", self.rotation)
+	self.rotation = clamp(self.rotation, firing_arc[0], firing_arc[1]) 
+	#print(self.rotation)
+	
+	#if firing_arc[]
 
 	pass
 
