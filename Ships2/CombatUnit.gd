@@ -546,35 +546,9 @@ func align_turrets():
 	var valid_enemies = 0
 	
 	for t in turrets:
-		var all_enemy = get_tree().get_nodes_in_group(visible_string)
+		valid_enemies += t.align()
 		
-		#print(all_enemy)
-		
-		for enemy in all_enemy:
-			var gun2enemy_distance = self.global_position.distance_to(enemy.global_position)
-			
-			#print(gun2enemy_distance)
-			if gun2enemy_distance < t.weaponData.get_range() and \
-				enemy.get_faction() != self.faction:
-				# this is basically an XOR: the aa gun and plane have to match up
-				if enemy.is_plane() and not t.is_aa_gun():
-					pass
-					
-				else:
-					combat_entity = enemy  ## --->## after get the current close_enemy
-					
-					# lerped (slowed down rotation)
-					# need to use global rotation otherwise things get bad
-					combat_target = combat_entity.global_position
-					
-					# t here is turret
-					t.global_rotation = lerp_angle(t.global_rotation, 
-						(combat_target - t.global_position).normalized().angle(), 
-						t.turn_weight)
-						
-					#print("aligned turret")
-						
-					valid_enemies += 1
+	#print(fact_string, "\t", visible_string, "\t", valid_enemies)
 				
 	if self.in_combat == false and valid_enemies > 0:
 		self.enter_combat()
