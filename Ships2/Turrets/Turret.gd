@@ -71,16 +71,25 @@ func _process(delta):
 			var gun2enemy_distance = self.global_position.distance_to(enemy.global_position)
 			#print(gun2enemy_distance)
 			if gun2enemy_distance < self.weaponData.get_range() and enemy.get_faction() != self.faction:
+				
+				if enemy.is_plane() and not self.is_aa_gun():
+					pass
+				
+				elif not enemy.is_plane() and self.is_aa_gun():
+					pass
+				
+				else:
 
-				close_enemy = enemy  ## --->## after get the current close_enemy
+					close_enemy = enemy  ## --->## after get the current close_enemy
 
-				# lerped (slowed down rotation)
-				# need to use global rotation otherwise things get bad
-				target = close_enemy.global_position
+					# lerped (slowed down rotation)
+					# need to use global rotation otherwise things get bad
+					target = close_enemy.global_position
 
-				self.global_rotation = lerp_angle(self.global_rotation, 
-					(target - self.global_position).normalized().angle(), 
-					self.turn_weight)
+					self.global_rotation = lerp_angle(self.global_rotation, 
+						(target - self.global_position).normalized().angle(), 
+						self.turn_weight)
+					
 	# fuck. we have to handle the turret alignment here:
 	
 					
