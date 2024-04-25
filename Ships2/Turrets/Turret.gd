@@ -99,7 +99,7 @@ func shoot():
 		
 		bullet.transform = $Barrel.global_transform
 	
-	print("shooting")
+	#print("shooting")
 	
 	get_node("AnimatedSprite").animation = "shoot"
 	get_node("AnimatedSprite").play()

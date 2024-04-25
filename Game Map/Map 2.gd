@@ -82,6 +82,10 @@ func init(input_unit_list, num_islands):
 	get_node("CanvasLayer/SelectionBox").add_camera(get_node("ZoomCamera"))
 
 	get_node("CanvasLayer/LineDrawer").add_camera(get_node("ZoomCamera"))
+	
+	get_node("ZoomCamera").zoom.x = 1
+	get_node("ZoomCamera").zoom.y = 1
+	get_node("ZoomCamera").offset = Vector2.ZERO
 
 func hide_enemies():
 	print("hiding enemies")
@@ -141,9 +145,6 @@ func place_squadron(squad_data, landfort=false):
 func place_ship(ship_data):
 	var ship = ship_scene.instance()
 		
-	ship.init(ship_data.ship, get_viewport().get_mouse_position(), 
-	ship_data.faction, ship_data.unit_type)
-		
 	ship_list.append(ship)
 		
 	add_child(ship)
@@ -157,6 +158,9 @@ func place_ship(ship_data):
 	
 	# Find mouse position, set ship position based on it
 	ship.start_placing()
+	
+	ship.init(ship_data.ship, get_viewport().get_mouse_position(), 
+	ship_data.faction, ship_data.unit_type)
 
 func place_airbase(airbase_data):
 	var airbase = airbase_scene.instance()
@@ -175,9 +179,6 @@ func place_airbase(airbase_data):
 
 func place_carrier(carrier_data):
 	var carrier = carrier_scene.instance()
-	
-	carrier.init(carrier_data["ship"], get_viewport().get_mouse_position(), 
-	carrier_data.faction, carrier_data.type)
 	
 	ship_list.append(carrier)
 		
@@ -200,6 +201,9 @@ func place_carrier(carrier_data):
 	# Find mouse position, set squadron position based on it
 	#print("about to start placing carrier")
 	carrier.start_placing()
+	
+	carrier.init(carrier_data["ship"], get_viewport().get_mouse_position(), 
+	carrier_data.faction, carrier_data.type)
 
 func place_next_unit(place_list):
 	#print(place_list)
@@ -238,7 +242,7 @@ func _on_squadron_stopped_placement():
 		
 		hide_enemies()
 		
-		enable_combat()
+		#enable_combat()
 		
 func raise_controls():
 	get_node("CanvasLayer/PauseMenu").raise()
@@ -394,13 +398,13 @@ func update_weather():
 			unit.calc_new_wind_vector(get_node("CanvasLayer/Weather").get_wind_velocity_cartesian())
 		
 		
-	if get_node("CanvasLayer/Weather").get_fog_gen_flag():
-		var new_fog = fog_scene.instance()
-		get_node("CanvasLayer/Weather").register_fog(new_fog)
-		add_child(new_fog)
-		
-		# when fog added, push GUI to front
-		raise_controls()
+#	if get_node("CanvasLayer/Weather").get_fog_gen_flag():
+#		var new_fog = fog_scene.instance()
+#		get_node("CanvasLayer/Weather").register_fog(new_fog)
+#		add_child(new_fog)
+#
+#		# when fog added, push GUI to front
+#		raise_controls()
 		
 	get_node("CanvasLayer/Weather").update_fog()
 	get_node("CanvasLayer/WindBox").update_weather_display(get_node("CanvasLayer/Weather").get_wind_dir_angle(), get_node("CanvasLayer/Weather").get_wind_speed_kt())

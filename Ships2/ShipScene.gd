@@ -106,7 +106,8 @@ func _process(delta):
 	draw_ghost_sprite()
 	
 	## find overlapping bodies to spot
-	scan_detection_radius()
+	if self.spotting_enabled:
+		scan_detection_radius()
 	
 	align_turrets()
 	

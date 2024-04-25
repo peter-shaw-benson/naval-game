@@ -56,6 +56,8 @@ func init(entity_type, entity_name):
 	
 	#print("reading entity data from file")
 	entity_data = read_json_file(entity_data_path)[entity_type][entity_name]
+	
+	#print(entity_data)
 
 	self.max_speed = entity_data["speed"]
 	
@@ -91,6 +93,8 @@ func get_turn_weight():
 	return self.entity_data["turn_weight"]
 
 func get_visibility():
+	#print(entity_data["visibility"])
+	
 	return self.entity_data["visibility"]
 
 func get_hiding():

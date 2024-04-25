@@ -143,11 +143,11 @@ func _unhandled_input(event):
 			# this is what actually finds what's selected
 			selected = space.intersect_shape(query)
 			
-			print("select extents:", select_rect.extents)
-			print(drag_end, drag_start)
-			print("drag end - start (unzoomed)", drag_end - drag_start)
-			print("drag offset - drag start (zoomed)", get_zoomed_offset(drag_end) - get_zoomed_offset(drag_start))
-			print("transform:", query.transform)
+			#print("select extents:", select_rect.extents)
+			#print(drag_end, drag_start)
+			#print("drag end - start (unzoomed)", drag_end - drag_start)
+			#print("drag offset - drag start (zoomed)", get_zoomed_offset(drag_end) - get_zoomed_offset(drag_start))
+			#print("transform:", query.transform)
 			#print(selected)
 			
 			# selected is an array of dicts

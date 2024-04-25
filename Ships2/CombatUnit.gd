@@ -68,6 +68,10 @@ var visibility_scaled: float
 var hiding: float
 var detector: DetectionArea
 var wind_resist: float
+var spotting_enabled
+
+var fact_string
+var visible_string 
 
 # Combat Vars
 var faction = 0
@@ -131,8 +135,15 @@ func init(entity, initial_position, faction, type):
 	
 	detector = detector_scene.instance()
 	detector.init(visibility_scaled, self.faction)
+
 	
 	add_child(detector)
+	
+	fact_string = "faction_" + str(self.faction)
+	add_to_group(fact_string)
+	visible_string = "visible_to_" + str(self.faction)
+	add_to_group(visible_string)
+	
 	
 	self.current_speed = getSpeed()
 	self.velocity_vector = Vector2(0, 0)
@@ -147,17 +158,6 @@ func init(entity, initial_position, faction, type):
 	
 	# global setups
 	add_to_group("ship")
-	
-	# add self to proper group (faction)
-	if self.faction == 0:
-		add_to_group("faction_0")
-	elif self.faction == 1:
-		add_to_group("faction_1")
-	elif self.faction == 2:
-		add_to_group("faction_2")
-		
-	self.faction_visibility_group += str(faction)
-	add_to_group(faction_visibility_group)
 		
 	if self.faction != GameState.get_playerFaction():
 		add_to_group("enemy")
@@ -169,7 +169,7 @@ func init(entity, initial_position, faction, type):
 	# Combat Variables:
 	get_node("ShotTimer").wait_time = GameState.get_combatPace()
 	
-	self.scale = Vector2(1.2, 1.2)
+	#self.scale = Vector2(1.2, 1.2)
 	
 	screen_size = get_viewport_rect().size
 	
@@ -189,17 +189,17 @@ func init(entity, initial_position, faction, type):
 		add_child(turret)
 		
 		turrets.append(turret)
-	
-	setup_specific_unit()
-	
-func _ready():
-	# this has to be called here, cause we need a root scene
-	
+		
 	# Healthbar
 	healthbar = Healthbar.instance()
 	get_tree().root.add_child(healthbar)
 	healthbar.value = self.get_health()
 	healthbar.max_value = self.get_health()
+	
+	setup_specific_unit()
+	
+func _ready():
+	# this has to be called here, cause we need a root scene
 	
 	if self.faction != GameState.get_playerFaction():
 		healthbar.visible = false
@@ -306,6 +306,9 @@ func stop_placing():
 	
 	current_target = self.global_position
 	print("stopped placing ship")
+#
+#	print("visibility: ", visibility, "\t", visibility_scaled)
+#	print(detector.get_radius())
 
 
 ## MOVEMENT
@@ -411,6 +414,8 @@ func handle_ship_inputs():
 
 func enable_spotting():
 	detector.enable_spotting()
+	
+	self.spotting_enabled = true
 		
 func get_health():
 	return self.unitData.get_health()
@@ -480,8 +485,12 @@ func update_healthbar():
 func scan_detection_radius():
 	
 	for body in detector.get_overlapping_bodies():
-		if body != self:
+		if body != self and not body.is_in_group(fact_string) and \
+		not body.is_in_group(visible_string):
+			print("found body via scan", self.fact_string)
+			
 			body.call("detect")
+			body.add_to_group(visible_string)
 	
 func set_firing_target(firing_target):
 	
@@ -491,7 +500,7 @@ func set_firing_target(firing_target):
 # update this later, once turrets are added
 func _on_ShotTimer_timeout():
 	if is_instance_valid(combat_entity) and in_combat:
-		self.shoot_ship_turrets(combat_ticks)
+		#self.shoot_ship_turrets(combat_ticks)
 		
 		self.combat_ticks += 1
 		
@@ -617,6 +626,7 @@ func select():
 		last_button = ""
 		
 		show_ghost_sprite()
+
 		
 func deselect():
 	selected = false

@@ -7,9 +7,11 @@ func _ready():
 	pass
 	
 func init(visibility, faction):
-	get_node("CollisionShape2D").shape.radius = visibility
+	get_node("DetectionBox").shape.radius = visibility
 	
-	get_node("CollisionShape2D").disabled = true
+	#print(visibility, get_node("CollisionShape2D").shape.radius)
+	
+	get_node("DetectionBox").disabled = true
 	
 	self.faction = faction
 	
@@ -19,21 +21,24 @@ func init(visibility, faction):
 	var light_scale = visibility * GameState.light_detector_scale
 	
 	get_node("DetectionLight").scale = Vector2(light_scale, light_scale)
-	
-	#print(get_node("CollisionShape2D").shape.radius)
+#
+#	print("initializing detector")
+#	print(get_node("DetectionBox").shape.radius)
+#	print(get_node("DetectionLight").scale)
 	
 func enable_spotting():
-	get_node("CollisionShape2D").disabled = false
+	get_node("DetectionBox").disabled = false
 
 func to_string():
 	var s = ""
 	
 	s += str(global_position) + "\n"
-	s += str(get_node("CollisionShape2D").shape.radius)
+	s += str(get_node("DetectionBox").shape.radius)
 
+func get_radius():
+	return get_node("DetectionBox").shape.radius
 
 func _on_DetectionArea_body_entered(body):
-	# test if it's from another faction – if so, show it
 	
 	var fact_string = "faction_" + str(self.faction)
 	var visible_string = "visible_to_" + str(self.faction)
