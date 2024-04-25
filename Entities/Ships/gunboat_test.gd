@@ -25,16 +25,16 @@ var mg_turret_path = "res://art/Turrets/MG/MGTurret.tres"
 # this will become much more complex (with multiple sprite paths, multiple offsets, etc).
 
 var turret_list = [
-	{"weapon": LightGun.new(), "offset": [0,30], "barrels": 1, 
-	"sprite_path": fletcher_turret_path, "turn_weight":0.02, "firing_arc": [-15, 195]},
+#	{"weapon": LightGun.new(), "offset": [0,30], "barrels": 1, 
+#	"sprite_path": fletcher_turret_path, "turn_weight":0.02, "firing_arc": [-15, 195]},
 	{"weapon": LightGun.new(), "offset": [0,-30], "barrels": 1, 
 	"sprite_path": fletcher_turret_path, "turn_weight":0.02, "firing_arc": [-195, 15]},
 #	{"weapon": LightGun.new(), "offset": [20,0], "barrels": 1, 
 #	"sprite_path": fletcher_turret_path, "turn_weight":0.02, "firing_arc": [-90, 90]},
-	{"weapon": LightGun.new(), "offset": [-20,0], "barrels": 1, 
-	"sprite_path": fletcher_turret_path, "turn_weight":0.02, "firing_arc": [90, 270]},
-	{"weapon": LightGun.new(), "offset": [20,0], "barrels": 1, 
-	"sprite_path": fletcher_turret_path, "turn_weight":0.02, "firing_arc": [-90, 90]}
+#	{"weapon": LightGun.new(), "offset": [-20,0], "barrels": 1, 
+#	"sprite_path": fletcher_turret_path, "turn_weight":0.02, "firing_arc": [90, 270]},
+#	{"weapon": LightGun.new(), "offset": [20,0], "barrels": 1, 
+#	"sprite_path": fletcher_turret_path, "turn_weight":0.02, "firing_arc": [-90, 90]}
 ]
 
 

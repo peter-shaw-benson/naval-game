@@ -12,7 +12,10 @@ var turn_weight = 0
 var firing_arc = [0,0]
 var default_rotation = 0
 
+var local_rotation_target = 0
+
 var locked = true
+var ship_rotation = 0
 
 var target = Vector2(0,0)
 var close_enemy
@@ -84,6 +87,7 @@ func _process(delta):
 					pass
 				
 				else:
+					#print("found enemy; self faction: ", self.faction, " enemy faction: ", enemy.get_faction())
 
 					close_enemy = enemy  ## --->## after get the current close_enemy
 
@@ -96,9 +100,12 @@ func _process(delta):
 #						self.turn_weight)
 
 					self.global_rotation = (target - self.global_position).normalized().angle()
+					
+					#local_rotation_target =  (target - self.global_position).normalized().angle() #+ ship_rotation
 			
 			else:
-				self.rotation = default_rotation
+				#self.rotation = default_rotation
+				pass
 					
 	# fuck. we have to handle the turret alignment here:
 	
@@ -108,14 +115,55 @@ func _process(delta):
 
 # this almost works
 	#print(self.global_rotation, "\t", self.rotation)
+	
+	# this only works if the ship's rotation is basically the default one. maybe I get the ship rotation somehow?
+#	self.rotation = lerp_angle(self.rotation, 
+#						local_rotation_target, 
+#						self.turn_weight)
+
+	#self.rotation = local_rotation_target
+#
 	self.rotation = clamp(self.rotation, firing_arc[0], firing_arc[1]) 
 	#print(self.rotation)
 	
 	#if firing_arc[]
 
 	pass
+	
+func check_close_enemy():
+	
+	if close_enemy.is_in_group(faction_visibility_group):
+		
+		target = close_enemy.global_position
+		
+	else:
+		if not locked:
+
+			var all_enemy = get_tree().get_nodes_in_group(faction_visibility_group)
+
+			for enemy in all_enemy:
+				var gun2enemy_distance = self.global_position.distance_to(enemy.global_position)
+				#print(gun2enemy_distance)
+				if gun2enemy_distance < self.weaponData.get_range() and enemy.get_faction() != self.faction:
+					
+					if enemy.is_plane() and not self.is_aa_gun():
+						pass
+					
+					elif not enemy.is_plane() and self.is_aa_gun():
+						pass
+					
+					else:
+						#print("found enemy; self faction: ", self.faction, " enemy faction: ", enemy.get_faction())
+
+						close_enemy = enemy  ## --->## after get the current close_enemy
+
+						# lerped (slowed down rotation)
+						# need to use global rotation otherwise things get bad
+						target = close_enemy.global_position
+	
 
 func align():
+	
 	return 0
 					
 
