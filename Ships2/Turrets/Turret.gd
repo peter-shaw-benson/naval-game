@@ -68,51 +68,59 @@ func _process(delta):
 	#self.point_to(get_global_mouse_position())
 	
 	if not locked:
-		self.point_to(target)
-#
-	self.rotation = clamp(self.rotation, firing_arc[0], firing_arc[1])
-	pass
 
-func align():
-	var all_enemy = get_tree().get_nodes_in_group(faction_visibility_group)
-	
-	if self.faction == 0:
-		print(faction_visibility_group, "\t", all_enemy)
+		var all_enemy = get_tree().get_nodes_in_group(faction_visibility_group)
 
-	#print(all_enemy)
-	
-	for enemy in all_enemy:
-		var gun2enemy_distance = self.global_position.distance_to(enemy.global_position)
-		
-		if self.faction == 0:
-			print(self.faction, "\t", enemy, "\t", enemy.get_faction())
-		
-#		if self.faction == 1 and enemy.get_faction() != 1:
-#			print(self.faction, enemy.get_faction(), "\t", gun2enemy_distance, "\t", weaponData.get_range())
-#
-		if gun2enemy_distance < weaponData.get_range() and \
-			enemy.get_faction() != self.faction:
-			# this is basically an XOR: the aa gun and plane have to match up
-			if enemy.is_plane() and not self.is_aa_gun():
-				pass
-				
-			else:
-				#print("faction ", self.faction, " sighted enemy")
-				
+		for enemy in all_enemy:
+			var gun2enemy_distance = self.global_position.distance_to(enemy.global_position)
+			#print(gun2enemy_distance)
+			if gun2enemy_distance < self.weaponData.get_range() and enemy.get_faction() != self.faction:
+
 				close_enemy = enemy  ## --->## after get the current close_enemy
-				
+
 				# lerped (slowed down rotation)
 				# need to use global rotation otherwise things get bad
 				target = close_enemy.global_position
+
+				self.global_rotation = lerp_angle(self.global_rotation, 
+					(target - self.global_position).normalized().angle(), 
+					self.turn_weight)
+					
+#	if not locked:
+#		self.point_to(target)
+
+#	self.rotation = clamp(self.rotation, firing_arc[0], firing_arc[1])
+
+	pass
+
+func align():
+	if not locked:
+
+		var all_enemy = get_tree().get_nodes_in_group(faction_visibility_group)
+
+		for enemy in all_enemy:
+			var gun2enemy_distance = self.global_position.distance_to(enemy.global_position)
+			#print(gun2enemy_distance)
+			if gun2enemy_distance < self.weaponData.get_range() and enemy.get_faction() != self.faction:
 				
-				# t here is turret
-#				global_rotation = lerp_angle(global_rotation, 
-#					(target - global_position).normalized().angle(), 
-#					self.turn_weight)
+				if enemy.is_plane() and not self.is_aa_gun():
+					pass
+					
+				else:
+
+					close_enemy = enemy  ## --->## after get the current close_enemy
+
+					# lerped (slowed down rotation)
+					# need to use global rotation otherwise things get bad
+					target = close_enemy.global_position
+
+					self.global_rotation = lerp_angle(self.global_rotation, 
+						(target - self.global_position).normalized().angle(), 
+						self.turn_weight)
 					
 				return 1
-		
-		return 0
+			
+			return 0
 
 func shoot():
 	
