@@ -135,7 +135,6 @@ func init(entity, initial_position, faction, type):
 	
 	detector = detector_scene.instance()
 	detector.init(visibility_scaled, self.faction)
-
 	
 	add_child(detector)
 	
@@ -189,6 +188,8 @@ func init(entity, initial_position, faction, type):
 		add_child(turret)
 		
 		turrets.append(turret)
+		
+	print(turrets)
 		
 	# Healthbar
 	healthbar = Healthbar.instance()
@@ -499,8 +500,8 @@ func set_firing_target(firing_target):
 
 # update this later, once turrets are added
 func _on_ShotTimer_timeout():
-	if is_instance_valid(combat_entity) and in_combat:
-		#self.shoot_ship_turrets(combat_ticks)
+	if is_instance_valid(combat_entity) and in_combat and combat_enabled:
+		self.shoot_ship_turrets(combat_ticks)
 		
 		self.combat_ticks += 1
 		
@@ -539,13 +540,15 @@ func calc_current_speed():
 # this is unique to the ships – different for planes
 # bugged for now 
 func align_turrets():
-	
+	#print("aligning all turrets")
 	# we do this for each turret so they can independently target things.
 	# change later?
 	var valid_enemies = 0
 	
 	for t in turrets:
-		var all_enemy = get_tree().get_nodes_in_group(faction_visibility_group)
+		var all_enemy = get_tree().get_nodes_in_group(visible_string)
+		
+		#print(all_enemy)
 		
 		for enemy in all_enemy:
 			var gun2enemy_distance = self.global_position.distance_to(enemy.global_position)
@@ -568,6 +571,8 @@ func align_turrets():
 					t.global_rotation = lerp_angle(t.global_rotation, 
 						(combat_target - t.global_position).normalized().angle(), 
 						t.turn_weight)
+						
+					#print("aligned turret")
 						
 					valid_enemies += 1
 				

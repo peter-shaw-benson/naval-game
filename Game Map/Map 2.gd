@@ -242,7 +242,7 @@ func _on_squadron_stopped_placement():
 		
 		hide_enemies()
 		
-		#enable_combat()
+		enable_combat()
 		
 func raise_controls():
 	get_node("CanvasLayer/PauseMenu").raise()

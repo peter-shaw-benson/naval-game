@@ -65,7 +65,7 @@ func _process(delta):
 	
 	#self.point_to(get_global_mouse_position())
 #
-#	self.rotation = clamp(self.rotation, firing_arc[0], firing_arc[1])
+	self.rotation = clamp(self.rotation, firing_arc[0], firing_arc[1])
 	pass
 #	if not locked:
 #
