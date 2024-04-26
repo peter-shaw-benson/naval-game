@@ -214,7 +214,7 @@ func _process(delta):
 	## find overlapping bodies to spot
 	scan_detection_radius()
 	
-	align_turrets()
+	#align_turrets()
 	
 # if / when we add back fuel, we can use the prototypes in the Ship Squadron class.
 

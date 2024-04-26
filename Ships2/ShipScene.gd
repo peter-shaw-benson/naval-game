@@ -109,6 +109,6 @@ func _process(delta):
 	if self.spotting_enabled:
 		scan_detection_radius()
 	
-	align_turrets()
+	#align_turrets()
 	
 	update_healthbar()

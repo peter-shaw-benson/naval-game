@@ -229,16 +229,6 @@ func check_close_enemy():
 		
 			# print("stopped firing")
 
-func align():
-	
-	#print(self.faction, "\t", close_enemy)
-	if in_weapons_range:
-		return 1
-	
-	else:
-		return 0
-					
-
 func shoot():
 	
 #	if (in_weapons_range and pointing_at_enemy) or \
@@ -271,8 +261,6 @@ func shoot():
 			#print(this_bullet_spread)
 			
 			bullet.rotation += this_bullet_spread
-			
-		shot_count += 1
 		
 		#print("shooting")
 		
@@ -327,3 +315,5 @@ func _on_ShotTimer_timeout():
 		self.shoot()
 		
 		get_node("ShotTimer").wait_time += ((randf() * 2) - 1) * 0.05
+		
+		shot_count += 1

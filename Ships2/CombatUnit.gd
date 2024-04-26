@@ -492,31 +492,6 @@ func scan_detection_radius():
 			
 			body.call("detect")
 			body.add_to_group(visible_string)
-	
-func set_firing_target(firing_target):
-	
-	# idk how to do this one yet
-	self.firing_target = firing_target
-
-# update this later, once turrets are added
-func _on_ShotTimer_timeout():
-	if in_combat and combat_enabled:
-		self.shoot_ship_turrets(combat_ticks)
-		
-		self.combat_ticks += 1
-		
-func shoot_ship_turrets(combat_ticks):
-	
-	for t in turrets:
-
-		if int(combat_ticks) % int(t.get_fire_rate()) == 0:
-			t.shoot()
-#
-#			if t.is_aa_gun() and combat_entity.is_plane():
-#				t.shoot()
-#			elif not t.is_aa_gun() and not combat_entity.is_plane():
-#				t.shoot()
-
 # if / when we add back fuel, we can use the prototypes in the Ship Squadron class.
 
 func set_current_speed_mode(speed_mode):
@@ -539,32 +514,8 @@ func calc_current_speed():
 
 ## COMBAT
 # this is unique to the ships – different for planes
-# bugged for now 
-func align_turrets():
-	#print("aligning all turrets")
-	# we do this for each turret so they can independently target things.
-	# change later?
-	var valid_enemies = 0
-	
-	for t in turrets:
-		valid_enemies += t.align()
-		
-	#print(fact_string, "\t", visible_string, "\t", valid_enemies)
-				
-	if self.in_combat == false and valid_enemies > 0:
-		self.enter_combat()
-	
-	if valid_enemies == 0 and self.in_combat:
-		self.exit_combat()
-				
 
-func enter_combat():
-	#print("entered combat\t", self.faction)
-	self.in_combat = true
-	
-func exit_combat():
-	#print("exited combat\t", self.faction)
-	self.in_combat = false
+# mostly handled by turrets autonomously
 
 
 # Detection:
