@@ -240,9 +240,23 @@ func align():
 
 func shoot():
 	
-	if (in_weapons_range and pointing_at_enemy) or \
-		(in_weapons_range and locked):
+#	if (in_weapons_range and pointing_at_enemy) or \
+#		(in_weapons_range and locked):
+		
+		if weaponData.get_name() == "flakgun":
+			num_barrels = (int(randf() * 5) + 3)
 			
+		var accuracy_improvement = (-1) * shot_count * weaponData.get_accuracy_gain()
+		# current accuracy = bullet_spread * accuracyGainFactor ^ (shot_count * accuracy gain)
+		
+		var new_spread = self.bullet_spread * pow(GameState.get_accuracy_growth_factor(), accuracy_improvement)
+		
+		if new_spread <= 0:
+			new_spread = 0.01
+		
+		# add bullet spread
+		var this_bullet_spread = spread_rng.randf_range(-1 * new_spread, new_spread)
+		
 		for b in self.num_barrels:
 			# shoot one bullet per barrel
 			var bullet = Bullet.instance()
@@ -253,21 +267,6 @@ func shoot():
 			get_tree().root.add_child(bullet)
 
 			bullet.transform = $Barrel.global_transform
-			
-			var accuracy_improvement = (-1) * shot_count * weaponData.get_accuracy_gain()
-			
-			# current accuracy = bullet_spread * accuracyGainFactor ^ (shot_count * accuracy gain)
-			
-			var new_spread = self.bullet_spread * pow(GameState.get_accuracy_growth_factor(), accuracy_improvement)
-			
-			if new_spread <= 0:
-				new_spread = 0.01
-			
-			#print(shot_count, "\t", self.bullet_spread, "\t", weaponData.get_accuracy_gain(), "\t", accuracy_improvement, "\t", new_spread)
-			
-			# add bullet spread
-			var this_bullet_spread = spread_rng.randf_range(-1 * new_spread, new_spread)
-			
 			#print(this_bullet_spread)
 			
 			bullet.rotation += this_bullet_spread

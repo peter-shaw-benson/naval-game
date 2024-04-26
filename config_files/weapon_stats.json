@@ -77,13 +77,13 @@
   },
   "FlakGun": {
     "name": "flakgun",
-    "speed": 200,
+    "speed": 300,
   	"max_range": 80,
   	"fire_rate": 10,
   	"damage": 2,
   	"piercing": 1,
   	"armor_damage": 0,
-    "base_accuracy": 0.4,
+    "base_accuracy": 0.3,
   	"accuracy_gain": 0.03,
     "aa_gun": true
   },

@@ -7,6 +7,7 @@ var max_range: int
 var lifetime: float
 
 var flakgun = false
+var flak_exploded = false
 
 var weaponData: Weapon
 
@@ -67,10 +68,11 @@ func _physics_process(delta):
 	# test if max range is reached
 	if self.global_position.distance_to(self.initial_pos) >= self.max_range:
 		
-		if flakgun:
+		if flakgun and not flak_exploded:
 			handle_flakgun()
-		
-		queue_free()
+			
+		else:
+			queue_free()
 
 
 # IDEAS:
@@ -79,6 +81,7 @@ func _physics_process(delta):
 
 
 func _on_AnimatedSprite_animation_finished():
+
 	queue_free()
 
 
@@ -106,29 +109,18 @@ func _on_Bullet_body_entered(body):
 			body.take_damage(self.weaponData)
 
 func handle_flakgun():
-	get_node("AnimatedSprite").animation = "explosion"
-	get_node("AnimatedSprite").play()
 	
-	self.speed = 0
+	#self.speed = 0
 	
-	# make baby bullets
-	var num_bullets = int(randf() * 5) + 3
+	self.initial_pos = self.global_position
+	self.max_range = 20
+	self.rotation += ((randf() * 2) - 1)
+	self.speed += 100
 	
-	for b in num_bullets:
-		var bullet = Bullet.instance()
-
-		bullet.init(weaponData, self.global_position)
-
-		get_tree().root.add_child(bullet)
-
-		bullet.transform = $Barrel.global_transform
-		
-		# add bullet spread
-		var this_bullet_spread = ((randf() * 2) - 1) * bullet
-		
-		#print(this_bullet_spread)
-		
-		bullet.rotation += this_bullet_spread
+	flak_exploded = true
+	
+	#get_node("AnimatedSprite").animation = "shell"
+	
 
 
 func _on_fuseTimer_timeout():

@@ -67,6 +67,3 @@ func get_accuracy_gain():
 
 func is_aa_gun():
 	return self.weapon_data["aa_gun"]
-
-func get_flak_bullet():
-	return WeaponJSON.init()
