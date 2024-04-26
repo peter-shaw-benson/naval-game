@@ -84,6 +84,7 @@ func init(weapon, faction):
 	#print(self.faction_visibility_group)
 	
 func _ready():
+	get_node("ShotTimer").start()
 	pass
 
 func _process(delta):
@@ -315,3 +316,14 @@ func get_fire_rate():
 
 func _on_AnimatedSprite_animation_finished():
 	get_node("AnimatedSprite").animation = "default"
+
+
+
+func _on_ShotTimer_timeout():
+	
+	if (in_weapons_range and pointing_at_enemy) or \
+		(in_weapons_range and locked):
+			
+		self.shoot()
+		
+		get_node("ShotTimer").wait_time += ((randf() * 2) - 1) * 0.05
