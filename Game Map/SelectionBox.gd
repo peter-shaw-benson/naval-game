@@ -155,7 +155,9 @@ func _unhandled_input(event):
 				
 				# need to check if it's in the right group
 				
-				if item.collider.is_in_group("ship") and not item.collider in selected_ships:
+				if item.collider.is_in_group("ship") and \
+				 not item.collider in selected_ships and \
+				item.collider.get_faction() == GameState.playerFaction:
 					selected_ships.append(item.collider)
 				
 				#print(item.collider)

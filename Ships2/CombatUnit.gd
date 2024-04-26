@@ -488,7 +488,7 @@ func scan_detection_radius():
 	for body in detector.get_overlapping_bodies():
 		if body != self and not body.is_in_group(fact_string) and \
 		not body.is_in_group(visible_string):
-			print("found body via scan", self.fact_string)
+			#print("found body via scan", self.fact_string)
 			
 			body.call("detect")
 			body.add_to_group(visible_string)
@@ -500,7 +500,7 @@ func set_firing_target(firing_target):
 
 # update this later, once turrets are added
 func _on_ShotTimer_timeout():
-	if is_instance_valid(combat_entity) and in_combat and combat_enabled:
+	if in_combat and combat_enabled:
 		self.shoot_ship_turrets(combat_ticks)
 		
 		self.combat_ticks += 1
@@ -510,11 +510,12 @@ func shoot_ship_turrets(combat_ticks):
 	for t in turrets:
 
 		if int(combat_ticks) % int(t.get_fire_rate()) == 0:
-			
-			if t.is_aa_gun() and combat_entity.is_plane():
-				t.shoot()
-			elif not t.is_aa_gun() and not combat_entity.is_plane():
-				t.shoot()
+			t.shoot()
+#
+#			if t.is_aa_gun() and combat_entity.is_plane():
+#				t.shoot()
+#			elif not t.is_aa_gun() and not combat_entity.is_plane():
+#				t.shoot()
 
 # if / when we add back fuel, we can use the prototypes in the Ship Squadron class.
 
@@ -553,14 +554,16 @@ func align_turrets():
 	if self.in_combat == false and valid_enemies > 0:
 		self.enter_combat()
 	
-	if valid_enemies == 0:
+	if valid_enemies == 0 and self.in_combat:
 		self.exit_combat()
 				
 
 func enter_combat():
+	print("entered combat\t", self.faction)
 	self.in_combat = true
 	
 func exit_combat():
+	print("exited combat\t", self.faction)
 	self.in_combat = false
 
 

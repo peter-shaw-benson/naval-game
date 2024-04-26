@@ -7,11 +7,11 @@ var mg_turret_path = "res://art/Turrets/MG/MGTurret.tres"
 
 var turret_list = [
 	{"weapon": MG.new(), "offset": [0,0], "barrels": 1, 
-	"sprite_path": mg_turret_path, "turn_weight":0, "firing_arc": [0, 0]},
+	"sprite_path": mg_turret_path, "turn_weight":0, "firing_arc": [-90, -90]},
 	
 	{"weapon": AirTorpedo.new(), "offset": [0,0], "barrels": 1, 
 	# sprite path doesn't matter here
-	"sprite_path": mg_turret_path, "turn_weight":0, "ammo": 1, "firing_arc": [0, 0]}
+	"sprite_path": mg_turret_path, "turn_weight":0, "ammo": 1, "firing_arc": [-90, -90]}
 ]
 
 

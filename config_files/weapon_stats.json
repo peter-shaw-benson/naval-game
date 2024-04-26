@@ -15,7 +15,7 @@
   "AirTorpedo": {
     "name": "torpedo",
     "speed": 40,
-    "max_range": 60,
+    "max_range": 100,
   	"fire_rate": 100,
   	"damage": 8,
   	"piercing": 12,
