@@ -29,6 +29,10 @@ var faction_visibility_group = "visible_to_"
 var aa_gun = false
 # plane gun not being used rn
 var plane_gun = false
+var bullet_spread = 0
+var shot_count = 0
+
+var spread_rng
 
 func init(weapon, faction):
 	# here, weapon is a dict of weapon data, y offset, and number of barrels
@@ -44,6 +48,11 @@ func init(weapon, faction):
 	self.num_barrels = weapon["barrels"]
 	self.turn_weight = weapon["turn_weight"]
 	self.aa_gun = weaponData.is_aa_gun()
+	self.bullet_spread = weaponData.get_spread()
+	
+	self.spread_rng = RandomNumberGenerator.new()
+	spread_rng.seed = hash(get_instance_id())
+	
 	
 	self.firing_arc[0] = deg2rad(weapon["firing_arc"][0])
 	self.firing_arc[1] = deg2rad(weapon["firing_arc"][1])
@@ -215,6 +224,8 @@ func check_close_enemy():
 		
 		in_weapons_range = false
 		
+		shot_count = 0
+		
 			# print("stopped firing")
 
 func align():
@@ -242,6 +253,26 @@ func shoot():
 			get_tree().root.add_child(bullet)
 
 			bullet.transform = $Barrel.global_transform
+			
+			var accuracy_improvement = (-1) * shot_count * weaponData.get_accuracy_gain()
+			
+			# current accuracy = bullet_spread * accuracyGainFactor ^ (shot_count * accuracy gain)
+			
+			var new_spread = self.bullet_spread * pow(GameState.get_accuracy_growth_factor(), accuracy_improvement)
+			
+			if new_spread <= 0:
+				new_spread = 0.01
+			
+			#print(shot_count, "\t", self.bullet_spread, "\t", weaponData.get_accuracy_gain(), "\t", accuracy_improvement, "\t", new_spread)
+			
+			# add bullet spread
+			var this_bullet_spread = spread_rng.randf_range(-1 * new_spread, new_spread)
+			
+			#print(this_bullet_spread)
+			
+			bullet.rotation += this_bullet_spread
+			
+		shot_count += 1
 		
 		#print("shooting")
 		

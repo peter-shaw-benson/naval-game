@@ -6,6 +6,8 @@ var max_range: int
 
 var lifetime: float
 
+var flakgun = false
+
 var weaponData: Weapon
 
 var initial_pos = Vector2(0,0)
@@ -30,7 +32,7 @@ func init(weaponData, turret_pos):
 		self.set_collision_mask_bit(3, true)
 		self.set_collision_mask_bit(1, false)
 		
-	if self.weaponData.get_name() == "machinegun":
+	elif self.weaponData.get_name() == "machinegun":
 		frames = preload("res://art/Bullets/MG/MGSprite.tres")
 		get_node("AnimatedSprite").set_sprite_frames(frames)
 		
@@ -42,6 +44,20 @@ func init(weaponData, turret_pos):
 		# can hit boats, but not planes
 		self.set_collision_mask_bit(3, true)
 		self.set_collision_mask_bit(1, false)
+		
+	elif self.weaponData.get_name() == "flakgun":
+		flakgun = true
+		
+		self.set_collision_mask_bit(3, false)
+		self.set_collision_mask_bit(1, true)
+		
+	elif self.weaponData.get_name() == "flakbullet":
+		
+		frames = preload("res://art/Bullets/MG/MGSprite.tres")
+		get_node("AnimatedSprite").set_sprite_frames(frames)
+		
+		self.set_collision_mask_bit(3, false)
+		self.set_collision_mask_bit(1, true)
 
 	get_node("AnimatedSprite").animation = "shell"
 
@@ -50,6 +66,10 @@ func _physics_process(delta):
 	
 	# test if max range is reached
 	if self.global_position.distance_to(self.initial_pos) >= self.max_range:
+		
+		if flakgun:
+			handle_flakgun()
+		
 		queue_free()
 
 
@@ -85,6 +105,30 @@ func _on_Bullet_body_entered(body):
 			
 			body.take_damage(self.weaponData)
 
+func handle_flakgun():
+	get_node("AnimatedSprite").animation = "explosion"
+	get_node("AnimatedSprite").play()
+	
+	self.speed = 0
+	
+	# make baby bullets
+	var num_bullets = int(randf() * 5) + 3
+	
+	for b in num_bullets:
+		var bullet = Bullet.instance()
+
+		bullet.init(weaponData, self.global_position)
+
+		get_tree().root.add_child(bullet)
+
+		bullet.transform = $Barrel.global_transform
+		
+		# add bullet spread
+		var this_bullet_spread = ((randf() * 2) - 1) * bullet
+		
+		#print(this_bullet_spread)
+		
+		bullet.rotation += this_bullet_spread
 
 
 func _on_fuseTimer_timeout():

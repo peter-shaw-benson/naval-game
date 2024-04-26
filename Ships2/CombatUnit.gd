@@ -559,11 +559,11 @@ func align_turrets():
 				
 
 func enter_combat():
-	print("entered combat\t", self.faction)
+	#print("entered combat\t", self.faction)
 	self.in_combat = true
 	
 func exit_combat():
-	print("exited combat\t", self.faction)
+	#print("exited combat\t", self.faction)
 	self.in_combat = false
 
 

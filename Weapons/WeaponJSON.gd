@@ -57,6 +57,16 @@ func get_damage():
 
 func get_name():
 	return self.weapon_data["name"]
+	
+# lower accuracy is better (less spread)
+func get_spread():
+	return self.weapon_data["base_accuracy"]
+	
+func get_accuracy_gain():
+	return self.weapon_data["accuracy_gain"]
 
 func is_aa_gun():
 	return self.weapon_data["aa_gun"]
+
+func get_flak_bullet():
+	return WeaponJSON.init()
