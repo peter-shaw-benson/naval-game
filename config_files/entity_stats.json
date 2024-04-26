@@ -36,8 +36,8 @@
     	"class": "Carrier",
     	"planes": {
         "scout": 4,
-        "strike": 10,
-        "fighter": 15,
+        "strike": 7,
+        "fighter": 10,
         "bomber": 0
       }
     }
@@ -88,8 +88,8 @@
     	"launch_time": 2,
     	"agility": 0.15,
       "fuel": 7,
-      "cohesion": 0.3,
-      "separation": 0.05
+      "cohesion": 0.05,
+      "separation": 0.4
     },
     "fighter": {
       "speed": 100,

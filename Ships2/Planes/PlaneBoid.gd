@@ -222,6 +222,15 @@ func _physics_process(_delta):
 	# this looks in the same direction as its movement
 	global_rotation = _velocity.angle() + PI/2
 
+func _process(delta):
+	
+	scan_detection_radius()
+	
+func scan_detection_radius():
+	
+	for body in detector.get_overlapping_bodies():
+		if body != self:
+			body.call("detect")
 
 func get_flock_status(flock: Array):
 	var center_vector: = Vector2()

@@ -68,6 +68,10 @@ var visibility_scaled: float
 var hiding: float
 var detector: DetectionArea
 var wind_resist: float
+var spotting_enabled
+
+var fact_string
+var visible_string 
 
 # Combat Vars
 var faction = 0
@@ -134,6 +138,12 @@ func init(entity, initial_position, faction, type):
 	
 	add_child(detector)
 	
+	fact_string = "faction_" + str(self.faction)
+	add_to_group(fact_string)
+	visible_string = "visible_to_" + str(self.faction)
+	add_to_group(visible_string)
+	
+	
 	self.current_speed = getSpeed()
 	self.velocity_vector = Vector2(0, 0)
 	
@@ -147,17 +157,6 @@ func init(entity, initial_position, faction, type):
 	
 	# global setups
 	add_to_group("ship")
-	
-	# add self to proper group (faction)
-	if self.faction == 0:
-		add_to_group("faction_0")
-	elif self.faction == 1:
-		add_to_group("faction_1")
-	elif self.faction == 2:
-		add_to_group("faction_2")
-		
-	self.faction_visibility_group += str(faction)
-	add_to_group(faction_visibility_group)
 		
 	if self.faction != GameState.get_playerFaction():
 		add_to_group("enemy")
@@ -169,7 +168,7 @@ func init(entity, initial_position, faction, type):
 	# Combat Variables:
 	get_node("ShotTimer").wait_time = GameState.get_combatPace()
 	
-	self.scale = Vector2(1.2, 1.2)
+	#self.scale = Vector2(1.2, 1.2)
 	
 	screen_size = get_viewport_rect().size
 	
@@ -189,17 +188,19 @@ func init(entity, initial_position, faction, type):
 		add_child(turret)
 		
 		turrets.append(turret)
-	
-	setup_specific_unit()
-	
-func _ready():
-	# this has to be called here, cause we need a root scene
-	
+		
+	print(turrets)
+		
 	# Healthbar
 	healthbar = Healthbar.instance()
 	get_tree().root.add_child(healthbar)
 	healthbar.value = self.get_health()
 	healthbar.max_value = self.get_health()
+	
+	setup_specific_unit()
+	
+func _ready():
+	# this has to be called here, cause we need a root scene
 	
 	if self.faction != GameState.get_playerFaction():
 		healthbar.visible = false
@@ -306,6 +307,9 @@ func stop_placing():
 	
 	current_target = self.global_position
 	print("stopped placing ship")
+#
+#	print("visibility: ", visibility, "\t", visibility_scaled)
+#	print(detector.get_radius())
 
 
 ## MOVEMENT
@@ -411,6 +415,8 @@ func handle_ship_inputs():
 
 func enable_spotting():
 	detector.enable_spotting()
+	
+	self.spotting_enabled = true
 		
 func get_health():
 	return self.unitData.get_health()
@@ -480,8 +486,12 @@ func update_healthbar():
 func scan_detection_radius():
 	
 	for body in detector.get_overlapping_bodies():
-		if body != self:
+		if body != self and not body.is_in_group(fact_string) and \
+		not body.is_in_group(visible_string):
+			#print("found body via scan", self.fact_string)
+			
 			body.call("detect")
+			body.add_to_group(visible_string)
 	
 func set_firing_target(firing_target):
 	
@@ -490,7 +500,7 @@ func set_firing_target(firing_target):
 
 # update this later, once turrets are added
 func _on_ShotTimer_timeout():
-	if is_instance_valid(combat_entity) and in_combat:
+	if in_combat and combat_enabled:
 		self.shoot_ship_turrets(combat_ticks)
 		
 		self.combat_ticks += 1
@@ -500,11 +510,12 @@ func shoot_ship_turrets(combat_ticks):
 	for t in turrets:
 
 		if int(combat_ticks) % int(t.get_fire_rate()) == 0:
-			
-			if t.is_aa_gun() and combat_entity.is_plane():
-				t.shoot()
-			elif not t.is_aa_gun() and not combat_entity.is_plane():
-				t.shoot()
+			t.shoot()
+#
+#			if t.is_aa_gun() and combat_entity.is_plane():
+#				t.shoot()
+#			elif not t.is_aa_gun() and not combat_entity.is_plane():
+#				t.shoot()
 
 # if / when we add back fuel, we can use the prototypes in the Ship Squadron class.
 
@@ -530,49 +541,29 @@ func calc_current_speed():
 # this is unique to the ships – different for planes
 # bugged for now 
 func align_turrets():
-	
+	#print("aligning all turrets")
 	# we do this for each turret so they can independently target things.
 	# change later?
 	var valid_enemies = 0
 	
 	for t in turrets:
-		var all_enemy = get_tree().get_nodes_in_group(faction_visibility_group)
+		valid_enemies += t.align()
 		
-		for enemy in all_enemy:
-			var gun2enemy_distance = self.global_position.distance_to(enemy.global_position)
-			
-			#print(gun2enemy_distance)
-			if gun2enemy_distance < t.weaponData.get_range() and \
-				enemy.get_faction() != self.faction:
-				# this is basically an XOR: the aa gun and plane have to match up
-				if enemy.is_plane() and not t.is_aa_gun():
-					pass
-					
-				else:
-					combat_entity = enemy  ## --->## after get the current close_enemy
-					
-					# lerped (slowed down rotation)
-					# need to use global rotation otherwise things get bad
-					combat_target = combat_entity.global_position
-					
-					# t here is turret
-					t.global_rotation = lerp_angle(t.global_rotation, 
-						(combat_target - t.global_position).normalized().angle(), 
-						t.turn_weight)
-						
-					valid_enemies += 1
+	#print(fact_string, "\t", visible_string, "\t", valid_enemies)
 				
 	if self.in_combat == false and valid_enemies > 0:
 		self.enter_combat()
 	
-	if valid_enemies == 0:
+	if valid_enemies == 0 and self.in_combat:
 		self.exit_combat()
 				
 
 func enter_combat():
+	print("entered combat\t", self.faction)
 	self.in_combat = true
 	
 func exit_combat():
+	print("exited combat\t", self.faction)
 	self.in_combat = false
 
 
@@ -617,6 +608,7 @@ func select():
 		last_button = ""
 		
 		show_ghost_sprite()
+
 		
 func deselect():
 	selected = false

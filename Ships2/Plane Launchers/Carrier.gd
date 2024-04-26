@@ -48,7 +48,7 @@ func _ready():
 func setup_specific_unit():
 	
 	add_to_group("carrier")
-	self.scale = Vector2(1.2, 1.2)
+	#self.scale = Vector2(1.2, 1.2)
 	#print(self.unitData)
 	#print(self.unitData.get_planes())
 	self.plane_numbers = self.unitData.get_planes()

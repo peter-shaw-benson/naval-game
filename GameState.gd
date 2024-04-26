@@ -47,7 +47,7 @@ var default_budgets = {"0": 200, "1": 200, "2": 200}
 var faction_budgets = {"0": 200, "1": 200, "2": 200}
 var strike_multiplier = 8
 
-var light_detector_scale = 0.005
+var light_detector_scale = 0.008
 
 
 func _ready():

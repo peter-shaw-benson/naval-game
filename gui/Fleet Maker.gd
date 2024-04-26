@@ -12,8 +12,8 @@ var position_x = 0
 var position_y = 0
 var num_islands = 0
 
-var num_airbases = 1
-var num_carriers = 1
+var num_airbases = 0
+var num_carriers = 0
 
 var player_faction = 0
 var enemy_faction = -1
@@ -33,7 +33,9 @@ func make_destroyer_array(length, faction):
 	
 	for i in range(length):
 		# testing fletcher-class:
-		var next_destroyer = FletcherClassDestroyer.new()
+		#var next_destroyer = FletcherClassDestroyer.new()
+		# testing monitor:
+		var next_destroyer = Monitor.new()
 		#var next_destroyer = TorpDestroyer.new()
 		#print(next_destroyer)
 		
