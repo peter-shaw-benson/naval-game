@@ -78,6 +78,8 @@ func handle_right_click(placement):
 		#print("right clicked for course")
 		# Turn logic is here for now?
 		
+		#print("carrier right click, last button = ", last_button)
+		
 		# Airbase things:
 		if last_button == "scout" and plane_numbers["scout"] > 0:
 			# Send planes
@@ -147,26 +149,6 @@ func carrier_inputs(event):
 
 func handle_specific_deselect():
 	get_node("ScoutPlaneTriangle").visible = false
-
-# these are here for later, if we build ports n shit
-#func start_repairs():
-#	print("repairing")
-#
-#	self.current_target = self.global_position
-#	self.target_array = []
-#
-#	stop_moving()
-#
-#	self.repairing = true
-#	get_node("RepairClock").start()
-#
-#func end_repairs():
-#	print("stopped repairing")
-#
-#	self.repairing = false
-#	start_moving()
-#
-#	get_node("RepairClock").stop()
 	
 # movement functions:
 # took out fuel indicators – idk how to do fuel with the new ships.
@@ -212,32 +194,8 @@ func _process(delta):
 	
 	## find overlapping bodies to spot
 	scan_detection_radius()
-	
-	
-	#align_turrets()
-	
-# if / when we add back fuel, we can use the prototypes in the Ship Squadron class.
-
-
-
-## COMBAT
-# this is unique to the ships – different for planes
-# bugged for now 
-#func align_turrets():
-#	## TODO
-#	var mouse_position = get_global_mouse_position()
-#
-#	for t in turrets:
-#		t.point_to(mouse_position)
-
 
 ## PLANE thingS:
-
-#func _unhandled_input(event):
-#	if event is InputEventMouseButton \
-#	and event.button_index == BUTTON_RIGHT \
-#	and !event.pressed:
-#		self.handle_right_click(event.position)
 
 func get_launch_time(plane_list):
 	if len(plane_list) == 0:

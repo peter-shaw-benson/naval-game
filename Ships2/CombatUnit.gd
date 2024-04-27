@@ -333,11 +333,6 @@ func handle_right_mouse_movement(placement):
 		current_target = placement
 		target_array.append(self.global_position)
 		
-		#print(target_array)
-		#print(current_target)
-		#print(self.global_position)
-		#print("patrolling value:", patrolling)
-		
 		emit_signal("new_course_change", current_target, placement)
 		
 		last_button = ""
@@ -490,12 +485,7 @@ func take_damage(weapon: Weapon):
 func update_healthbar():
 	if self.is_in_group("visible_to_" + str(GameState.get_playerFaction())):
 		healthbar.visible = true
-#
-#		# dynamic healthbar offset
-#		var scaled_rotation = abs((int(self.rotation_degrees) % 180) - 90)
-#		var base_offset = Vector2(-15, 30)
-#		healthbar_offset = base_offset - Vector2(0, healthbar_offset_scaling_factor * scaled_rotation)
-#
+
 		healthbar.set_global_position(self.global_position + healthbar_offset)
 		
 		healthbar.set_rotation(0)

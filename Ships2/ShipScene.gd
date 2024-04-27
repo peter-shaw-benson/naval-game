@@ -30,55 +30,6 @@ func _input(event):
 		#print(event)
 		handle_ship_inputs(event)
 
-# change this (hardcode) for now.
-# change arrow to the ship type later
-
-#func select():
-#	print("selecting")
-#
-#	if faction == GameState.get_playerFaction():
-#		selected = true
-#		get_node("Sprite").animation = "arrow" + "_clicked"
-#		get_node("Sprite").set_frame(faction)
-#
-#		print(get_node("Sprite").animation)
-#
-#		emit_signal("ship_selected", self)
-#
-#		last_button = ""
-#
-#func deselect():
-#	print("deselecting")
-#
-#	selected = false
-#
-#	get_node("Sprite").animation = "arrow" + "_basic"
-#	get_node("Sprite").set_frame(faction)
-#
-#	print(get_node("Sprite").animation)
-#
-#	emit_signal("ship_deselected", self)
-
-# these are here for later, if we build ports n shit
-#func start_repairs():
-#	print("repairing")
-#
-#	self.current_target = self.global_position
-#	self.target_array = []
-#
-#	stop_moving()
-#
-#	self.repairing = true
-#	get_node("RepairClock").start()
-#
-#func end_repairs():
-#	print("stopped repairing")
-#
-#	self.repairing = false
-#	start_moving()
-#
-#	get_node("RepairClock").stop()
-	
 # movement functions:
 # took out fuel indicators – idk how to do fuel with the new ships.
 
