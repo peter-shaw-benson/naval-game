@@ -266,7 +266,6 @@ func _input_event(viewport, event, shape_idx):
 		# removing for now
 		# print("(combat unit) mouse clicked")
 		# this still registers 4 mouse press events per actual mouse click 
-		
 		self.on_click()
 
 func _unhandled_input(event):
@@ -275,7 +274,13 @@ func _unhandled_input(event):
 	if event is InputEventMouseButton \
 	and event.button_index == BUTTON_LEFT \
 	and !event.pressed:
-		#print("unhandled input")
+#
+#		print("clicked outside ship")
+#		if last_button == "move" and self.selected:
+#			#last_button = ""
+#			self.handle_right_mouse_movement(event.position)
+#			print("LMB in combat unit")
+#
 		if self.selected:
 			self.deselect()
 		
@@ -315,110 +320,59 @@ func handle_final_turn(turn_point):
 
 func handle_right_mouse_movement(placement):
 ### Ship things:
-		if Input.is_action_pressed("queue"):
-			target_array.append(placement)
-			
-			emit_signal("new_course_change", current_target, placement)
-			#print(target_array)
-			
-		elif last_button == "patrol":
-			print("patrolling")
-			patrolling = true
-			current_target = placement
-			target_array.append(self.global_position)
-			
-			#print(target_array)
-			#print(current_target)
-			#print(self.global_position)
-			#print("patrolling value:", patrolling)
-			
-			emit_signal("new_course_change", current_target, placement)
-			
-			last_button = ""
-			
-			# need to start moving when you begin a patrol...
-			if stopped:
-				start_moving()
-			
-		else:
-			patrolling = false
-			target_array = []
-			#print("stopped patrolling for some reason?")
-
-			# unstops the ship, and also sets the current speed mode
-			if stopped:
-				start_moving()
-				#end_repairs()
-				
-				# flank or half from stop
-				if last_button == "flank" || last_button == "half":
-					set_current_speed_mode(last_button)
-					calc_current_speed()
-	
-				
-			# handles setting a current target while already flanking 
-			elif get_current_speed_mode() == "flank" || get_current_speed_mode() == "half":
-				set_current_speed_mode(get_current_speed_mode())
-			
-			current_target = placement
-			
-			#print("ship current target: ", current_target)
-
-func handle_ship_inputs_old():
-	
-	#print("handling ship input")
-	
-	if Input.is_action_pressed("patrol"):
-		last_button = "patrol"
+	#print("right mouse clicked, ", placement)
+	if Input.is_action_pressed("queue"):
+		target_array.append(placement)
 		
+		emit_signal("new_course_change", current_target, placement)
+		#print(target_array)
+		
+	elif last_button == "patrol":
 		print("patrolling")
+		patrolling = true
+		current_target = placement
+		target_array.append(self.global_position)
 		
-	elif Input.is_action_pressed("flank speed"):
-		last_button = "flank"
+		#print(target_array)
+		#print(current_target)
+		#print(self.global_position)
+		#print("patrolling value:", patrolling)
 		
-		print("changing to flank speed")
+		emit_signal("new_course_change", current_target, placement)
 		
-		# set speed to be higher here
-		set_current_speed_mode("flank")
-		calc_current_speed()
-	
-	elif Input.is_action_pressed("half speed"):
-		last_button = "half"
-		
-		print("changing to half speed")
-		
-		# set speed to be half here
-		set_current_speed_mode("half")
-		calc_current_speed()
-	
-	elif Input.is_action_pressed("full ahead"):
-		last_button = "full"
-		
-		print("changing to full speed")
-		
-		# set speed to be full here
-		set_current_speed_mode("full")
-		calc_current_speed()
-	
-	elif Input.is_action_pressed("stop"):
-		
-		print("stopping")
-
-		set_current_speed_mode("stopped")
-		calc_current_speed()
-		self.current_target = self.global_position
-		self.target_array = []
-		
-	
-	## COMBAT
-	elif Input.is_action_just_pressed("shoot"):
-		#print("shooting turrets")
-		if selected and combat_enabled:
-			self.shoot_turrets()
-	
-	
-	elif Input.is_action_pressed("cancel"):
 		last_button = ""
+		
+		# need to start moving when you begin a patrol...
+		if stopped:
+			start_moving()
+		
+	else:
+		patrolling = false
+		target_array = []
+		#print("stopped patrolling for some reason?")
+
+		# unstops the ship, and also sets the current speed mode
+		if stopped:
+			start_moving()
+			#end_repairs()
+			
+			# flank or half from stop
+			if last_button == "flank" || last_button == "half":
+				set_current_speed_mode(last_button)
+				calc_current_speed()
+
+			
+		# handles setting a current target while already flanking 
+		elif get_current_speed_mode() == "flank" || get_current_speed_mode() == "half":
+			set_current_speed_mode(get_current_speed_mode())
+		
+		current_target = placement
+
+func get_last_button():
+	return last_button
+
+func set_last_button(new_last):
+	last_button = new_last
 
 func handle_ship_inputs(event):
 
