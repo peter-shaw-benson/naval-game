@@ -114,31 +114,30 @@ func launch_planes(placement, strike_type):
 	
 	#self.stop_moving()
 
+func carrier_inputs():
+	handle_ship_inputs()
+	
+	## Airbase Things
+	if Input.is_action_pressed("scout"):
+		last_button = "scout"
+		
+		# show the Scouting Triangle
+		if plane_numbers["scout"] > 0:
+			get_node("ScoutPlaneTriangle").visible = true
+		
+	else:
+		get_node("ScoutPlaneTriangle").visible = false
+		
+		if Input.is_action_pressed("strike"):
+			last_button = "strike"
+		elif Input.is_action_pressed("bomb"):
+			last_button = "bomb"
+		elif Input.is_action_pressed("fighter"):
+			last_button = "CAP"
+	
+	if Input.is_action_pressed("stop_launch"):
+		self.stop_launching()
 
-func _input(event):
-	if selected:
-		handle_ship_inputs()
-		
-		## Airbase Things
-		if Input.is_action_pressed("scout"):
-			last_button = "scout"
-			
-			# show the Scouting Triangle
-			if plane_numbers["scout"] > 0:
-				get_node("ScoutPlaneTriangle").visible = true
-			
-		else:
-			get_node("ScoutPlaneTriangle").visible = false
-			
-			if Input.is_action_pressed("strike"):
-				last_button = "strike"
-			elif Input.is_action_pressed("bomb"):
-				last_button = "bomb"
-			elif Input.is_action_pressed("fighter"):
-				last_button = "CAP"
-		
-		if Input.is_action_pressed("stop_launch"):
-			self.stop_launching()
 
 # change this (hardcode) for now.
 # change arrow to the ship type later
@@ -213,6 +212,8 @@ func _process(delta):
 	
 	## find overlapping bodies to spot
 	scan_detection_radius()
+	
+	carrier_inputs()
 	
 	#align_turrets()
 	

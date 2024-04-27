@@ -165,9 +165,6 @@ func init(entity, initial_position, faction, type):
 		
 	# a ship should have three groups (flags): ship, faction, animosity
 	
-	# Combat Variables:
-	get_node("ShotTimer").wait_time = GameState.get_combatPace()
-	
 	#self.scale = Vector2(1.2, 1.2)
 	
 	screen_size = get_viewport_rect().size
@@ -204,8 +201,6 @@ func _ready():
 	
 	if self.faction != GameState.get_playerFaction():
 		healthbar.visible = false
-		
-	get_node("ShotTimer").start()
 	
 func setup_specific_unit():
 	pass
@@ -370,11 +365,18 @@ func handle_right_mouse_movement(placement):
 			#print("ship current target: ", current_target)
 
 func handle_ship_inputs():
+	
+	#print("handling ship input")
+	
 	if Input.is_action_pressed("patrol"):
 		last_button = "patrol"
 		
+		print("patrolling")
+		
 	elif Input.is_action_pressed("flank speed"):
 		last_button = "flank"
+		
+		print("changing to flank speed")
 		
 		# set speed to be higher here
 		set_current_speed_mode("flank")
@@ -383,6 +385,8 @@ func handle_ship_inputs():
 	elif Input.is_action_pressed("half speed"):
 		last_button = "half"
 		
+		print("changing to half speed")
+		
 		# set speed to be half here
 		set_current_speed_mode("half")
 		calc_current_speed()
@@ -390,11 +394,15 @@ func handle_ship_inputs():
 	elif Input.is_action_pressed("full ahead"):
 		last_button = "full"
 		
+		print("changing to full speed")
+		
 		# set speed to be full here
 		set_current_speed_mode("full")
 		calc_current_speed()
 	
 	elif Input.is_action_pressed("stop"):
+		
+		print("stopping")
 
 		set_current_speed_mode("stopped")
 		calc_current_speed()

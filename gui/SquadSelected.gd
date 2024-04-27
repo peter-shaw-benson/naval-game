@@ -1,46 +1,111 @@
 extends PopupPanel
 
-var burning_color = Color("#E67E22")
-var repair_color = Color("#5DADE2")
-var subsystem_color = Color("9a25aa")
-var healthy_color = Color("1bc32a")
+export(ButtonGroup) var group
 
-var speed_color = Color("#AAB7B8")
+var selected_ships = []
 
-var color_dict = {
-	"burning": burning_color,
-	"repairing": repair_color,
-	"healthy": healthy_color
-}
+var carrier_present = false
+
+func get_ship_speed():
+	return selected_ships[0].get_current_speed_mode()
 
 func _ready():
-	get_node("VBoxContainer/HBoxContainer/SquadStatus").text = "HEALTHY"
+	get_node("ShipSelected/Basic Actions/HBoxContainer/SpeedModes/StopButton").pressed = true
+
+func _on_MoveButton_pressed():
+	#Input.action_press("")
+	pass # Replace with function body.
+
+
+func _on_PatrolButton_pressed():
+	var patrol_event = InputEventAction.new()
+	patrol_event.action = "patrol"
+	patrol_event.pressed = true
+	Input.parse_input_event(patrol_event)
+#
+#	patrol_event.pressed = false
+#	Input.parse_input_event(patrol_event)
+	pass # Replace with function body.
+
+
+func _on_DeselectButton_pressed():
+	var new_deselect_event = InputEventMouseButton.new()
+	new_deselect_event.position = Vector2(-10000, -10000)
 	
-	get_node("VBoxContainer/HBoxContainer/SpeedStatus").set("custom_colors/default_color", speed_color)
+	new_deselect_event.pressed = true
+	Input.parse_input_event(new_deselect_event)
 
 
-func change_font_color_squad(color):
-	get_node("VBoxContainer/HBoxContainer/SquadStatus").set("custom_colors/default_color", color)
+func set_selected_ships(new_ship_list):
+	self.selected_ships = new_ship_list
+
+func _on_ShootButton_pressed():
+	Input.action_press("shoot")
+	pass # Replace with function body.
+
+
+## SPEED BUTTONS
+func _on_FlankButton_pressed():
+	var speed_event = InputEventAction.new()
+	speed_event.action = "flank speed"
+	speed_event.pressed = true
+	Input.parse_input_event(speed_event)
+#
+#	speed_event.pressed = false
+#	Input.parse_input_event(speed_event)
 	
-func subsystem_status(status):
-	if status in color_dict:
-		change_font_color_squad(color_dict[status])
-	else:
-		change_font_color_squad(subsystem_color)
+	print("pressed flank button")
+	#Input.action_press("flank speed")
+	pass # Replace with function body.
+
+
+func _on_FullButton_pressed():
+	var full_event = InputEventAction.new()
+	full_event.action = "full ahead"
+	full_event.pressed = true
+	Input.parse_input_event(full_event)
+#
+#	full_event.pressed = false
+#	Input.parse_input_event(full_event)
 	
-	get_node("VBoxContainer/HBoxContainer/SquadStatus").text = status.to_upper()
-
-func speed_status(status):
-	get_node("VBoxContainer/HBoxContainer/SpeedStatus").text = status.to_upper()
+	print("pressed full button")
 	
-func update_health(new_health):
-	get_node("VBoxContainer/HealthBar").value = new_health
+	pass # Replace with function body.
 
-func set_max_health(max_health):
-	get_node("VBoxContainer/HealthBar").max_value = max_health
 
-func update_fuel(new_fuel):
-	get_node("VBoxContainer/FuelBar").value = new_fuel
+func _on_HalfButton_pressed():
+	var half_event = InputEventAction.new()
+	half_event.action = "half speed"
+	half_event.pressed = true
+	Input.parse_input_event(half_event)
+#
+#	half_event.pressed = false
+#	Input.parse_input_event(half_event)
+	
+	print("pressed half button")
+	
+	pass # Replace with function body.
 
-func set_max_fuel(max_fuel):
-	get_node("VBoxContainer/FuelBar").max_value = max_fuel
+
+func _on_StopButton_pressed():
+	var stop_event = InputEventAction.new()
+	stop_event.action = "stop"
+	stop_event.pressed = true
+	Input.parse_input_event(stop_event)
+#
+#	stop_event.pressed = false
+#	Input.parse_input_event(stop_event)
+	
+	print("pressed stop button")
+	
+	pass # Replace with function body.
+
+
+## CARRIER SHIT
+func set_carrier_present(new_status):
+	carrier_present = new_status
+
+func _on_ShipSelected_tab_selected(tab):
+	# if the tab is 1 (second tab) and it's not a carrier, don't do shit.
+	if tab == 1 and not carrier_present:
+		return

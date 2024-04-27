@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=2]
+[gd_scene load_steps=25 format=2]
 
 [ext_resource path="res://Game Map/Map 2.gd" type="Script" id=1]
 [ext_resource path="res://Squad/Squadron.tscn" type="PackedScene" id=2]
@@ -22,6 +22,9 @@
 [ext_resource path="res://Game Map/SelectionBox.gd" type="Script" id=20]
 [ext_resource path="res://Miscellaneous/ZoomCamera.tscn" type="PackedScene" id=21]
 [ext_resource path="res://Miscellaneous/ZoomCamera.gd" type="Script" id=22]
+
+[sub_resource type="ButtonGroup" id=2]
+resource_name = "speed_modes"
 
 [sub_resource type="DynamicFont" id=1]
 size = 36
@@ -104,8 +107,11 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="SquadSelected" parent="CanvasLayer" instance=ExtResource( 18 )]
-visible = false
+[node name="ShipSelectedPopup" parent="CanvasLayer" instance=ExtResource( 18 )]
+margin_left = -281.586
+margin_top = -183.699
+margin_right = 1.41425
+group = SubResource( 2 )
 
 [node name="Ship Popup Timer" type="Timer" parent="CanvasLayer"]
 wait_time = 2.0

@@ -21,13 +21,13 @@ func setup_specific_unit():
 	self.scale = Vector2(0.6, 0.6)
 	
 	unlock_turrets()
-	get_node("ShotTimer").start()
 
 func handle_right_click(placement):
 	handle_right_mouse_movement(placement)
 
 func _input(event):
 	if selected:
+		#print(event)
 		handle_ship_inputs()
 
 # change this (hardcode) for now.
@@ -110,5 +110,8 @@ func _process(delta):
 		scan_detection_radius()
 	
 	#align_turrets()
+	
+	if selected:
+		handle_ship_inputs()
 	
 	update_healthbar()

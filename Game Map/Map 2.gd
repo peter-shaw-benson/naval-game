@@ -248,7 +248,7 @@ func raise_controls():
 	get_node("CanvasLayer/PauseMenu").raise()
 	get_node("CanvasLayer/ClockDisplay").raise()
 	get_node("CanvasLayer/Ship Funeral").raise()
-	get_node("CanvasLayer/SquadSelected").raise()
+	get_node("CanvasLayer/ShipSelectedPopup").raise()
 	get_node("CanvasLayer/WindBox").raise()
 
 func _input(event):
@@ -469,6 +469,16 @@ func add_ship_to_selected(ship: CombatUnit):
 	
 	get_node("CanvasLayer/SelectionBox").add_ship(ship)
 	selected.append(ship)
+	
+	if len(selected) > 0:
+		get_node("CanvasLayer/ShipSelectedPopup").show()
+		get_node("CanvasLayer/ShipSelectedPopup").set_selected_ships(selected)
+		
+		for s in selected:
+			if s.get_type() == "carrier":
+				get_node("CanvasLayer/ShipSelectedPopup").set_carrier_present(true)
+		
+			
 
 func remove_ship_from_selected(ship: CombatUnit):
 	
@@ -482,6 +492,13 @@ func remove_ship_from_selected(ship: CombatUnit):
 	# this line here is not good at all lmao
 	self.selected.remove(ship_index)
 	#print(self.selected)
+	
+	if len(selected) == 0:
+		get_node("CanvasLayer/ShipSelectedPopup").set_selected_ships([])
+		
+		get_node("CanvasLayer/ShipSelectedPopup").hide()
+		get_node("CanvasLayer/ShipSelectedPopup").set_carrier_present(false)
 
+# do stuff with selec
 
 ## Selection Groups
