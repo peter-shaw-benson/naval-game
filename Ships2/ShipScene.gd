@@ -28,7 +28,7 @@ func handle_right_click(placement):
 func _input(event):
 	if selected:
 		#print(event)
-		handle_ship_inputs()
+		handle_ship_inputs(event)
 
 # change this (hardcode) for now.
 # change arrow to the ship type later
@@ -110,8 +110,5 @@ func _process(delta):
 		scan_detection_radius()
 	
 	#align_turrets()
-	
-	if selected:
-		handle_ship_inputs()
 	
 	update_healthbar()

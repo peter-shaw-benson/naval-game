@@ -364,7 +364,7 @@ func handle_right_mouse_movement(placement):
 			
 			#print("ship current target: ", current_target)
 
-func handle_ship_inputs():
+func handle_ship_inputs_old():
 	
 	#print("handling ship input")
 	
@@ -418,6 +418,63 @@ func handle_ship_inputs():
 	
 	
 	elif Input.is_action_pressed("cancel"):
+		last_button = ""
+
+func handle_ship_inputs(event):
+
+	if event.is_action_pressed("patrol"):
+		last_button = "patrol"
+		
+	if event.is_action_pressed("move"):
+		last_button = "move"
+		
+		#print("patrolling")
+		
+	elif event.is_action_pressed("flank speed"):
+		last_button = "flank"
+		
+		#print("changing to flank speed")
+		
+		# set speed to be higher here
+		set_current_speed_mode("flank")
+		calc_current_speed()
+	
+	elif event.is_action_pressed("half speed"):
+		last_button = "half"
+		
+		#print("changing to half speed")
+		
+		# set speed to be half here
+		set_current_speed_mode("half")
+		calc_current_speed()
+	
+	elif event.is_action_pressed("full ahead"):
+		last_button = "full"
+		
+		#print("changing to full speed")
+		
+		# set speed to be full here
+		set_current_speed_mode("full")
+		calc_current_speed()
+	
+	elif event.is_action_pressed("stop"):
+		
+		#print("stopping")
+
+		set_current_speed_mode("stopped")
+		calc_current_speed()
+		self.current_target = self.global_position
+		self.target_array = []
+		
+	
+	## COMBAT
+	elif event.is_action_pressed("shoot"):
+		#print("shooting turrets")
+		if selected and combat_enabled:
+			self.shoot_turrets()
+	
+	
+	elif event.is_action_pressed("cancel"):
 		last_button = ""
 
 

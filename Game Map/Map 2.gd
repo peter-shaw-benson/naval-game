@@ -253,14 +253,14 @@ func raise_controls():
 
 func _input(event):
 			
-	if Input.is_action_pressed("pause_menu"):
+	if event.is_action_pressed("pause_menu"):
 		if not paused:
 			# make sure the pause menu is above everything else
 			get_node("CanvasLayer/PauseMenu").raise()
 			
 			handle_pause()
 			
-	elif Input.is_action_pressed("pause_game"):
+	elif event.is_action_pressed("pause_game"):
 		print("spacebar pressed")
 		# Spacebar
 		if not paused:
@@ -269,10 +269,10 @@ func _input(event):
 			unpause()
 			
 	# Selection Groups
-	if Input.is_action_pressed("command"):
+	if event.is_action_pressed("command"):
 		creating_new_group = true
 		
-	elif Input.is_action_just_released("command"):
+	elif event.is_action_released("command"):
 		creating_new_group = false
 	
 	if event is InputEventKey and event.pressed:

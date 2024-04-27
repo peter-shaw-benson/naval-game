@@ -257,9 +257,10 @@ func remove_ship(ship):
 	
 	ship_index = selected_ships.find(ship)
 	
-	# this line here is not good at all lmao
-	self.selected.remove(ship_index)
-	self.selected_ships.remove(ship_index)
+	if ship_index >= 0:
+		# this line here is not good at all lmao
+		self.selected.remove(ship_index)
+		self.selected_ships.remove(ship_index)
 	
 func get_average_ship_position():
 	var average_position = Vector2(0,0)
