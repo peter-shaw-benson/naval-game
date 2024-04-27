@@ -6,6 +6,9 @@ var max_range: int
 
 var lifetime: float
 
+var flakgun = false
+var flak_exploded = false
+
 var weaponData: Weapon
 
 var initial_pos = Vector2(0,0)
@@ -30,7 +33,7 @@ func init(weaponData, turret_pos):
 		self.set_collision_mask_bit(3, true)
 		self.set_collision_mask_bit(1, false)
 		
-	if self.weaponData.get_name() == "machinegun":
+	elif self.weaponData.get_name() == "machinegun":
 		frames = preload("res://art/Bullets/MG/MGSprite.tres")
 		get_node("AnimatedSprite").set_sprite_frames(frames)
 		
@@ -42,6 +45,20 @@ func init(weaponData, turret_pos):
 		# can hit boats, but not planes
 		self.set_collision_mask_bit(3, true)
 		self.set_collision_mask_bit(1, false)
+		
+	elif self.weaponData.get_name() == "flakgun":
+		flakgun = true
+		
+		self.set_collision_mask_bit(3, false)
+		self.set_collision_mask_bit(1, true)
+		
+	elif self.weaponData.get_name() == "flakbullet":
+		
+		frames = preload("res://art/Bullets/MG/MGSprite.tres")
+		get_node("AnimatedSprite").set_sprite_frames(frames)
+		
+		self.set_collision_mask_bit(3, false)
+		self.set_collision_mask_bit(1, true)
 
 	get_node("AnimatedSprite").animation = "shell"
 
@@ -50,7 +67,12 @@ func _physics_process(delta):
 	
 	# test if max range is reached
 	if self.global_position.distance_to(self.initial_pos) >= self.max_range:
-		queue_free()
+		
+		if flakgun and not flak_exploded:
+			handle_flakgun()
+			
+		else:
+			queue_free()
 
 
 # IDEAS:
@@ -59,6 +81,7 @@ func _physics_process(delta):
 
 
 func _on_AnimatedSprite_animation_finished():
+
 	queue_free()
 
 
@@ -85,6 +108,19 @@ func _on_Bullet_body_entered(body):
 			
 			body.take_damage(self.weaponData)
 
+func handle_flakgun():
+	
+	#self.speed = 0
+	
+	self.initial_pos = self.global_position
+	self.max_range = 20
+	self.rotation += ((randf() * 2) - 1)
+	self.speed += 100
+	
+	flak_exploded = true
+	
+	#get_node("AnimatedSprite").animation = "shell"
+	
 
 
 func _on_fuseTimer_timeout():

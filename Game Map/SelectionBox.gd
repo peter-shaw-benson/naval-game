@@ -56,6 +56,7 @@ func _input(event):
 			#print("Left button was clicked at ", event.position)
 	# this handles right mouse buttons
 	if event is InputEventMouseButton and event.button_index == 2:
+		
 		raw_initial_right_mouse_pos = event.position
 		#transformed_pos = get_canvas_transform().basis_xform(event.position)
 		
@@ -105,7 +106,25 @@ func _input(event):
 			else:
 				move_in_formation(initial_right_mouse_pos)
 				self.handle_squadron_turn(final_right_mouse_pos)
+				
+	elif (event is InputEventMouseButton and event.button_index == 1 and \
+	len(selected_ships) > 0 and selected_ships[0].get_last_button() == "move"):
+		
+		initial_right_mouse_pos = get_zoomed_offset(event.position)
+		
+		if len(selected_ships) == 1:
+			var selected_ship: CombatUnit = selected_ships[0]
 			
+			if selected_ship.is_in_group("player") and selected_ship.is_in_group("ship"):
+				selected_ship.handle_right_click(initial_right_mouse_pos)
+				#selected_ship.handle_final_turn(final_right_mouse_pos)
+		# if there's multiple ships
+		else:
+			move_in_formation(initial_right_mouse_pos)
+			#self.handle_squadron_turn(final_right_mouse_pos)
+#
+#		for s in selected_ships:
+#			s.set_last_button("")
 			
 
 func _unhandled_input(event):
@@ -257,9 +276,10 @@ func remove_ship(ship):
 	
 	ship_index = selected_ships.find(ship)
 	
-	# this line here is not good at all lmao
-	self.selected.remove(ship_index)
-	self.selected_ships.remove(ship_index)
+	if ship_index >= 0:
+		# this line here is not good at all lmao
+		self.selected.remove(ship_index)
+		self.selected_ships.remove(ship_index)
 	
 func get_average_ship_position():
 	var average_position = Vector2(0,0)

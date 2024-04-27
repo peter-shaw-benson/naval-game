@@ -4,7 +4,7 @@
 [ext_resource path="res://Ships2/Turrets/Turret.gd" type="Script" id=2]
 [ext_resource path="res://Ships2/Bullets/Bullet.tscn" type="PackedScene" id=3]
 
-[sub_resource type="SpriteFrames" id=1]
+[sub_resource type="SpriteFrames" id=3]
 animations = [ {
 "frames": [ ExtResource( 1 ) ],
 "loop": true,
@@ -21,7 +21,7 @@ Bullet = ExtResource( 3 )
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 position = Vector2( 2.4231, -0.0883942 )
 rotation = 1.5708
-frames = SubResource( 1 )
+frames = SubResource( 3 )
 speed_scale = 4.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -36,4 +36,7 @@ points = PoolVector2Array( 0, 0, 0, 0, 83.2733, -0.0850296 )
 width = 1.0
 default_color = Color( 1, 0.4, 0.4, 1 )
 
+[node name="ShotTimer" type="Timer" parent="."]
+
 [connection signal="animation_finished" from="AnimatedSprite" to="." method="_on_AnimatedSprite_animation_finished"]
+[connection signal="timeout" from="ShotTimer" to="." method="_on_ShotTimer_timeout"]

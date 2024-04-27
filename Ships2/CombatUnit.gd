@@ -165,9 +165,6 @@ func init(entity, initial_position, faction, type):
 		
 	# a ship should have three groups (flags): ship, faction, animosity
 	
-	# Combat Variables:
-	get_node("ShotTimer").wait_time = GameState.get_combatPace()
-	
 	#self.scale = Vector2(1.2, 1.2)
 	
 	screen_size = get_viewport_rect().size
@@ -204,8 +201,6 @@ func _ready():
 	
 	if self.faction != GameState.get_playerFaction():
 		healthbar.visible = false
-		
-	get_node("ShotTimer").start()
 	
 func setup_specific_unit():
 	pass
@@ -271,7 +266,6 @@ func _input_event(viewport, event, shape_idx):
 		# removing for now
 		# print("(combat unit) mouse clicked")
 		# this still registers 4 mouse press events per actual mouse click 
-		
 		self.on_click()
 
 func _unhandled_input(event):
@@ -280,7 +274,13 @@ func _unhandled_input(event):
 	if event is InputEventMouseButton \
 	and event.button_index == BUTTON_LEFT \
 	and !event.pressed:
-		#print("unhandled input")
+#
+#		print("clicked outside ship")
+#		if last_button == "move" and self.selected:
+#			#last_button = ""
+#			self.handle_right_mouse_movement(event.position)
+#			print("LMB in combat unit")
+#
 		if self.selected:
 			self.deselect()
 		
@@ -320,81 +320,95 @@ func handle_final_turn(turn_point):
 
 func handle_right_mouse_movement(placement):
 ### Ship things:
-		if Input.is_action_pressed("queue"):
-			target_array.append(placement)
-			
-			emit_signal("new_course_change", current_target, placement)
-			#print(target_array)
-			
-		elif last_button == "patrol":
-			print("patrolling")
-			patrolling = true
-			current_target = placement
-			target_array.append(self.global_position)
-			
-			#print(target_array)
-			#print(current_target)
-			#print(self.global_position)
-			#print("patrolling value:", patrolling)
-			
-			emit_signal("new_course_change", current_target, placement)
-			
-			last_button = ""
-			
-			# need to start moving when you begin a patrol...
-			if stopped:
-				start_moving()
-			
-		else:
-			patrolling = false
-			target_array = []
-			#print("stopped patrolling for some reason?")
+	#print("right mouse clicked, ", placement)
+	if Input.is_action_pressed("queue"):
+		target_array.append(placement)
+		
+		emit_signal("new_course_change", current_target, placement)
+		#print(target_array)
+		
+	elif last_button == "patrol":
+		print("patrolling")
+		patrolling = true
+		current_target = placement
+		target_array.append(self.global_position)
+		
+		emit_signal("new_course_change", current_target, placement)
+		
+		last_button = ""
+		
+		# need to start moving when you begin a patrol...
+		if stopped:
+			start_moving()
+		
+	else:
+		patrolling = false
+		target_array = []
+		#print("stopped patrolling for some reason?")
 
-			# unstops the ship, and also sets the current speed mode
-			if stopped:
-				start_moving()
-				#end_repairs()
-				
-				# flank or half from stop
-				if last_button == "flank" || last_button == "half":
-					set_current_speed_mode(last_button)
-					calc_current_speed()
-	
-				
-			# handles setting a current target while already flanking 
-			elif get_current_speed_mode() == "flank" || get_current_speed_mode() == "half":
-				set_current_speed_mode(get_current_speed_mode())
+		# unstops the ship, and also sets the current speed mode
+		if stopped:
+			start_moving()
+			#end_repairs()
 			
-			current_target = placement
-			
-			#print("ship current target: ", current_target)
+			# flank or half from stop
+			if last_button == "flank" || last_button == "half":
+				set_current_speed_mode(last_button)
+				calc_current_speed()
 
-func handle_ship_inputs():
-	if Input.is_action_pressed("patrol"):
+			
+		# handles setting a current target while already flanking 
+		elif get_current_speed_mode() == "flank" || get_current_speed_mode() == "half":
+			set_current_speed_mode(get_current_speed_mode())
+		
+		current_target = placement
+
+func get_last_button():
+	return last_button
+
+func set_last_button(new_last):
+	last_button = new_last
+
+func handle_ship_inputs(event):
+
+	if event.is_action_pressed("patrol"):
 		last_button = "patrol"
 		
-	elif Input.is_action_pressed("flank speed"):
+	if event.is_action_pressed("move"):
+		last_button = "move"
+		
+		#print("patrolling")
+		
+	elif event.is_action_pressed("flank speed"):
 		last_button = "flank"
+		
+		#print("changing to flank speed")
 		
 		# set speed to be higher here
 		set_current_speed_mode("flank")
 		calc_current_speed()
 	
-	elif Input.is_action_pressed("half speed"):
+	elif event.is_action_pressed("half speed"):
 		last_button = "half"
+		
+		#print("changing to half speed")
 		
 		# set speed to be half here
 		set_current_speed_mode("half")
 		calc_current_speed()
 	
-	elif Input.is_action_pressed("full ahead"):
+	elif event.is_action_pressed("full ahead"):
 		last_button = "full"
+		
+		#print("changing to full speed")
 		
 		# set speed to be full here
 		set_current_speed_mode("full")
 		calc_current_speed()
 	
-	elif Input.is_action_pressed("stop"):
+	elif event.is_action_pressed("stop"):
+		
+		#print("stopping")
 
 		set_current_speed_mode("stopped")
 		calc_current_speed()
@@ -403,13 +417,13 @@ func handle_ship_inputs():
 		
 	
 	## COMBAT
-	elif Input.is_action_just_pressed("shoot"):
+	elif event.is_action_pressed("shoot"):
 		#print("shooting turrets")
 		if selected and combat_enabled:
 			self.shoot_turrets()
 	
 	
-	elif Input.is_action_pressed("cancel"):
+	elif event.is_action_pressed("cancel"):
 		last_button = ""
 
 
@@ -471,12 +485,7 @@ func take_damage(weapon: Weapon):
 func update_healthbar():
 	if self.is_in_group("visible_to_" + str(GameState.get_playerFaction())):
 		healthbar.visible = true
-#
-#		# dynamic healthbar offset
-#		var scaled_rotation = abs((int(self.rotation_degrees) % 180) - 90)
-#		var base_offset = Vector2(-15, 30)
-#		healthbar_offset = base_offset - Vector2(0, healthbar_offset_scaling_factor * scaled_rotation)
-#
+
 		healthbar.set_global_position(self.global_position + healthbar_offset)
 		
 		healthbar.set_rotation(0)
@@ -492,31 +501,6 @@ func scan_detection_radius():
 			
 			body.call("detect")
 			body.add_to_group(visible_string)
-	
-func set_firing_target(firing_target):
-	
-	# idk how to do this one yet
-	self.firing_target = firing_target
-
-# update this later, once turrets are added
-func _on_ShotTimer_timeout():
-	if in_combat and combat_enabled:
-		self.shoot_ship_turrets(combat_ticks)
-		
-		self.combat_ticks += 1
-		
-func shoot_ship_turrets(combat_ticks):
-	
-	for t in turrets:
-
-		if int(combat_ticks) % int(t.get_fire_rate()) == 0:
-			t.shoot()
-#
-#			if t.is_aa_gun() and combat_entity.is_plane():
-#				t.shoot()
-#			elif not t.is_aa_gun() and not combat_entity.is_plane():
-#				t.shoot()
-
 # if / when we add back fuel, we can use the prototypes in the Ship Squadron class.
 
 func set_current_speed_mode(speed_mode):
@@ -539,32 +523,8 @@ func calc_current_speed():
 
 ## COMBAT
 # this is unique to the ships – different for planes
-# bugged for now 
-func align_turrets():
-	#print("aligning all turrets")
-	# we do this for each turret so they can independently target things.
-	# change later?
-	var valid_enemies = 0
-	
-	for t in turrets:
-		valid_enemies += t.align()
-		
-	#print(fact_string, "\t", visible_string, "\t", valid_enemies)
-				
-	if self.in_combat == false and valid_enemies > 0:
-		self.enter_combat()
-	
-	if valid_enemies == 0 and self.in_combat:
-		self.exit_combat()
-				
 
-func enter_combat():
-	print("entered combat\t", self.faction)
-	self.in_combat = true
-	
-func exit_combat():
-	print("exited combat\t", self.faction)
-	self.in_combat = false
+# mostly handled by turrets autonomously
 
 
 # Detection:

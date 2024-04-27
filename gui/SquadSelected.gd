@@ -1,46 +1,81 @@
 extends PopupPanel
 
-var burning_color = Color("#E67E22")
-var repair_color = Color("#5DADE2")
-var subsystem_color = Color("9a25aa")
-var healthy_color = Color("1bc32a")
+export(ButtonGroup) var group
 
-var speed_color = Color("#AAB7B8")
+var selected_ships = []
 
-var color_dict = {
-	"burning": burning_color,
-	"repairing": repair_color,
-	"healthy": healthy_color
-}
+var carrier_present = false
+
+func get_ship_speed():
+	return selected_ships[0].get_current_speed_mode()
 
 func _ready():
-	get_node("VBoxContainer/HBoxContainer/SquadStatus").text = "HEALTHY"
+	get_node("ShipSelected/Basic Actions/HBoxContainer/SpeedModes/StopButton").pressed = true
+
+func simulate_action(sim_action):
+	var action_event = InputEventAction.new()
+	action_event.action = sim_action
+	action_event.pressed = true
+	Input.parse_input_event(action_event)
+
+func _on_MoveButton_pressed():
+	simulate_action("move")
+
+func _on_PatrolButton_pressed():
+	simulate_action("patrol")
+
+func _on_DeselectButton_pressed():
 	
-	get_node("VBoxContainer/HBoxContainer/SpeedStatus").set("custom_colors/default_color", speed_color)
+	for s in selected_ships:
+		s.deselect()
 
 
-func change_font_color_squad(color):
-	get_node("VBoxContainer/HBoxContainer/SquadStatus").set("custom_colors/default_color", color)
+func set_selected_ships(new_ship_list):
+	self.selected_ships = new_ship_list
+
+func _on_ShootButton_pressed():
+	#Input.action_press("shoot")
 	
-func subsystem_status(status):
-	if status in color_dict:
-		change_font_color_squad(color_dict[status])
-	else:
-		change_font_color_squad(subsystem_color)
+	simulate_action("shoot")
 	
-	get_node("VBoxContainer/HBoxContainer/SquadStatus").text = status.to_upper()
+## SPEED BUTTONS
+func _on_FlankButton_pressed():
+	simulate_action("flank speed")
 
-func speed_status(status):
-	get_node("VBoxContainer/HBoxContainer/SpeedStatus").text = status.to_upper()
+func _on_FullButton_pressed():
+	simulate_action("full ahead")
 	
-func update_health(new_health):
-	get_node("VBoxContainer/HealthBar").value = new_health
+func _on_HalfButton_pressed():
+	simulate_action("half speed")
 
-func set_max_health(max_health):
-	get_node("VBoxContainer/HealthBar").max_value = max_health
+func _on_StopButton_pressed():
+	simulate_action("stop")
 
-func update_fuel(new_fuel):
-	get_node("VBoxContainer/FuelBar").value = new_fuel
+## CARRIER SHIT
+func set_carrier_present(new_status):
+	carrier_present = new_status
 
-func set_max_fuel(max_fuel):
-	get_node("VBoxContainer/FuelBar").max_value = max_fuel
+func _on_ShipSelected_tab_selected(tab):
+	# if the tab is 1 (second tab) and it's not a carrier, don't do shit.
+	if tab == 1 and not carrier_present:
+		return
+
+
+func _on_LaunchScout_pressed():
+	simulate_action("scout")
+	pass # Replace with function body.
+
+
+func _on_Launch_Fighters_pressed():
+	simulate_action("fighter")
+	pass # Replace with function body.
+
+
+func _on_LaunchStrike_pressed():
+	simulate_action("strike")
+	pass # Replace with function body.
+
+
+func _on_LaunchDiveBombers_pressed():
+	simulate_action("dive")
+	pass # Replace with function body.

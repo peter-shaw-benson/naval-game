@@ -17,6 +17,8 @@ var game_vars = {
 	# how much weapon damage gets scaled
 	"accuracyScaling": 0.3,
 	# global weapon accuracy scaling
+	"accuracyGrowthFactor": 4,
+	# used in the math of accuracy gain over time.
 	"armorReduction": 5,
 	# how much armor reduces incoming weapon damage
 	"stoppedFactor": 0.5,
@@ -199,3 +201,6 @@ func get_speedFactor(speed_mode):
 
 func get_visibility_scale():
 	return game_vars["visibilityScale"]
+
+func get_accuracy_growth_factor():
+	return game_vars["accuracyGrowthFactor"]

@@ -29,6 +29,10 @@ var faction_visibility_group = "visible_to_"
 var aa_gun = false
 # plane gun not being used rn
 var plane_gun = false
+var bullet_spread = 0
+var shot_count = 0
+
+var spread_rng
 
 func init(weapon, faction):
 	# here, weapon is a dict of weapon data, y offset, and number of barrels
@@ -44,6 +48,11 @@ func init(weapon, faction):
 	self.num_barrels = weapon["barrels"]
 	self.turn_weight = weapon["turn_weight"]
 	self.aa_gun = weaponData.is_aa_gun()
+	self.bullet_spread = weaponData.get_spread()
+	
+	self.spread_rng = RandomNumberGenerator.new()
+	spread_rng.seed = hash(get_instance_id())
+	
 	
 	self.firing_arc[0] = deg2rad(weapon["firing_arc"][0])
 	self.firing_arc[1] = deg2rad(weapon["firing_arc"][1])
@@ -75,6 +84,7 @@ func init(weapon, faction):
 	#print(self.faction_visibility_group)
 	
 func _ready():
+	get_node("ShotTimer").start()
 	pass
 
 func _process(delta):
@@ -215,23 +225,29 @@ func check_close_enemy():
 		
 		in_weapons_range = false
 		
+		shot_count = 0
+		
 			# print("stopped firing")
-
-func align():
-	
-	#print(self.faction, "\t", close_enemy)
-	if in_weapons_range:
-		return 1
-	
-	else:
-		return 0
-					
 
 func shoot():
 	
-	if (in_weapons_range and pointing_at_enemy) or \
-		(in_weapons_range and locked):
+#	if (in_weapons_range and pointing_at_enemy) or \
+#		(in_weapons_range and locked):
+		
+		if weaponData.get_name() == "flakgun":
+			num_barrels = (int(randf() * 5) + 3)
 			
+		var accuracy_improvement = (-1) * shot_count * weaponData.get_accuracy_gain()
+		# current accuracy = bullet_spread * accuracyGainFactor ^ (shot_count * accuracy gain)
+		
+		var new_spread = self.bullet_spread * pow(GameState.get_accuracy_growth_factor(), accuracy_improvement)
+		
+		if new_spread <= 0:
+			new_spread = 0.01
+		
+		# add bullet spread
+		var this_bullet_spread = spread_rng.randf_range(-1 * new_spread, new_spread)
+		
 		for b in self.num_barrels:
 			# shoot one bullet per barrel
 			var bullet = Bullet.instance()
@@ -242,6 +258,9 @@ func shoot():
 			get_tree().root.add_child(bullet)
 
 			bullet.transform = $Barrel.global_transform
+			#print(this_bullet_spread)
+			
+			bullet.rotation += this_bullet_spread
 		
 		#print("shooting")
 		
@@ -285,3 +304,16 @@ func get_fire_rate():
 
 func _on_AnimatedSprite_animation_finished():
 	get_node("AnimatedSprite").animation = "default"
+
+
+
+func _on_ShotTimer_timeout():
+	
+	if (in_weapons_range and pointing_at_enemy) or \
+		(in_weapons_range and locked):
+			
+		self.shoot()
+		
+		get_node("ShotTimer").wait_time += ((randf() * 2) - 1) * 0.05
+		
+		shot_count += 1

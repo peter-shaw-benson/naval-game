@@ -320,7 +320,7 @@ func take_damage(weapon):
 	#print(weapon.get_name())
 	
 	if self.get_health() <= 0:
-		print("plane lost")
+		#print("plane lost")
 		queue_free()
 
 func get_health():
